@@ -1,0 +1,65 @@
+# qemu-8704
+
+当前主路线为 Apple Silicon macOS + QEMU HVF，启动入口保留 `MEB-EMU.sh`。Windows 入口属于历史工程预览，不代表已验证的同等功能。
+
+## 首次运行
+
+本仓库不分发 8704 更新包、原厂镜像、原厂 JAR、个人车辆编码或运行快照，**也不提供 8704 资源下载链接**。使用者自行取得有权使用的 8704 资源并完成提取；原始更新包不能直接作为下列镜像使用。
+
+安装 Git LFS 后，在克隆的项目根目录执行：
+
+```sh
+git lfs install
+git lfs pull
+./MEB-EMU.sh setup
+```
+
+将自己准备的 8704 文件放到以下项目相对位置：
+
+```text
+var/inputs/analysis/cpu/ivi/icas3cn-gp-image-euto-v9.ext4
+var/inputs/hmi/vw-restored/vw-hmi.ext4
+var/inputs/support/vw-verity-native/overlay-verity/lg-custom.ext4
+var/inputs/support/abox-dsp-native/virtual-lun0-dsp/ufs-lun0.raw
+```
+
+四项分别供 Linux 根文件系统、原 HMI、custom 分区和 Android 原始分区读取使用。更新包是否足够取决于实际包含的分区；缺失原始输入不能由脚本伪造。初始化时会创建明确标为模拟的离线车型资源选择（默认 21 位资源键，可用 `--vehicle-type` 指定），不包含原车诊断记录或身份。个人车辆适配配置如有需要，由使用者自行准备在被忽略的 `src/hvf_bench/local/`，不随仓库分发。
+
+在新克隆且未启动会话的目录执行：
+
+```sh
+.venv/bin/python -B tools/configure_macos.py
+./MEB-EMU.sh doctor
+./MEB-EMU.sh smoke
+./MEB-EMU.sh start
+.venv/bin/python -B tools/bench_power.py on
+./MEB-EMU.sh serve
+./MEB-EMU.sh status
+```
+
+初始化脚本仅绑定本机路径、校验模块并创建空白 Android misc 运行盘；缺少输入时退出 2 且不写配置，不下载、不解包、不修改原厂输入。`bench_power.py on` 只设置客体内模拟的驻车点火与电源信号，服务尚未就绪时需稍后重试；不是实车控制。首次 HMI 启动可能等待约 90 秒后选择默认皮肤。`doctor` 或路径检查成功不代表完整业务启动通过；页面地址以 `start` / `serve` 的实际输出为准。使用 `./MEB-EMU.sh stop` 停止当前副本，等旧 worker 退出后再启动。
+
+已有本机验证覆盖原 HMI 页面、中文设置及 Linux/Android 指令通道。Android 完整 framework、QNX/IC/HUD、长期稳定性及持续动态帧率未全部验收。不能将“本机已有镜像可运行”表述为“任意机器仅克隆即可运行”；新机器仍需自备输入、macOS 依赖和实际冷启动验证。历史文档中的本机绝对路径不是新机器的部署路径。
+
+## 历史 Windows 工程预览
+
+**0.1.0-preview.1 · Windows x64 工程预览版**
+
+Exynos Auto9 模拟器、原厂 Linux／Android／QNX 引导代码、中控原生像素窗口与统一控制页面。
+
+唯一入口：`MEB-EMU.ps1`。
+
+```powershell
+./MEB-EMU.ps1 setup
+./MEB-EMU.ps1 doctor
+./MEB-EMU.ps1 verify
+./MEB-EMU.ps1 test
+```
+
+- [导入输入与启动](docs/使用.md)
+- [源码与构建](docs/开发.md)
+- [预发布状态](发布状态.md)
+- [第三方声明](NOTICE.md)
+- [运行边界](运行边界.md)
+
+公开包保留 `src/`、`tools/`、`native/`、`runtime/`、`config/`、`tests/`、`licenses/` 与必要文档；本机输入和输出分别位于 `var/inputs/`、`var/sessions/`。`var/`、`.local/`、`.venv/` 不进入发布包。
