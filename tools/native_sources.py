@@ -3,14 +3,38 @@ import hashlib
 from pathlib import Path
 import shutil
 import tarfile
+import tempfile
+import urllib.request
 
 ROOT=Path(__file__).resolve().parents[1]
+SOURCE_URL='https://download.qemu.org/qemu-11.1.0.tar.xz'
+SOURCE_SHA256='6ee1d1a61f68212476b27108c26da5f449dc09b626d42f8279ba0dc2e08fa858'
+
+
+def ensure_archive(archive):
+    """Fetch only the pinned open-source QEMU archive, never OEM firmware."""
+    archive=Path(archive)
+    if archive.exists():return
+    archive.parent.mkdir(parents=True,exist_ok=True)
+    temporary=None
+    try:
+        with tempfile.NamedTemporaryFile(dir=archive.parent,prefix='.qemu-source-',delete=False) as output:
+            temporary=Path(output.name)
+            with urllib.request.urlopen(SOURCE_URL,timeout=60) as response:
+                shutil.copyfileobj(response,output)
+        with temporary.open('rb') as stream:
+            if hashlib.file_digest(stream,'sha256').hexdigest()!=SOURCE_SHA256:
+                raise ValueError('Downloaded upstream source checksum mismatch')
+        if not archive.exists():temporary.replace(archive)
+    finally:
+        if temporary is not None and temporary.exists():temporary.unlink()
 
 
 def prepare(build_root=None):
     archive=ROOT/'native/upstream/qemu-11.1.0.tar.xz'
+    ensure_archive(archive)
     with archive.open('rb') as stream:
-        if hashlib.file_digest(stream,'sha256').hexdigest()!='6ee1d1a61f68212476b27108c26da5f449dc09b626d42f8279ba0dc2e08fa858':
+        if hashlib.file_digest(stream,'sha256').hexdigest()!=SOURCE_SHA256:
             raise ValueError('Upstream source checksum mismatch')
     destination=Path(build_root).resolve() if build_root else ROOT/'.local/build'
     if not destination.is_relative_to(ROOT/'.local'):raise ValueError('Build root must stay in .local')

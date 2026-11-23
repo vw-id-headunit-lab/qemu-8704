@@ -16,3 +16,8 @@ __pycache__/
 
 # Per-checkout configuration backups
 /config/*.before-configure
+
+# Reproducible third-party source and unpack caches
+/native/upstream/*.tar.xz
+/src/hvf_bench/runtime/mesa/rootfs/
+/src/hvf_bench/runtime/cache/
