@@ -1,0 +1,32 @@
+[
+  {
+    "source": "/system/lib64/bootstrap/libc.so",
+    "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/local/link/libc.so",
+    "bytes": 978264,
+    "sha256": "46164595086e73447460c3384b01fb4a0a956d23e4870182dba0d4774696957d"
+  },
+  {
+    "source": "/system/lib64/liblog.so",
+    "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/local/link/liblog.so",
+    "bytes": 72008,
+    "sha256": "568fc7cd164deabd8fa6b5351683c5f6d7b63fc69b6bebc33870635b3630ec8f"
+  },
+  {
+    "source": "/system/lib64/libcutils.so",
+    "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/local/link/libcutils.so",
+    "bytes": 70456,
+    "sha256": "f891555e3f0b7743b537520a0aa8267c2ca134153b345fca668c19c861059a4d"
+  },
+  {
+    "source": "/system/lib64/bootstrap/libdl.so",
+    "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/local/link/libdl.so",
+    "bytes": 14176,
+    "sha256": "cf34c08cb33b841e96c6005a8de1509f9175c61e0f4db94bff04e861493e2ad0"
+  },
+  {
+    "source": "/system/lib64/libhardware.so",
+    "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/local/link/libhardware.so",
+    "bytes": 11232,
+    "sha256": "bf8628edb011bd14cb9ea595b29243e68151f49647f1e650bc9944c9624ebe13"
+  }
+]

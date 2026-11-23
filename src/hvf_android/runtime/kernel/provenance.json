@@ -1,0 +1,8 @@
+{
+  "source": "https://android.googlesource.com/platform/prebuilts/qemu-kernel/+/49fc0bd37a4ac7350a45eb6fd86f011bf2bb79cb/arm64/5.4/",
+  "commit": "49fc0bd37a4ac7350a45eb6fd86f011bf2bb79cb",
+  "compressed_git_blob_sha1": "76f329a9929aec808b19c9c89bfd4c00c862cd81",
+  "sha256": "22d5678eecbced78556e4a44293a15bcac54feb3364fecdd392ab6551c112650",
+  "bytes": 26210816,
+  "version": "Linux version 5.4.47-01061-g22e35a1de440 (android-build@abfarm-00994) (Android (6443078 based on r383902) clang version 11.0.1 (https://android.googlesource.com/toolchain/llvm-project b397f81060ce6d701042b782172ed13bee898b79), LLD 11.0.1 (/buildbot/tmp/tmp6_m7QH b397f81060c"
+}

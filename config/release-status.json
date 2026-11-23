@@ -1,0 +1,38 @@
+{
+  "version": "0.1.0-preview.1",
+  "stage": "engineering-preview",
+  "platform": "windows-x86_64",
+  "carrier": "runtime/qemu-system-aarch64.exe",
+  "firmware_distribution": "excluded",
+  "private_identity_distribution": "excluded",
+  "center": {
+    "source_resolution": [
+      1920,
+      1080
+    ],
+    "original_hmi_frames_observed_in_development": true,
+    "sustained_interaction_accepted": false,
+    "dynamic_fps_over_10_accepted": false
+  },
+  "android": {
+    "long_term_stability_accepted": false
+  },
+  "ic": {
+    "instrument_picture_accepted": false
+  },
+  "hud": {
+    "picture_accepted": false
+  },
+  "publication": "local-artifact-only",
+  "packaging": {
+    "unit_tests_passed": 17,
+    "public_privacy_scan_findings": 0,
+    "native_machine_qmp_smoke_passed": true,
+    "native_disk_create_info_compare_passed": true,
+    "rollback_baseline_hash_restored": true,
+    "relocated_zip_acceptance": true,
+    "locked_dependency_files": 32,
+    "locked_dependency_packages": 27,
+    "original_carriers_unchanged": true
+  }
+}

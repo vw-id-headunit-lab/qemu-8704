@@ -1,0 +1,30 @@
+[
+  {
+    "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/runtime/modules/virtio_mmio.ko",
+    "url": "https://android.googlesource.com/platform/prebuilts/qemu-kernel/+/49fc0bd37a4ac7350a45eb6fd86f011bf2bb79cb/arm64/5.4/ko/virtio_mmio.ko?format=TEXT",
+    "git_blob_sha1": "dfb01a030141dd168cf6a383c235b97251fb788e",
+    "sha256": "dbb6e2cb6815243ff8595a1c8385067a876e4f16297383fe2a857d47852e9912",
+    "bytes": 313592
+  },
+  {
+    "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/runtime/modules/virtio_blk.ko",
+    "url": "https://android.googlesource.com/platform/prebuilts/qemu-kernel/+/49fc0bd37a4ac7350a45eb6fd86f011bf2bb79cb/arm64/5.4/ko/virtio_blk.ko?format=TEXT",
+    "git_blob_sha1": "9e7f67fa1361e37f3ac5fe32f0da3ebae3626c9e",
+    "sha256": "bdccc4d9f29ded33852187580341c89303602f444d6a0ed0bb6e2f8991ada158",
+    "bytes": 367696
+  },
+  {
+    "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/runtime/modules/virtio_console.ko",
+    "url": "https://android.googlesource.com/platform/prebuilts/qemu-kernel/+/49fc0bd37a4ac7350a45eb6fd86f011bf2bb79cb/arm64/5.4/ko/virtio_console.ko?format=TEXT",
+    "git_blob_sha1": "f26e2107a50ecbf9f465923282305eb64b76eb2b",
+    "sha256": "6fd0a39a331cc638860ab2f137d4d65e70260487c155265fc8fc143648243475",
+    "bytes": 519816
+  },
+  {
+    "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/runtime/modules/virtio-rng.ko",
+    "url": "https://android.googlesource.com/platform/prebuilts/qemu-kernel/+/49fc0bd37a4ac7350a45eb6fd86f011bf2bb79cb/arm64/5.4/ko/virtio-rng.ko?format=TEXT",
+    "git_blob_sha1": "85eb9a77634fa24890a63420fd5fff7671ef5793",
+    "sha256": "be5ef3b9d46c552ed218e044bdc6a1fa9044453e43af9e9ab00781dcd6a84219",
+    "bytes": 220672
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "name": "hwcomposer2.h",
+    "sha256": "b9692465ab7cf6991841a60b90cccbd32fe534ca93f48721d665f8a0f3d47260",
+    "source": "https://android.googlesource.com/platform/hardware/libhardware/+/refs/tags/android-11.0.0_r1/include/hardware/hwcomposer2.h"
+  },
+  {
+    "name": "hwcomposer_defs.h",
+    "sha256": "231a19dc77192167118007157e83ab40f825857e7a9cee497111fb45e4b3c46e",
+    "source": "https://android.googlesource.com/platform/hardware/libhardware/+/refs/tags/android-11.0.0_r1/include/hardware/hwcomposer_defs.h"
+  }
+]

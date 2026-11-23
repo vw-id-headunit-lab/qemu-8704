@@ -1,0 +1,7 @@
+{
+  "linux_data": "var/inputs/seeds/linux",
+  "linux_hmi_data": "var/inputs/seeds/linux-hmi",
+  "qnx_data": "var/inputs/seeds/qnx",
+  "qnx_completed_var": "var/inputs/seeds/qnx-completed",
+  "linux_hmi_install_media": "var/inputs/hmi/install-overlay/result.json"
+}

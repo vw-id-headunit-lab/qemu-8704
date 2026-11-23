@@ -1,0 +1,18 @@
+/.local/
+/var/
+/dist/
+/.venv/
+__pycache__/
+*.py[cod]
+*.qcow2
+*.ram
+*.img
+*.pem
+*.key
+
+# Private OEM inputs and vehicle fixtures: prepared by each user
+/src/hvf_bench/local/
+.DS_Store
+
+# Per-checkout configuration backups
+/config/*.before-configure

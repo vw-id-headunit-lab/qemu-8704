@@ -1,0 +1,7 @@
+capstone==5.0.9
+dissect.cstruct==4.7
+dissect.extfs==3.15
+dissect.util==3.24
+lz4==4.4.5
+pyelftools==0.33
+lief==1.0.0

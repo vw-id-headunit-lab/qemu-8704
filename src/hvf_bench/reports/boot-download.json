@@ -1,0 +1,18 @@
+{
+  "files": [
+    {
+      "name": "vmlinuz-virt",
+      "sha256": "cd05fed9e617b5df93dc62ece9b78c422fd94e9b432a2f7c092714b139d5eef4"
+    },
+    {
+      "name": "initramfs-virt",
+      "sha256": "189402937646965374ef2df5d37f76467135179ae168c88175df2fe3e264a0b0"
+    },
+    {
+      "name": "modloop-virt",
+      "sha256": "a726889467d1d4fefa4ba1ed710f28b9db1fbd019ca3eba2d4c6c65b33536343"
+    }
+  ],
+  "pinned_branch": "v3.24",
+  "verification": "Checked-in SHA-256 pins; fail closed if the netboot URL changes. No signature verification claim."
+}

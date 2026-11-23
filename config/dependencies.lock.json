@@ -1,0 +1,440 @@
+{
+  "schema_version": 1,
+  "packages": [
+    {
+      "name": "mingw-w64-x86_64-gettext-runtime",
+      "version": "1.0-1",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-gettext-runtime-1.0-1-any.pkg.tar.zst",
+      "sha256": "be68d7f260633284b910c588c6d82ee304a81c8817a686d2cd9df83f872c27af",
+      "bytes": 427276,
+      "files": [
+        {
+          "member": "mingw64/bin/libintl-8.dll",
+          "target": "bin/libintl-8.dll",
+          "sha256": "0537c3dd2378218508ebe3cc416d72a99ee2d24ae1c5525e23458f32544ef861",
+          "bytes": 298731
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-glib2",
+      "version": "2.90.1-1",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-glib2-2.90.1-1-any.pkg.tar.zst",
+      "sha256": "152ba3b2cfb35feebc0fcb690889b16a6f0c2b89ced52e65aea45d089f86d219",
+      "bytes": 5471610,
+      "files": [
+        {
+          "member": "mingw64/bin/libglib-2.0-0.dll",
+          "target": "bin/libglib-2.0-0.dll",
+          "sha256": "84b15dc907fd1d3bb1cd799fc034d2edcbc3946c8c4acd6a8dd3ace381f9e568",
+          "bytes": 1570710
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-libiconv",
+      "version": "1.19.1-1",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-libiconv-1.19.1-1-any.pkg.tar.zst",
+      "sha256": "50e915aa36fdbe6c84acc8954e939275609ba051cdb4eeeff3884453c28efde0",
+      "bytes": 742982,
+      "files": [
+        {
+          "member": "mingw64/bin/libiconv-2.dll",
+          "target": "bin/libiconv-2.dll",
+          "sha256": "587bd8c780e89f5d834c251accc6053f479713184c433e0f1bab898ee0aa3751",
+          "bytes": 1141004
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-libpng",
+      "version": "1.6.59-2",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-libpng-1.6.59-2-any.pkg.tar.zst",
+      "sha256": "8cf4e17ed9f592d23a5d1f1f8875c6a8da42eaf7772a997908565e94131cfc20",
+      "bytes": 404396,
+      "files": [
+        {
+          "member": "mingw64/bin/libpng16-16.dll",
+          "target": "bin/libpng16-16.dll",
+          "sha256": "4a33007395f1d30881d0c185c120f1ecf05c8ebb520933068902ddc1f6c58506",
+          "bytes": 260070
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-libwinpthread",
+      "version": "14.0.0.r598.ge3d18511f-1",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-libwinpthread-14.0.0.r598.ge3d18511f-1-any.pkg.tar.zst",
+      "sha256": "942a62a3ecafbb4f5a80016685a0e3002a8de903012eed49c213e4f5b693668a",
+      "bytes": 34634,
+      "files": [
+        {
+          "member": "mingw64/bin/libwinpthread-1.dll",
+          "target": "bin/libwinpthread-1.dll",
+          "sha256": "98a4fea591385952cad1c532f4a92606358630976e9ede5fcf115ab945305a09",
+          "bytes": 73020
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-pcre2",
+      "version": "10.49-1",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-pcre2-10.49-1-any.pkg.tar.zst",
+      "sha256": "0abc5313085a0f9b4a77a1580d92b09761371cb3a1f31d01051a94a289fb9413",
+      "bytes": 1446280,
+      "files": [
+        {
+          "member": "mingw64/bin/libpcre2-8-0.dll",
+          "target": "bin/libpcre2-8-0.dll",
+          "sha256": "68a7cee2acc36d6a61d73f78825d17dfd32f8580f4bb1bc399134719518213d5",
+          "bytes": 706915
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-pixman",
+      "version": "0.46.4-3",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-pixman-0.46.4-3-any.pkg.tar.zst",
+      "sha256": "435715dd1ca4c55873cf3c38d644615196bc2d238e3366f8ff81cc0811260eb2",
+      "bytes": 358460,
+      "files": [
+        {
+          "member": "mingw64/bin/libpixman-1-0.dll",
+          "target": "bin/libpixman-1-0.dll",
+          "sha256": "55ce45825eb8e825c635416171be4736147a6b0b690469f545d8c4ae8e85b4a3",
+          "bytes": 740378
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-zlib",
+      "version": "1.4-2",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-zlib-1.4-2-any.pkg.tar.zst",
+      "sha256": "2a065fb3311d6c08bd2c7431a092b912ade08a83954474e06ea4eb0479d908cd",
+      "bytes": 889705,
+      "files": [
+        {
+          "member": "mingw64/bin/libz-1.dll",
+          "target": "bin/libz-1.dll",
+          "sha256": "b82cab3e02b60e664c19eb3459f6e6ca7f6165a727bbb18f48dee0474b42a920",
+          "bytes": 148872
+        },
+        {
+          "member": "mingw64/bin/zlib1.dll",
+          "target": "bin/zlib1.dll",
+          "sha256": "72df18f3a7c8e9341c776a5a23c2dfb2524dbbf1f343c3012cb1178436535a29",
+          "bytes": 191257
+        }
+      ]
+    },
+    {
+      "name": "angleproject",
+      "version": "2.1.r25748.890b5d8f-6",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-angleproject-2.1.r25748.890b5d8f-6-any.pkg.tar.zst",
+      "sha256": "758a85e878435bed76104d933f1f6c1268dca63eca0dceda357a6ef4180701f0",
+      "bytes": 11205455,
+      "files": [
+        {
+          "member": "mingw64/bin/libEGL.dll",
+          "target": "bin/libEGL.dll",
+          "sha256": "0033437d679274030766277ea6dc4f95efa7dd836dc08f2bc92efcfd20110e21",
+          "bytes": 259584
+        },
+        {
+          "member": "mingw64/bin/libGLESv2.dll",
+          "target": "bin/libGLESv2.dll",
+          "sha256": "52d62906224c9d81075304a56eff44b0b11c9e04a41a64203b78e46621623a96",
+          "bytes": 11604992
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-qemu-image-util",
+      "version": "11.1.1-3",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-qemu-image-util-11.1.1-3-any.pkg.tar.zst",
+      "sha256": "5cd15b3e82f7bf28d3c7ea07fd5cda769150befa61150f42b4e7fda78e405de5",
+      "bytes": 730446,
+      "files": [
+        {
+          "member": "mingw64/bin/qemu-img.exe",
+          "target": "bin/qemu-img.exe",
+          "sha256": "c708a6753b88e19fe40fd5b0ec82407b73ad37de1f8a48cd3f0ae9cb81cc28b6",
+          "bytes": 1969266
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-bzip2",
+      "version": "1.0.8-4",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-bzip2-1.0.8-4-any.pkg.tar.zst",
+      "sha256": "123768f30ae14ba654a6feb70f8526146a331bc85f831a91a549ffb3f6cbffc7",
+      "bytes": 95428,
+      "files": [
+        {
+          "member": "mingw64/bin/libbz2-1.dll",
+          "target": "bin/libbz2-1.dll",
+          "sha256": "a4fbb97c26662d2b8a80bf4597ed3effb69b12048b0cb1eef2c3f211e2e66673",
+          "bytes": 108633
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-curl-winssl",
+      "version": "8.23.0-3",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-curl-winssl-8.23.0-3-any.pkg.tar.zst",
+      "sha256": "3b65fcb381dada924cd1dd936140b67eb3d57c4ec3cf65ed4504253932486b7a",
+      "bytes": 1696170,
+      "files": [
+        {
+          "member": "mingw64/bin/libcurl-4.dll",
+          "target": "bin/libcurl-4.dll",
+          "sha256": "3a2685b692f84f6f4784c5b2704b8feb626cb61f8fa7f75dfd5e680eee4edd2d",
+          "bytes": 1261278
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-gnutls",
+      "version": "3.8.14-1",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-gnutls-3.8.14-1-any.pkg.tar.zst",
+      "sha256": "5aa219d1efdb448d4d3e738d2dae277d0352493695604c66db107bfbf1b475c1",
+      "bytes": 2417476,
+      "files": [
+        {
+          "member": "mingw64/bin/libgnutls-30.dll",
+          "target": "bin/libgnutls-30.dll",
+          "sha256": "c207b98897222f34aaa490bece8596a7c6304a87346492f99b5531859ee84a33",
+          "bytes": 2325568
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-libnfs",
+      "version": "6.0.2-1",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-libnfs-6.0.2-1-any.pkg.tar.zst",
+      "sha256": "e819316a4c18bf9ae739750f68d8cd76c0c96dd6ccb01c9cc1ed3db7f313358e",
+      "bytes": 283955,
+      "files": [
+        {
+          "member": "mingw64/bin/libnfs-16.dll",
+          "target": "bin/libnfs-16.dll",
+          "sha256": "d6210876b2ecf7b6016c360bee32f4e16af3e808046e2e7a99c58a02a6984eed",
+          "bytes": 361411
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-libssh",
+      "version": "0.12.2-2",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-libssh-0.12.2-2-any.pkg.tar.zst",
+      "sha256": "0ccd3dbe0a0b77e178699f0ab1429696dae39ce9e58156ac4d0e5f36e41d7ccd",
+      "bytes": 423464,
+      "files": [
+        {
+          "member": "mingw64/bin/libssh.dll",
+          "target": "bin/libssh.dll",
+          "sha256": "11b7639a35cd20d98b011cd9092d7d9726b956fb7cb643d03bf0d7d81175337c",
+          "bytes": 624350
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-zstd",
+      "version": "1.5.7-2",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-zstd-1.5.7-2-any.pkg.tar.zst",
+      "sha256": "1add6705b344664f6aca108c85f79ab5bdd9e1162662bb06a4cf40a34f6e0907",
+      "bytes": 669879,
+      "files": [
+        {
+          "member": "mingw64/bin/libzstd.dll",
+          "target": "bin/libzstd.dll",
+          "sha256": "b95c223a9548a9ecf51377c962e0bc8f0c51eb0c6f67a296dbc885996f0dd40d",
+          "bytes": 1218273
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-brotli",
+      "version": "1.2.1-1",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-brotli-1.2.1-1-any.pkg.tar.zst",
+      "sha256": "3163fae24021624b49d3372a6a7fe05c0f3e01b301e65fcbcb3a95557019fb2d",
+      "bytes": 450784,
+      "files": [
+        {
+          "member": "mingw64/bin/libbrotlidec.dll",
+          "target": "bin/libbrotlidec.dll",
+          "sha256": "dab7d47981ee887865d1f82dcbcc8fc4c7a43942278bb27877e168909e10d346",
+          "bytes": 60092
+        },
+        {
+          "member": "mingw64/bin/libbrotlienc.dll",
+          "target": "bin/libbrotlienc.dll",
+          "sha256": "07a33fd6cf281dc6dea6606700ede061b8dc7c2b6786f1cd4ab64e7bcbacef22",
+          "bytes": 786548
+        },
+        {
+          "member": "mingw64/bin/libbrotlicommon.dll",
+          "target": "bin/libbrotlicommon.dll",
+          "sha256": "121006fe45e8bd12b1929f86e1efb1dbd1c6291118f9a409693ce8c030f1cefb",
+          "bytes": 140068
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-libidn2",
+      "version": "2.3.8-5",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-libidn2-2.3.8-5-any.pkg.tar.zst",
+      "sha256": "988a94544c71fd425edc9f6aea57dcd90f73057cf046a2d78c6cd5ac7d381af8",
+      "bytes": 174421,
+      "files": [
+        {
+          "member": "mingw64/bin/libidn2-0.dll",
+          "target": "bin/libidn2-0.dll",
+          "sha256": "84bbd5b6f2e03f39068f7cc37f590be830820287557f783fb47307d47fe3b37a",
+          "bytes": 245489
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-libpsl",
+      "version": "0.21.5-3",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-libpsl-0.21.5-3-any.pkg.tar.zst",
+      "sha256": "2a86f7ce3cd3fabff7eb8e5c0d3eb1134808881a44c3838e1b518b75cb402e35",
+      "bytes": 96690,
+      "files": [
+        {
+          "member": "mingw64/bin/libpsl-5.dll",
+          "target": "bin/libpsl-5.dll",
+          "sha256": "b31fc70eda598a39b65fe2736d815518db0652d641346f75eac40c2a0499b058",
+          "bytes": 105304
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-libssh2-wincng",
+      "version": "1.11.1-4",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-libssh2-wincng-1.11.1-4-any.pkg.tar.zst",
+      "sha256": "cc6823f7e00e079e6771ba6b962ffa80eff872f4fb4c29d5f891640c76178f9a",
+      "bytes": 422025,
+      "files": [
+        {
+          "member": "mingw64/bin/libssh2-1.dll",
+          "target": "bin/libssh2-1.dll",
+          "sha256": "e28cd722bd828084b0ba66fa5e616d0cf9a3e653c92a462c92cca64da62c1d86",
+          "bytes": 296720
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-gmp",
+      "version": "6.3.0-2",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-gmp-6.3.0-2-any.pkg.tar.zst",
+      "sha256": "8924433974c4add46cb46ea4f6ef283b5c5139d3f552375115b5580f855015cc",
+      "bytes": 591674,
+      "files": [
+        {
+          "member": "mingw64/bin/libgmp-10.dll",
+          "target": "bin/libgmp-10.dll",
+          "sha256": "37248cda33845e7c5c35a574e57da762dd0a8268f0270d179f30a33746809681",
+          "bytes": 679747
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-nettle",
+      "version": "4.0-1",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-nettle-4.0-1-any.pkg.tar.zst",
+      "sha256": "505773abfb4f3af514012e2926c11db6365299c7eda141d958a065740740dc86",
+      "bytes": 577414,
+      "files": [
+        {
+          "member": "mingw64/bin/libhogweed-7.dll",
+          "target": "bin/libhogweed-7.dll",
+          "sha256": "8a4785b98e5418c32035f570904f65360c89825358702954b53c77ee2df8c97d",
+          "bytes": 275389
+        },
+        {
+          "member": "mingw64/bin/libnettle-9.dll",
+          "target": "bin/libnettle-9.dll",
+          "sha256": "208002d990684946c7923a87022bedea588fef8e31286598c08805e37be2a95a",
+          "bytes": 360977
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-p11-kit",
+      "version": "0.26.6-1",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-p11-kit-0.26.6-1-any.pkg.tar.zst",
+      "sha256": "567fdc960efccf1ca50f54b044d10efd1fb396b678e62b430120d7d2ef2b3dda",
+      "bytes": 670212,
+      "files": [
+        {
+          "member": "mingw64/bin/libp11-kit-0.dll",
+          "target": "bin/libp11-kit-0.dll",
+          "sha256": "b949df3470cbb1510a90c7332e78d5c81f45dd74fc9dc47b5bd44f340021df78",
+          "bytes": 1633761
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-libtasn1",
+      "version": "4.21.0-2",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-libtasn1-4.21.0-2-any.pkg.tar.zst",
+      "sha256": "7d94db68f81200cc9f72dc87fb6cecbaf9776b61d395aa611936d9c365bfb87c",
+      "bytes": 202112,
+      "files": [
+        {
+          "member": "mingw64/bin/libtasn1-6.dll",
+          "target": "bin/libtasn1-6.dll",
+          "sha256": "7fab47d20a3ba71161113dd182441ece97ab2f041fed90b4919d035a2819ec6f",
+          "bytes": 112355
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-libunistring",
+      "version": "1.5-1",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-libunistring-1.5-1-any.pkg.tar.zst",
+      "sha256": "0738a318261d8c7f77e47453d97aac9039f1c7b6068e64b2037005ae9f6a5859",
+      "bytes": 876421,
+      "files": [
+        {
+          "member": "mingw64/bin/libunistring-5.dll",
+          "target": "bin/libunistring-5.dll",
+          "sha256": "45355d84e6f24737ffd95554ac91a3b2ca346d70df1db289730c4124287cd962",
+          "bytes": 2298777
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-openssl",
+      "version": "4.1.0-1",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-openssl-4.1.0-1-any.pkg.tar.zst",
+      "sha256": "d23a605bd7543ea1143324fd70f4db40d26b588321c6e4e8cdcadf9d15998daf",
+      "bytes": 8482640,
+      "files": [
+        {
+          "member": "mingw64/bin/libcrypto-4-x64.dll",
+          "target": "bin/libcrypto-4-x64.dll",
+          "sha256": "42e484d793266c8506bfbbefd7fe341b708b2656bf41acee20afd0c9e3934dc4",
+          "bytes": 5592098
+        }
+      ]
+    },
+    {
+      "name": "mingw-w64-x86_64-libffi",
+      "version": "3.8.0-1",
+      "url": "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-libffi-3.8.0-1-any.pkg.tar.zst",
+      "sha256": "6dad7f3c6c900d3c64a4fe0c2764b405e678b22df3521d2284ffaeff0198b84b",
+      "bytes": 51683,
+      "files": [
+        {
+          "member": "mingw64/bin/libffi-8.dll",
+          "target": "bin/libffi-8.dll",
+          "sha256": "b649c515907436a3299326f83aea0e8d75c61853eb1609602603bbcb9b00b4db",
+          "bytes": 39699
+        }
+      ]
+    }
+  ]
+}

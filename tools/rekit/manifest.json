@@ -1,0 +1,1432 @@
+{
+  "schema_version": 1,
+  "script_count": 203,
+  "scan_roots": [
+    "src/emu",
+    "src/firmware",
+    "src/runner"
+  ],
+  "entries": [
+    {
+      "name": "abox_dsp_peer",
+      "path": "src/emu/abox_dsp_peer.py",
+      "sha256": "a7302443dd4029a26d65ccc74db1f6c613ecbfdce727e1d0870fde7984187716",
+      "purpose": "abox dsp peer",
+      "read_only": false
+    },
+    {
+      "name": "abox_dsp_platform",
+      "path": "src/emu/abox_dsp_platform.py",
+      "sha256": "6216db01fec0138f7dadee6c5b8698fc37e4a11b5128d1d8c2e8762041631827",
+      "purpose": "abox dsp platform",
+      "read_only": false
+    },
+    {
+      "name": "abox_gic_platform",
+      "path": "src/emu/abox_gic_platform.py",
+      "sha256": "c078678f522b9a50b1e0dab9f1aa23524bc4a4730776a1185062255e09fcc4b5",
+      "purpose": "abox gic platform",
+      "read_only": false
+    },
+    {
+      "name": "abox_mailbox_wire",
+      "path": "src/emu/abox_mailbox_wire.py",
+      "sha256": "deeb518d28488300462a78d7621584171036c84b5608167414e994a7fdbc700d",
+      "purpose": "abox mailbox wire",
+      "read_only": false
+    },
+    {
+      "name": "abox_sft_platform",
+      "path": "src/emu/abox_sft_platform.py",
+      "sha256": "9c87607330799f230b014a5cff3c745a30f718e5cebe3cab0676c5a3a01649ce",
+      "purpose": "abox sft platform",
+      "read_only": false
+    },
+    {
+      "name": "abox_sysmmu_platform",
+      "path": "src/emu/abox_sysmmu_platform.py",
+      "sha256": "bb28d31025ff14fcd30b8103a25471db1ce3d317eae841f7adab8d29d9fd5cff",
+      "purpose": "abox sysmmu platform",
+      "read_only": false
+    },
+    {
+      "name": "acpm_firmware",
+      "path": "src/emu/acpm_firmware.py",
+      "sha256": "f1339734927597d7ad989578a6a75afa5a36274e6166efa12f7b91ccbb02454c",
+      "purpose": "acpm firmware",
+      "read_only": false
+    },
+    {
+      "name": "android_abox_watch",
+      "path": "src/emu/android_abox_watch.py",
+      "sha256": "fe9fdc17786ea3e9a7df7688da3da10a375dc4a9fbabc353529c808d55435b19",
+      "purpose": "android abox watch",
+      "read_only": false
+    },
+    {
+      "name": "android_init_trace",
+      "path": "src/emu/android_init_trace.py",
+      "sha256": "d2a2457dcb5d11f6b74061b79a453a3693883d09e6f4bf3fa40106eced3359ba",
+      "purpose": "android init trace",
+      "read_only": false
+    },
+    {
+      "name": "android_local_shell",
+      "path": "src/emu/android_local_shell.py",
+      "sha256": "240cdae7405e899eb038c2c1c18353510faade3ef4c85c9de6442628980b7173",
+      "purpose": "android local shell",
+      "read_only": false
+    },
+    {
+      "name": "android_task_context",
+      "path": "src/emu/android_task_context.py",
+      "sha256": "3cc3e8e30d7567dad5810c9eac42878db53a34ff03b0189738b06ff9d9f11dc8",
+      "purpose": "android task context",
+      "read_only": false
+    },
+    {
+      "name": "apm_watchdog",
+      "path": "src/emu/apm_watchdog.py",
+      "sha256": "e24465cc4d8a49b20e0187e943d4210eba2e1db4341e82c117bbbdaf6d09b434",
+      "purpose": "apm watchdog",
+      "read_only": false
+    },
+    {
+      "name": "bifrost_disassemble",
+      "path": "src/emu/bifrost_disassemble.py",
+      "sha256": "c0bc3f316c198c8f2b1dcb1dde4a5a877036292f9b64427bc27d8f6e7841c821",
+      "purpose": "bifrost disassemble",
+      "read_only": false
+    },
+    {
+      "name": "bl2_fvmap",
+      "path": "src/emu/bl2_fvmap.py",
+      "sha256": "d5cb60174ce541905c92872dac1b9cc042942d0ea757945c8cae8ce3ed152be1",
+      "purpose": "bl2 fvmap",
+      "read_only": false
+    },
+    {
+      "name": "bl2_mcu",
+      "path": "src/emu/bl2_mcu.py",
+      "sha256": "01ceccf4375dae17e05055d049719a3c241bc0164897a7f7135ff5c07583f14a",
+      "purpose": "bl2 mcu",
+      "read_only": false
+    },
+    {
+      "name": "cal_init_platform",
+      "path": "src/emu/cal_init_platform.py",
+      "sha256": "0a080ced304eacf4e43ae0eb0b58f146ff1883be79933318a1e39f3a11a7beb3",
+      "purpose": "cal init platform",
+      "read_only": false
+    },
+    {
+      "name": "check_scaler_abox",
+      "path": "src/emu/check_scaler_abox.py",
+      "sha256": "c5a2f944a226bd700ca21ff38262130dd8cc92a4eb9a9ba3533847f632dec0e6",
+      "purpose": "check scaler abox",
+      "read_only": false
+    },
+    {
+      "name": "check_ufs_vh",
+      "path": "src/emu/check_ufs_vh.py",
+      "sha256": "7ea5bc768c154171e392eb590572745531f0a72fafefa22bb28269f866240ddb",
+      "purpose": "check ufs vh",
+      "read_only": false
+    },
+    {
+      "name": "clock_rpc_platform",
+      "path": "src/emu/clock_rpc_platform.py",
+      "sha256": "f6c9bb4bedb633092199e6f6efd7947facdfd8334cfeaad88798cc03bd0b34ac",
+      "purpose": "clock rpc platform",
+      "read_only": false
+    },
+    {
+      "name": "cmu_sequence",
+      "path": "src/emu/cmu_sequence.py",
+      "sha256": "df0f6cd70dbc013c49fb509bd449a47fe48351046515bc992985acfe4e495c8b",
+      "purpose": "cmu sequence",
+      "read_only": false
+    },
+    {
+      "name": "decon_platform",
+      "path": "src/emu/decon_platform.py",
+      "sha256": "16ef1de3ed4a50c7ba4671be0779ca5f89bbd96c7be161e8a863dae6912565a4",
+      "purpose": "decon platform",
+      "read_only": false
+    },
+    {
+      "name": "dpp_platform",
+      "path": "src/emu/dpp_platform.py",
+      "sha256": "b59f5dec28c9c9b4070b08d95364327ea2406468d960421a9fdc87910fae97e0",
+      "purpose": "dpp platform",
+      "read_only": false
+    },
+    {
+      "name": "dsp_bootstrap",
+      "path": "src/emu/dsp_bootstrap.py",
+      "sha256": "6b206260d3d78f884948361e496329c7445bef8c062b43b9fbf6b7d6d584754d",
+      "purpose": "dsp bootstrap",
+      "read_only": false
+    },
+    {
+      "name": "eqos_platform",
+      "path": "src/emu/eqos_platform.py",
+      "sha256": "a2e94ba8cdf74dc8d24952f9bc3c150ded6de6ca8c3f9ab4963b9dc485544dd7",
+      "purpose": "eqos platform",
+      "read_only": false
+    },
+    {
+      "name": "g2d_reset_platform",
+      "path": "src/emu/g2d_reset_platform.py",
+      "sha256": "a8391196cdc140cd0f9d53a566a6b0798a2ed9dd452d93f2a79797583ea55b3b",
+      "purpose": "g2d reset platform",
+      "read_only": false
+    },
+    {
+      "name": "bind-font",
+      "path": "src/emu/gl-forward/bind-font.py",
+      "sha256": "e70aeb958d170640fc24424ed1672dc139df697fad2467541a8781a137395acb",
+      "purpose": "bind-font",
+      "read_only": false
+    },
+    {
+      "name": "bind-launcher",
+      "path": "src/emu/gl-forward/bind-launcher.py",
+      "sha256": "0b4a79624885418779d63fa27044018c1cb2ad44ed83fb56b01f59deea2d274e",
+      "purpose": "bind-launcher",
+      "read_only": false
+    },
+    {
+      "name": "bind-native",
+      "path": "src/emu/gl-forward/bind-native.py",
+      "sha256": "0552ad55768ecd2e98846896b1431238f1e3dbfd42d29d41636e9c92e47c0aab",
+      "purpose": "bind-native",
+      "read_only": false
+    },
+    {
+      "name": "build-client",
+      "path": "src/emu/gl-forward/build-client.py",
+      "sha256": "40db4c0116c697392f3778237ee1a4d7aef9de285a4be17e9d2e539599261d03",
+      "purpose": "build-client",
+      "read_only": false
+    },
+    {
+      "name": "build-host",
+      "path": "src/emu/gl-forward/build-host.py",
+      "sha256": "24ee248aa90d18c5a973e920375171bb67c05b6a8fa73db7b0db51b3a8b6c451",
+      "purpose": "build-host",
+      "read_only": false
+    },
+    {
+      "name": "check-client-host",
+      "path": "src/emu/gl-forward/check-client-host.py",
+      "sha256": "fc94d2f11947053c6cfefe3a2a4fb55917b67bd43e9c61ef2bc858b4b1f2ec81",
+      "purpose": "check-client-host",
+      "read_only": false
+    },
+    {
+      "name": "reserve-guest",
+      "path": "src/emu/gl-forward/reserve-guest.py",
+      "sha256": "699d4fb813c1042ea3ee4adcd59ca1c96b42be171a00102622e2fb297db40b66",
+      "purpose": "reserve-guest",
+      "read_only": false
+    },
+    {
+      "name": "runtime",
+      "path": "src/emu/gl-forward/runtime.py",
+      "sha256": "2ffb875983f928a09ff554895d5116c6dc1cb99a2e5b4f2127034b212d735434",
+      "purpose": "runtime",
+      "read_only": false
+    },
+    {
+      "name": "test-host",
+      "path": "src/emu/gl-forward/test-host.py",
+      "sha256": "5ec5a124e5d0881d2fefc1c216c124566f036bdd49ce7c0da484fdbe435ca1f9",
+      "purpose": "test-host",
+      "read_only": false
+    },
+    {
+      "name": "gl_center_live",
+      "path": "src/emu/gl_center_live.py",
+      "sha256": "876c07b5bf25109018cf2506d933a0ef9040428356e5fd83ca4c0482ecbf1e20",
+      "purpose": "gl center live",
+      "read_only": false
+    },
+    {
+      "name": "inspect_boot_crash",
+      "path": "src/emu/inspect_boot_crash.py",
+      "sha256": "b1b49cae58311d2ca96af4f60a13e326b77b2d0f6013d0fb7c0f3790cf09bdc7",
+      "purpose": "inspect boot crash",
+      "read_only": false
+    },
+    {
+      "name": "inspect_display_chain",
+      "path": "src/emu/inspect_display_chain.py",
+      "sha256": "3eae1560324a0e92e62c6c735366b54959c4c66d94f24662181d30d677559959",
+      "purpose": "inspect display chain",
+      "read_only": false
+    },
+    {
+      "name": "ivi_verity",
+      "path": "src/emu/ivi_verity.py",
+      "sha256": "f3f821b94997cbbbaeeb3f590a0a6ca5a9990119549dc78f2fc658fdb851601a",
+      "purpose": "ivi verity",
+      "read_only": false
+    },
+    {
+      "name": "ldfw_layout",
+      "path": "src/emu/ldfw_layout.py",
+      "sha256": "efeafc6796be0c5d1f0e0eca836ffaced459550d358f5cbef8b517ab866e299a",
+      "purpose": "ldfw layout",
+      "read_only": false
+    },
+    {
+      "name": "linux_data_overlay",
+      "path": "src/emu/linux_data_overlay.py",
+      "sha256": "ee6d2dc2ae3716a25d634ddebad933b3ba742e403cb200aa235b8aedd5e3a8d2",
+      "purpose": "linux data overlay",
+      "read_only": false
+    },
+    {
+      "name": "linux_dwc3_platform",
+      "path": "src/emu/linux_dwc3_platform.py",
+      "sha256": "9a3bbf2061034d0002d078e9d33c39cfc6ee7183543fe5a480f51f877ea67ad2",
+      "purpose": "linux dwc3 platform",
+      "read_only": false
+    },
+    {
+      "name": "linux_early_uart",
+      "path": "src/emu/linux_early_uart.py",
+      "sha256": "a9fad225c701f350674bc939f90a1e3e550688af1191963b370803cbcb6355f6",
+      "purpose": "linux early uart",
+      "read_only": false
+    },
+    {
+      "name": "linux_hmi_overlay",
+      "path": "src/emu/linux_hmi_overlay.py",
+      "sha256": "0cb29d1c852c99e6b3dab1905478929f2019c9ecc861499ec05664b66f80bb16",
+      "purpose": "linux hmi overlay",
+      "read_only": false
+    },
+    {
+      "name": "linux_hmi_userdata",
+      "path": "src/emu/linux_hmi_userdata.py",
+      "sha256": "9e5a2f0cd8a3a807d899e1f9b9448fd9aa4103f01d5c81e8d8189fbdcf5250c7",
+      "purpose": "linux hmi userdata",
+      "read_only": false
+    },
+    {
+      "name": "linux_i2c_platform",
+      "path": "src/emu/linux_i2c_platform.py",
+      "sha256": "21723da54c650865d528f64c5de9d62467bc67836b9f7a31601308d222583c87",
+      "purpose": "linux i2c platform",
+      "read_only": false
+    },
+    {
+      "name": "linux_local_shell",
+      "path": "src/emu/linux_local_shell.py",
+      "sha256": "1eb8097c94d069d5a7d519709b7633c06a52e1661e3250a957b847932d684281",
+      "purpose": "linux local shell",
+      "read_only": false
+    },
+    {
+      "name": "linux_mcu_identity",
+      "path": "src/emu/linux_mcu_identity.py",
+      "sha256": "d10a858af3aee80aa20bd83f5f33ddf8588f99f451b04f5842b6263cd124e6ba",
+      "purpose": "linux mcu identity",
+      "read_only": false
+    },
+    {
+      "name": "linux_mfc_platform",
+      "path": "src/emu/linux_mfc_platform.py",
+      "sha256": "a3ec053f9ea255a5bcfd35c3df9e8bece4b69fa6a3b870325f1453f1b7b488e8",
+      "purpose": "linux mfc platform",
+      "read_only": false
+    },
+    {
+      "name": "linux_panic_watch",
+      "path": "src/emu/linux_panic_watch.py",
+      "sha256": "639e6c6a5fcdb6604a68e258f187d1f7de4f7c38b4a070a27f06756e7ebf7fa8",
+      "purpose": "linux panic watch",
+      "read_only": false
+    },
+    {
+      "name": "linux_pid1_context",
+      "path": "src/emu/linux_pid1_context.py",
+      "sha256": "34bdf3398267ea97251d7831735428e40df3d0eb44b97bf879260ccdcb2a74f6",
+      "purpose": "linux pid1 context",
+      "read_only": false
+    },
+    {
+      "name": "linux_rtnl_observer",
+      "path": "src/emu/linux_rtnl_observer.py",
+      "sha256": "7e9d92ec4c002e0221343f7249bdae0abbf0915687bbb356788565d8228afeee",
+      "purpose": "linux rtnl observer",
+      "read_only": false
+    },
+    {
+      "name": "linux_smack_observer",
+      "path": "src/emu/linux_smack_observer.py",
+      "sha256": "e1fd6a4d27dfafda49b220c422f8c89d144914409cf475f313733e588dc60008",
+      "purpose": "linux smack observer",
+      "read_only": false
+    },
+    {
+      "name": "linux_uart_platform",
+      "path": "src/emu/linux_uart_platform.py",
+      "sha256": "c6de99f7142493e1a075ac10d1a0a0f30f598a1e47e2279c5d1712ef646f388e",
+      "purpose": "linux uart platform",
+      "read_only": false
+    },
+    {
+      "name": "linux_weston_platform",
+      "path": "src/emu/linux_weston_platform.py",
+      "sha256": "bf35fdc3cc2416e410cae9da16e022200aa2c22c4a0cd62c2e330d5163ef363d",
+      "purpose": "linux weston platform",
+      "read_only": false
+    },
+    {
+      "name": "lk_handoff",
+      "path": "src/emu/lk_handoff.py",
+      "sha256": "86d4a315c28d6e5ed613082c96aa4cd49d72b051186605e43d04dfd79b2d3ca1",
+      "purpose": "lk handoff",
+      "read_only": false
+    },
+    {
+      "name": "lk_pwm_platform",
+      "path": "src/emu/lk_pwm_platform.py",
+      "sha256": "9085756b13d4da4774038cb0f2c1298483b182fd2801f7027137d0f0ba954eba",
+      "purpose": "lk pwm platform",
+      "read_only": false
+    },
+    {
+      "name": "lk_runtime",
+      "path": "src/emu/lk_runtime.py",
+      "sha256": "4f05577715118b67375ca7b625522648e94fcc8129a83ce6447fc253b7660904",
+      "purpose": "lk runtime",
+      "read_only": false
+    },
+    {
+      "name": "mali_g3d1_platform",
+      "path": "src/emu/mali_g3d1_platform.py",
+      "sha256": "eaf5cdbc5cb9f49d60fb244dc6e1708343d1c355b95baa1d4ec680747a220706",
+      "purpose": "mali g3d1 platform",
+      "read_only": false
+    },
+    {
+      "name": "native_center_live",
+      "path": "src/emu/native_center_live.py",
+      "sha256": "8d72ab98e8504a5f9f235df58bc769603cec7abea6a18233c61845ae706b0e02",
+      "purpose": "native center live",
+      "read_only": false
+    },
+    {
+      "name": "native_center_window",
+      "path": "src/emu/native_center_window.py",
+      "sha256": "7eb74b5ef1c527e6b0ec422a9b17e7efa6736936830202cfe5b20ad9c906dd26",
+      "purpose": "native center window",
+      "read_only": false
+    },
+    {
+      "name": "native_cpu_policy",
+      "path": "src/emu/native_cpu_policy.py",
+      "sha256": "69e2f8f87da69ffeca2de94cf3765db1af5c11f92ae276739bda4478cc4bdb74",
+      "purpose": "native cpu policy",
+      "read_only": false
+    },
+    {
+      "name": "native_live_console",
+      "path": "src/emu/native_live_console.py",
+      "sha256": "9fabeb71a3da624587763a6dcd15bdd9a66d356a88febe56b754265cc98de23c",
+      "purpose": "native live console",
+      "read_only": false
+    },
+    {
+      "name": "native_live_policy",
+      "path": "src/emu/native_live_policy.py",
+      "sha256": "fa95a6c0e5c4c2a5a8d1892da57f59b239a608f316cd27e1360a971072d04b17",
+      "purpose": "native live policy",
+      "read_only": false
+    },
+    {
+      "name": "native_offline_console",
+      "path": "src/emu/native_offline_console.py",
+      "sha256": "f474354e7c44191e3233e819e67d18a3b1792c9a00dce6a75c53b7f8f6119f55",
+      "purpose": "native offline console",
+      "read_only": false
+    },
+    {
+      "name": "native_uart_console",
+      "path": "src/emu/native_uart_console.py",
+      "sha256": "0f3441950377106dcba31940859658e6a61790aaf69b7cc9ca5ceadb36f61d91",
+      "purpose": "native uart console",
+      "read_only": false
+    },
+    {
+      "name": "offline_android_backend",
+      "path": "src/emu/offline_android_backend.py",
+      "sha256": "ce20419ab953ba19b451b93966bc4bcd36ce2794e1be01b9f623fc8a4fb849df",
+      "purpose": "offline android backend",
+      "read_only": false
+    },
+    {
+      "name": "offline_android_console",
+      "path": "src/emu/offline_android_console.py",
+      "sha256": "07586a69c14cdeee1d04231fa37e00db03f26f669f8e8f94db9da2421be98e7a",
+      "purpose": "offline android console",
+      "read_only": false
+    },
+    {
+      "name": "offline_android_seed",
+      "path": "src/emu/offline_android_seed.py",
+      "sha256": "551c7c9bf0f69d3d63ccaecc3dbf65c22dbbd0d4748661b86b38000d967bc1c3",
+      "purpose": "offline android seed",
+      "read_only": false
+    },
+    {
+      "name": "offline_android_waits",
+      "path": "src/emu/offline_android_waits.py",
+      "sha256": "5504b25215d231890e980a60877a4edc78ce4612850a9465f79bd23664e8ea7b",
+      "purpose": "offline android waits",
+      "read_only": false
+    },
+    {
+      "name": "offline_bench_hmi",
+      "path": "src/emu/offline_bench_hmi.py",
+      "sha256": "c2354419fec546a26522fbd58cf84972638dc3ddbcc6a983365f1bb43d9e74b0",
+      "purpose": "offline bench hmi",
+      "read_only": false
+    },
+    {
+      "name": "offline_clock",
+      "path": "src/emu/offline_clock.py",
+      "sha256": "00164d0d45c8b6328b5f561b521541ba68f05f932a7d9b5c85ed2fb98f223d8c",
+      "purpose": "offline clock",
+      "read_only": false
+    },
+    {
+      "name": "offline_development",
+      "path": "src/emu/offline_development.py",
+      "sha256": "dd5bbd9eed01331153911a25fbef59ca3b91868493c818bd5b45417a9ad96a5e",
+      "purpose": "offline development",
+      "read_only": false
+    },
+    {
+      "name": "offline_id3_config",
+      "path": "src/emu/offline_id3_config.py",
+      "sha256": "7852464a7f6a87e7d6c8eb11fd50f5ea59a4c61e701ac5f3a63314f42aab07c9",
+      "purpose": "offline id3 config",
+      "read_only": false
+    },
+    {
+      "name": "offline_id3_media",
+      "path": "src/emu/offline_id3_media.py",
+      "sha256": "4111345a69fbf3e0f8a62f85d328f7396afeb21e080874428fc8e19af3be37b1",
+      "purpose": "offline id3 media",
+      "read_only": false
+    },
+    {
+      "name": "offline_observer_clock",
+      "path": "src/emu/offline_observer_clock.py",
+      "sha256": "b6ef3b5fed85e717e8f7361803fa4afda4e082dd5636a3fa2619655b117ffaa0",
+      "purpose": "offline observer clock",
+      "read_only": false
+    },
+    {
+      "name": "offline_odm_image",
+      "path": "src/emu/offline_odm_image.py",
+      "sha256": "614c47ba77b1fc33bce606b40844ac146789ada8490cef9f51b9f7ce8ea0ced0",
+      "purpose": "offline odm image",
+      "read_only": false
+    },
+    {
+      "name": "offline_preinit",
+      "path": "src/emu/offline_preinit.py",
+      "sha256": "521a00126bfba2b96362d7984460c954f8af4374d0c62d961fd48384d2fdefa5",
+      "purpose": "offline preinit",
+      "read_only": false
+    },
+    {
+      "name": "offline_software_keystore",
+      "path": "src/emu/offline_software_keystore.py",
+      "sha256": "4e2cc2abaebeb1c8943107c10335849dffba5718a27b76cc9115e75e16b1e905",
+      "purpose": "offline software keystore",
+      "read_only": false
+    },
+    {
+      "name": "offline_touch_input",
+      "path": "src/emu/offline_touch_input.py",
+      "sha256": "f8f2bdbe465e43274703f44908b8939b4d158034a46273577168b354b55c1bc6",
+      "purpose": "offline touch input",
+      "read_only": false
+    },
+    {
+      "name": "original_8704_vm",
+      "path": "src/emu/original_8704_vm.py",
+      "sha256": "13bb82e0f1d7169d2dd339ac39d222d20782b669268dda5e37f91e2db840020c",
+      "purpose": "original 8704 vm",
+      "read_only": false
+    },
+    {
+      "name": "patch_qemu_exynos",
+      "path": "src/emu/patch_qemu_exynos.py",
+      "sha256": "599249edc73b57d2db7081b77250124ffdfe1f33cd6b6c515150226cdf117a5f",
+      "purpose": "patch qemu exynos",
+      "read_only": false
+    },
+    {
+      "name": "patch_qemu_xtensa_audio",
+      "path": "src/emu/patch_qemu_xtensa_audio.py",
+      "sha256": "ae48f4562254575488628e1b5869aba154c34300cd38c354adf85bc67050290a",
+      "purpose": "patch qemu xtensa audio",
+      "read_only": false
+    },
+    {
+      "name": "patch_qemu_xtensa_mailbox",
+      "path": "src/emu/patch_qemu_xtensa_mailbox.py",
+      "sha256": "ef3e0e59ea6a254f34432982c85f06e4306f6d5c176502ae33bd8f4b8613ebb6",
+      "purpose": "patch qemu xtensa mailbox",
+      "read_only": false
+    },
+    {
+      "name": "pcie2_platform",
+      "path": "src/emu/pcie2_platform.py",
+      "sha256": "f27041c4332ea77671c0121c07fcf219b387d58479f8002b4ab4fc9c31990b42",
+      "purpose": "pcie2 platform",
+      "read_only": false
+    },
+    {
+      "name": "pdma_platform",
+      "path": "src/emu/pdma_platform.py",
+      "sha256": "3f0df087f0e5bebe5fe652c42402f5fdb3b3f939745fdb5953ea5718483bb051",
+      "purpose": "pdma platform",
+      "read_only": false
+    },
+    {
+      "name": "pmic_bootstrap",
+      "path": "src/emu/pmic_bootstrap.py",
+      "sha256": "3662c76ffe1a7db187293cbea50c60c65027e2fb5ae5b2d8a37cda8f0a888e81",
+      "purpose": "pmic bootstrap",
+      "read_only": false
+    },
+    {
+      "name": "pmu_debug",
+      "path": "src/emu/pmu_debug.py",
+      "sha256": "33f12ea00fb772487cc7cf35c45f28a03ac2b26ca39891ed53fa668015d924f1",
+      "purpose": "pmu debug",
+      "read_only": false
+    },
+    {
+      "name": "pmu_domain",
+      "path": "src/emu/pmu_domain.py",
+      "sha256": "a772a0ddb2259fb23e709a79fb5b3dc3249cd20e2e1fafda8aedaae806f344f7",
+      "purpose": "pmu domain",
+      "read_only": false
+    },
+    {
+      "name": "pmu_platform",
+      "path": "src/emu/pmu_platform.py",
+      "sha256": "4c6645b23f2e3d9a4877c95db6c1f7218faf92cb846e06a780a9bc891e5bb39d",
+      "purpose": "pmu platform",
+      "read_only": false
+    },
+    {
+      "name": "prepare_hmi_partition",
+      "path": "src/emu/prepare_hmi_partition.py",
+      "sha256": "ec50a1fa99c0764151e5fc6abb026634c868e7ef37474b78ae55c206c095345e",
+      "purpose": "prepare hmi partition",
+      "read_only": false
+    },
+    {
+      "name": "pscdc_platform",
+      "path": "src/emu/pscdc_platform.py",
+      "sha256": "2804aa0ccba7c5f759e5c98982fdfd57cd591702fba6db19583f9f3caea2c12c",
+      "purpose": "pscdc platform",
+      "read_only": false
+    },
+    {
+      "name": "qnx_audio_clock_watch",
+      "path": "src/emu/qnx_audio_clock_watch.py",
+      "sha256": "1a9610cc0bc6e90251478a657b14749d4575c3a4ef26885467b8d354fc5946d6",
+      "purpose": "qnx audio clock watch",
+      "read_only": false
+    },
+    {
+      "name": "qnx_bts_platform",
+      "path": "src/emu/qnx_bts_platform.py",
+      "sha256": "ebaa9fce4efe0fbf87c2c6c60142f08e663274b216fee06a22cb5cc650eb4021",
+      "purpose": "qnx bts platform",
+      "read_only": false
+    },
+    {
+      "name": "qnx_display_identity",
+      "path": "src/emu/qnx_display_identity.py",
+      "sha256": "d3a24224870b2b0ecc242b9eb471ae05813a984b8399d86b62cbe97f613df61b",
+      "purpose": "qnx display identity",
+      "read_only": false
+    },
+    {
+      "name": "qnx_dp0_platform",
+      "path": "src/emu/qnx_dp0_platform.py",
+      "sha256": "1213d78116a73ae980420bf872dd62bc68561d3c9969e2cd5dc1eb7cc26c9360",
+      "purpose": "qnx dp0 platform",
+      "read_only": false
+    },
+    {
+      "name": "qnx_dsi_platform",
+      "path": "src/emu/qnx_dsi_platform.py",
+      "sha256": "b933f2ec52ca2ae427fd41056cf80469a939fbfc028f5411b5ea7209336e02b9",
+      "purpose": "qnx dsi platform",
+      "read_only": false
+    },
+    {
+      "name": "qnx_g3d00_platform",
+      "path": "src/emu/qnx_g3d00_platform.py",
+      "sha256": "1d3aee7021bfb6a336786712bd5caff07401e26170432a25dad394df1a82d884",
+      "purpose": "qnx g3d00 platform",
+      "read_only": false
+    },
+    {
+      "name": "qnx_hud_startup",
+      "path": "src/emu/qnx_hud_startup.py",
+      "sha256": "2b4531f1b6f0633b0a1faf8242766320e36013ae427e343a22cb4531fc0344c3",
+      "purpose": "qnx hud startup",
+      "read_only": false
+    },
+    {
+      "name": "qnx_native_display",
+      "path": "src/emu/qnx_native_display.py",
+      "sha256": "c7de55f0f834786e3a5f1474f07afb43677be119a1346fd20e31c46dc07a0323",
+      "purpose": "qnx native display",
+      "read_only": false
+    },
+    {
+      "name": "qnx_pmu_platform",
+      "path": "src/emu/qnx_pmu_platform.py",
+      "sha256": "1ed07cb05a5ceeecf078bf46e9df7497c7c4261b3762e1d33ca60c11b6d83769",
+      "purpose": "qnx pmu platform",
+      "read_only": false
+    },
+    {
+      "name": "qnx_tmu_platform",
+      "path": "src/emu/qnx_tmu_platform.py",
+      "sha256": "dc929324a14231c4f3b6ab30a10a8309ba178dd21390e4ff9a372296983ad784",
+      "purpose": "qnx tmu platform",
+      "read_only": false
+    },
+    {
+      "name": "scaler_reset_platform",
+      "path": "src/emu/scaler_reset_platform.py",
+      "sha256": "94768555ee96676d2cc471bda544c8f0ee4b8c749e3b95ae5a0730bc61cf63d0",
+      "purpose": "scaler reset platform",
+      "read_only": false
+    },
+    {
+      "name": "serializer_platform",
+      "path": "src/emu/serializer_platform.py",
+      "sha256": "c700a23ac6b5a419ed83facfc4eedd3f9f253e012696e4b49c4c2f6509a60f89",
+      "purpose": "serializer platform",
+      "read_only": false
+    },
+    {
+      "name": "storage_layout",
+      "path": "src/emu/storage_layout.py",
+      "sha256": "e22427a21de2a9b84d21175d1327515a4156d0abfb2a98b1311e40e218630ee1",
+      "purpose": "storage layout",
+      "read_only": false
+    },
+    {
+      "name": "sysmmu_high_root_check",
+      "path": "src/emu/sysmmu_high_root_check.py",
+      "sha256": "ec4f85141ffe049eb58a01fa879d2841462259d9e35e9b79dbcf41c77337f7c8",
+      "purpose": "sysmmu high root check",
+      "read_only": false
+    },
+    {
+      "name": "sysmmu_platform",
+      "path": "src/emu/sysmmu_platform.py",
+      "sha256": "fc78f82416be4f2439527529e4bca8fc614376c8a641dff4f4874a95f04ca531",
+      "purpose": "sysmmu platform",
+      "read_only": false
+    },
+    {
+      "name": "sysreg_platform",
+      "path": "src/emu/sysreg_platform.py",
+      "sha256": "2186d1784e0a985b3be01adda1910feff390536c3b69b77f011a328af93161bc",
+      "purpose": "sysreg platform",
+      "read_only": false
+    },
+    {
+      "name": "test_abox_mailbox_wire",
+      "path": "src/emu/test_abox_mailbox_wire.py",
+      "sha256": "27ad24e6c911c56138532338465da0fbe6b1009cd80e9b6d5552eb1fb574e71c",
+      "purpose": "test abox mailbox wire",
+      "read_only": false
+    },
+    {
+      "name": "test_acpm_firmware",
+      "path": "src/emu/test_acpm_firmware.py",
+      "sha256": "68d7cd72be1de731f96d6cf3cce4534ed1d8a4cba042059cb943cd9b9567b348",
+      "purpose": "test acpm firmware",
+      "read_only": false
+    },
+    {
+      "name": "test_android_init_trace",
+      "path": "src/emu/test_android_init_trace.py",
+      "sha256": "8eb3e54845b60566fd98b8b7e8a2de47615c83749ba05e3679da5fcd9eb46c55",
+      "purpose": "test android init trace",
+      "read_only": false
+    },
+    {
+      "name": "test_android_sparse",
+      "path": "src/emu/test_android_sparse.py",
+      "sha256": "f2b3d157a680c89d3deaa64925c5f46fd068ebf73da719712822e1b452cea0c6",
+      "purpose": "test android sparse",
+      "read_only": false
+    },
+    {
+      "name": "test_auto9_sss",
+      "path": "src/emu/test_auto9_sss.py",
+      "sha256": "65f1545f3628f78c9b87593d0d90947e9fdc17e26fd0009e5c7f3fcb35ce9d52",
+      "purpose": "test auto9 sss",
+      "read_only": false
+    },
+    {
+      "name": "test_bl2_mcu",
+      "path": "src/emu/test_bl2_mcu.py",
+      "sha256": "1c2ec3a450a893059277d1bdc607db69770b1cd095eaed584dbece4683a9ad30",
+      "purpose": "test bl2 mcu",
+      "read_only": false
+    },
+    {
+      "name": "test_cal_init_platform",
+      "path": "src/emu/test_cal_init_platform.py",
+      "sha256": "9369ae642c366cbb6d0317b13b34077b8b708dbfc52f474ebb3ba490ff9d7574",
+      "purpose": "test cal init platform",
+      "read_only": false
+    },
+    {
+      "name": "test_clock_rpc_platform",
+      "path": "src/emu/test_clock_rpc_platform.py",
+      "sha256": "dac52a864baffff645ad5eac9fb7c03a3d361e37b8412b9cd76a94d8506243a0",
+      "purpose": "test clock rpc platform",
+      "read_only": false
+    },
+    {
+      "name": "test_cmu_sequence",
+      "path": "src/emu/test_cmu_sequence.py",
+      "sha256": "3dddb201fbe33a1b754654370534c0d1f535e58be042fc83cddf96c498a5e099",
+      "purpose": "test cmu sequence",
+      "read_only": false
+    },
+    {
+      "name": "test_dsp_bootstrap",
+      "path": "src/emu/test_dsp_bootstrap.py",
+      "sha256": "ba7a9915f4d3cd0115e3a8c95fc998725efc40aac274f078703bfb1bfa96f59e",
+      "purpose": "test dsp bootstrap",
+      "read_only": false
+    },
+    {
+      "name": "test_eqos_sysmmu_platform",
+      "path": "src/emu/test_eqos_sysmmu_platform.py",
+      "sha256": "879b6f4d6908fc7c672bb15f91328b3e717c588a786f908119b902756b63a045",
+      "purpose": "test eqos sysmmu platform",
+      "read_only": false
+    },
+    {
+      "name": "test_ivi_verity",
+      "path": "src/emu/test_ivi_verity.py",
+      "sha256": "17c857a161107ba419b96979de64902087ae73389798fce7c183c64e10e22b5a",
+      "purpose": "test ivi verity",
+      "read_only": false
+    },
+    {
+      "name": "test_ldfw_layout",
+      "path": "src/emu/test_ldfw_layout.py",
+      "sha256": "3794a7d39f3151bfc04cd5a0ac6f61a44f7296dd5b644b42dc0baeb5422d8c9c",
+      "purpose": "test ldfw layout",
+      "read_only": false
+    },
+    {
+      "name": "test_linux_dpp_platform",
+      "path": "src/emu/test_linux_dpp_platform.py",
+      "sha256": "643775d299871feab4940a9939839bcd257ac62aa503085bf3e171722f25d960",
+      "purpose": "test linux dpp platform",
+      "read_only": false
+    },
+    {
+      "name": "test_linux_i2c_platform",
+      "path": "src/emu/test_linux_i2c_platform.py",
+      "sha256": "270214dbc6f48410a3b92105ffa972371c049a35061b47c4aa8823065086edac",
+      "purpose": "test linux i2c platform",
+      "read_only": false
+    },
+    {
+      "name": "test_linux_ivi_media",
+      "path": "src/emu/test_linux_ivi_media.py",
+      "sha256": "32c7228690497ff902888c7320a28cd2e2084547da2ae6d02c5ba9f11f313fd6",
+      "purpose": "test linux ivi media",
+      "read_only": false
+    },
+    {
+      "name": "test_linux_mcu_identity",
+      "path": "src/emu/test_linux_mcu_identity.py",
+      "sha256": "767bbc15718a58596124dccdc8ddaa601b706d379e910470a953ae6cb943a832",
+      "purpose": "test linux mcu identity",
+      "read_only": false
+    },
+    {
+      "name": "test_linux_rtnl_observer",
+      "path": "src/emu/test_linux_rtnl_observer.py",
+      "sha256": "10f6105334e5c5e89d0058cb985b3bd07282286ed3d8a204015f8c0ea46c1457",
+      "purpose": "test linux rtnl observer",
+      "read_only": false
+    },
+    {
+      "name": "test_lk_handoff",
+      "path": "src/emu/test_lk_handoff.py",
+      "sha256": "d31f0a056b2b5c6cba0e8f90cbd1f430f80eb5010c51f1998a5767af98f3efc9",
+      "purpose": "test lk handoff",
+      "read_only": false
+    },
+    {
+      "name": "test_lk_pwm_platform",
+      "path": "src/emu/test_lk_pwm_platform.py",
+      "sha256": "a00a8d32c1151881aae1a01c8bb64033eb681b934acd18bd4d8028ea722f929d",
+      "purpose": "test lk pwm platform",
+      "read_only": false
+    },
+    {
+      "name": "test_lk_runtime",
+      "path": "src/emu/test_lk_runtime.py",
+      "sha256": "0011e2f628a4f5092a38287f363f9b914a86e870d01e659013f49611aa85f46c",
+      "purpose": "test lk runtime",
+      "read_only": false
+    },
+    {
+      "name": "test_native_center_window",
+      "path": "src/emu/test_native_center_window.py",
+      "sha256": "45c4d9cfbd00aaf53fed22d88ce430cb202001b844692e6c79eb886ba46f7ed7",
+      "purpose": "test native center window",
+      "read_only": false
+    },
+    {
+      "name": "test_original_8704_vm",
+      "path": "src/emu/test_original_8704_vm.py",
+      "sha256": "09794f4d8d0a12a6c4e17c68baaeede9fed59bd7ab0486783656caf1fedcf59a",
+      "purpose": "test original 8704 vm",
+      "read_only": false
+    },
+    {
+      "name": "test_pcie2_platform",
+      "path": "src/emu/test_pcie2_platform.py",
+      "sha256": "4a652f6e0aac76a8fd7a5defe6c90446afacdbde89158f97215e3f80c3ca3407",
+      "purpose": "test pcie2 platform",
+      "read_only": false
+    },
+    {
+      "name": "test_pmu_debug",
+      "path": "src/emu/test_pmu_debug.py",
+      "sha256": "0076826bf285b229c261e0572bc12e31c91834c3acfc93bfe142b56470ee7b98",
+      "purpose": "test pmu debug",
+      "read_only": false
+    },
+    {
+      "name": "test_pmu_domain",
+      "path": "src/emu/test_pmu_domain.py",
+      "sha256": "5d5d2b0d8dba2df492fcf2010ec1a21e5b7efb632fc2da3b5d3fae8eeeb2cb19",
+      "purpose": "test pmu domain",
+      "read_only": false
+    },
+    {
+      "name": "test_qnx_audio_clock_watch",
+      "path": "src/emu/test_qnx_audio_clock_watch.py",
+      "sha256": "61a432d03148ebacac0b43f3eebf78c6f6425fee3eff7add588b8b6b299a5e00",
+      "purpose": "test qnx audio clock watch",
+      "read_only": false
+    },
+    {
+      "name": "test_qnx_gtf_watch",
+      "path": "src/emu/test_qnx_gtf_watch.py",
+      "sha256": "886e4e5f6aefefafdd6b7b48d0e42cde529852ec4a6fe111776773a0a2673093",
+      "purpose": "test qnx gtf watch",
+      "read_only": false
+    },
+    {
+      "name": "test_qnx_tmu_platform",
+      "path": "src/emu/test_qnx_tmu_platform.py",
+      "sha256": "227f0cb9a6d554001c236907d054a096bd14e8b50f1647001e0e60f3e12c83fc",
+      "purpose": "test qnx tmu platform",
+      "read_only": false
+    },
+    {
+      "name": "test_serializer_platform",
+      "path": "src/emu/test_serializer_platform.py",
+      "sha256": "6bfa69baaf90ebab7d7eb71c61613a32b8d040d946299c4669e8f4cd69928df1",
+      "purpose": "test serializer platform",
+      "read_only": false
+    },
+    {
+      "name": "test_storage_layout",
+      "path": "src/emu/test_storage_layout.py",
+      "sha256": "31f325c6eae529e05ee92524df37787e175112d4fc86de3141cb9f5c29bb0f12",
+      "purpose": "test storage layout",
+      "read_only": false
+    },
+    {
+      "name": "test_sysreg_platform",
+      "path": "src/emu/test_sysreg_platform.py",
+      "sha256": "2aad5d853eb78c92577df5b9f686c49e42b385d49510dbf7ac08173c638f580e",
+      "purpose": "test sysreg platform",
+      "read_only": false
+    },
+    {
+      "name": "test_ti983_platform",
+      "path": "src/emu/test_ti983_platform.py",
+      "sha256": "364a7c29350bafa57310179cb29d031101251f51e7aed02b87cb670977679fea",
+      "purpose": "test ti983 platform",
+      "read_only": false
+    },
+    {
+      "name": "test_ufs_boot_luns",
+      "path": "src/emu/test_ufs_boot_luns.py",
+      "sha256": "11b118ce3b5aa920bc477b664e8482b0344cb75d87df5c7e9a139affac7de703",
+      "purpose": "test ufs boot luns",
+      "read_only": false
+    },
+    {
+      "name": "test_ufs_dsp_media",
+      "path": "src/emu/test_ufs_dsp_media.py",
+      "sha256": "d86fa952e9e41c126d05a49e95bd2a1fb8ea2ae3b3eeef3a3797ed80dded3341",
+      "purpose": "test ufs dsp media",
+      "read_only": false
+    },
+    {
+      "name": "test_ufs_platform",
+      "path": "src/emu/test_ufs_platform.py",
+      "sha256": "0841a8562162be4fbb72659ab2b63dab99e7bec713441a43ef2359d76cb5203a",
+      "purpose": "test ufs platform",
+      "read_only": false
+    },
+    {
+      "name": "test_ufs_virtual_disk",
+      "path": "src/emu/test_ufs_virtual_disk.py",
+      "sha256": "cbe73ffb15431f08cad106fa8f4bc0987d5a7b9011858684e33da51b80adedbe",
+      "purpose": "test ufs virtual disk",
+      "read_only": false
+    },
+    {
+      "name": "test_vlm_platform",
+      "path": "src/emu/test_vlm_platform.py",
+      "sha256": "b1ac3f556c64fbb814a7665b19ef1c879b67a86f80e3a6f2c5b083a406c992da",
+      "purpose": "test vlm platform",
+      "read_only": false
+    },
+    {
+      "name": "ti983_platform",
+      "path": "src/emu/ti983_platform.py",
+      "sha256": "c33c5982e4dc5428c00baa48001b1563bb2b8f5b16a3700092991585d8c9d762",
+      "purpose": "ti983 platform",
+      "read_only": false
+    },
+    {
+      "name": "tmu_platform",
+      "path": "src/emu/tmu_platform.py",
+      "sha256": "08c982f043eb22640f584163f8809fd7328d23a397c52b8989b8e9eb921c36fa",
+      "purpose": "tmu platform",
+      "read_only": false
+    },
+    {
+      "name": "ufs_android_media",
+      "path": "src/emu/ufs_android_media.py",
+      "sha256": "5692b1a27238d24adf1e4d8180527b09983634533ace70132633dbe1a3a49766",
+      "purpose": "ufs android media",
+      "read_only": false
+    },
+    {
+      "name": "ufs_android_sparse",
+      "path": "src/emu/ufs_android_sparse.py",
+      "sha256": "0dc62dee71eeb0ff151f1b406807b25a07853bb09a4a5fb4230fbe1e3bdb9d84",
+      "purpose": "ufs android sparse",
+      "read_only": false
+    },
+    {
+      "name": "ufs_boot_luns",
+      "path": "src/emu/ufs_boot_luns.py",
+      "sha256": "c8cc34911ce19f1b3324700e7e52b403df820c1286045ff47b526cb49376f8ad",
+      "purpose": "ufs boot luns",
+      "read_only": false
+    },
+    {
+      "name": "ufs_dsp_media",
+      "path": "src/emu/ufs_dsp_media.py",
+      "sha256": "000d55ae900ef7c84dad9f69a7a5f95283c1da60a1c67c15c927c04186b2fbd7",
+      "purpose": "ufs dsp media",
+      "read_only": false
+    },
+    {
+      "name": "ufs_mailbox_platform",
+      "path": "src/emu/ufs_mailbox_platform.py",
+      "sha256": "16ba3df06a6b35b771596ced5fbbc7870206ae1669f085783dcfe798dad5c542",
+      "purpose": "ufs mailbox platform",
+      "read_only": false
+    },
+    {
+      "name": "ufs_platform",
+      "path": "src/emu/ufs_platform.py",
+      "sha256": "570273de7e488fdd5ddc31038c6025c1da98fe310c084ca2d98836b4dd83042f",
+      "purpose": "ufs platform",
+      "read_only": false
+    },
+    {
+      "name": "ufs_vh_platform",
+      "path": "src/emu/ufs_vh_platform.py",
+      "sha256": "8a2a1917f9e29f393e433cb52899360f59b81b06b554a12c23e9dca1f2795793",
+      "purpose": "ufs vh platform",
+      "read_only": false
+    },
+    {
+      "name": "ufs_virtual_disk",
+      "path": "src/emu/ufs_virtual_disk.py",
+      "sha256": "b940f05990f75176eb879133d87dde11c831ef0a83e61ebdf23ed751529e4bed",
+      "purpose": "ufs virtual disk",
+      "read_only": false
+    },
+    {
+      "name": "usi_i2c_platform",
+      "path": "src/emu/usi_i2c_platform.py",
+      "sha256": "d821a55dcffe8b5ca43d5af0eaccfa78fb1442b336874e178b9754b94295c8d0",
+      "purpose": "usi i2c platform",
+      "read_only": false
+    },
+    {
+      "name": "vlm_live",
+      "path": "src/emu/vlm_live.py",
+      "sha256": "2c0315eb4ba2a7f2d09c7ec066354372e04908c50a0338d02bf89826175d5332",
+      "purpose": "vlm live",
+      "read_only": false
+    },
+    {
+      "name": "vlm_offline_live",
+      "path": "src/emu/vlm_offline_live.py",
+      "sha256": "6d729388c6093f9a65db3e25bcff8a3e721d5b24a6064beb2ca86891499e3c1f",
+      "purpose": "vlm offline live",
+      "read_only": false
+    },
+    {
+      "name": "vlm_platform",
+      "path": "src/emu/vlm_platform.py",
+      "sha256": "874e5d8e4e9a590bab302ef7fd38735ed69edb04b75d52069db75fbd14614c1f",
+      "purpose": "vlm platform",
+      "read_only": false
+    },
+    {
+      "name": "android_sparse",
+      "path": "src/firmware/android_sparse.py",
+      "sha256": "92b2959a4f9acca65b05cecc0e1540be863776977019ff8cb81d6c4fd4e215c6",
+      "purpose": "android sparse",
+      "read_only": false
+    },
+    {
+      "name": "inspect_debug_device_tree",
+      "path": "src/firmware/inspect_debug_device_tree.py",
+      "sha256": "d0345f32b85943c15cfe84694f503e7aa57a6d33ae96af187a6f1196fac82eab",
+      "purpose": "inspect debug device tree",
+      "read_only": false
+    },
+    {
+      "name": "build-oem-getty-initrd",
+      "path": "src/runner/build-oem-getty-initrd.py",
+      "sha256": "e3e55ea4707b9d8c8ec0d4a7ea28c8658dd915bd9f6609bd17c0452e7e5d585c",
+      "purpose": "build-oem-getty-initrd",
+      "read_only": false
+    },
+    {
+      "name": "center-event-sample",
+      "path": "src/runner/center-event-sample.py",
+      "sha256": "e74fdd2955c0176d78ac8140f00a54ee60a95e9403526397e6eff5dc53a446e1",
+      "purpose": "center-event-sample",
+      "read_only": false
+    },
+    {
+      "name": "check-dp0-aux-sink",
+      "path": "src/runner/check-dp0-aux-sink.py",
+      "sha256": "b12bec461bd82aae34ba90466620c56cf00643f99b1e57301de60cb3985d4cb4",
+      "purpose": "check-dp0-aux-sink",
+      "read_only": false
+    },
+    {
+      "name": "check-live-getty",
+      "path": "src/runner/check-live-getty.py",
+      "sha256": "f9b0f8cfbeca05b5c9e5610408fdbee14b210b1e4389d302028e6830fe4f1c03",
+      "purpose": "check-live-getty",
+      "read_only": false
+    },
+    {
+      "name": "check-mali-jm",
+      "path": "src/runner/check-mali-jm.py",
+      "sha256": "5449fc202d3efc1b0c65e33a2fbb71763a222cb0e06aa463ee22a97d0f79c7f8",
+      "purpose": "check-mali-jm",
+      "read_only": false
+    },
+    {
+      "name": "check-running-oem-uart",
+      "path": "src/runner/check-running-oem-uart.py",
+      "sha256": "8e48252619a9e67d8ee62e3f8f929fd4f198ae18cb3f79fa8032135994e4f956",
+      "purpose": "check-running-oem-uart",
+      "read_only": false
+    },
+    {
+      "name": "check-usi08-uintm",
+      "path": "src/runner/check-usi08-uintm.py",
+      "sha256": "e4d396671f6fe3be2050db5ef7cbaf513998ea0d258e1ddad7877696a78e8a8f",
+      "purpose": "check-usi08-uintm",
+      "read_only": false
+    },
+    {
+      "name": "check-vm3-sysmmu",
+      "path": "src/runner/check-vm3-sysmmu.py",
+      "sha256": "f2827a2f46ae147a5144c83059e27f2d0a18949d753d372cdc4ac07baab8f905",
+      "purpose": "check-vm3-sysmmu",
+      "read_only": false
+    },
+    {
+      "name": "check-windows-file-ram",
+      "path": "src/runner/check-windows-file-ram.py",
+      "sha256": "2b57f54bb73b72cadbb1660eeee7e043513568a98009a486b1d55e0afae04aca",
+      "purpose": "check-windows-file-ram",
+      "read_only": false
+    },
+    {
+      "name": "early-boot-ring",
+      "path": "src/runner/early-boot-ring.py",
+      "sha256": "ec2c3d469bec6806fac6dc6b05983b905f45ac80b2c7e166be6576f48a2bf82b",
+      "purpose": "early-boot-ring",
+      "read_only": false
+    },
+    {
+      "name": "extract-android-keymaster",
+      "path": "src/runner/extract-android-keymaster.py",
+      "sha256": "cec706d68b0ec3909e7f75db21054b1144a867f27eae6641a292c249e16c9c66",
+      "purpose": "extract-android-keymaster",
+      "read_only": false
+    },
+    {
+      "name": "native-linux-scanout",
+      "path": "src/runner/native-linux-scanout.py",
+      "sha256": "daa82bf2f683982363e2e3d92948b7dc3dfcaf5f2a4d8767f7324f4e79a511dc",
+      "purpose": "native-linux-scanout",
+      "read_only": false
+    },
+    {
+      "name": "native-persistence-priority",
+      "path": "src/runner/native-persistence-priority.py",
+      "sha256": "0572eeb1882a78f67435283327f7513f5aae483fb1f7a20ff031d8a7983a69db",
+      "purpose": "native-persistence-priority",
+      "read_only": false
+    },
+    {
+      "name": "observe-center-peers",
+      "path": "src/runner/observe-center-peers.py",
+      "sha256": "9a8972e804be901c05ebebd5ec902ed8b068277b41586fd7e2a09f057d36a6da",
+      "purpose": "observe-center-peers",
+      "read_only": false
+    },
+    {
+      "name": "observe-hmi-queues",
+      "path": "src/runner/observe-hmi-queues.py",
+      "sha256": "95a33122ae78ddfd37a4c732f0fba3a004b340c4115ab89278083d4265aaabdd",
+      "purpose": "observe-hmi-queues",
+      "read_only": false
+    },
+    {
+      "name": "observe-hmi-threads",
+      "path": "src/runner/observe-hmi-threads.py",
+      "sha256": "857c1ac77d31d66a4b40ac3d03d61acc51bfa256c988c7b80709708a166f0267",
+      "purpose": "observe-hmi-threads",
+      "read_only": false
+    },
+    {
+      "name": "observe-ivi-ion",
+      "path": "src/runner/observe-ivi-ion.py",
+      "sha256": "4e90607969c0d36bd8be68966ddf41c3403e5ea3ffa6565346c3a96d2fa1feea",
+      "purpose": "observe-ivi-ion",
+      "read_only": false
+    },
+    {
+      "name": "observe-live-ivi",
+      "path": "src/runner/observe-live-ivi.py",
+      "sha256": "8fb320a2c7358cc0eceacb810b9132fe3a3bce2c32f6f4a9ece2eeaa18e142be",
+      "purpose": "observe-live-ivi",
+      "read_only": false
+    },
+    {
+      "name": "observe-native-kipc",
+      "path": "src/runner/observe-native-kipc.py",
+      "sha256": "6887eb88b3bd8f5c09c5fd3d814e5d8989bb0b778c63a6d82581d19976e67039",
+      "purpose": "observe-native-kipc",
+      "read_only": false
+    },
+    {
+      "name": "observe-original-weston-scene",
+      "path": "src/runner/observe-original-weston-scene.py",
+      "sha256": "760a0dbebc0db35c77d938757693505374492b0710d04f9d3195395c7d2f492d",
+      "purpose": "observe-original-weston-scene",
+      "read_only": false
+    },
+    {
+      "name": "observe-post-init-children",
+      "path": "src/runner/observe-post-init-children.py",
+      "sha256": "fb43a1a7be946d4682c9efef51c5356d3b108773d40b63c06619869b276406f9",
+      "purpose": "observe-post-init-children",
+      "read_only": false
+    },
+    {
+      "name": "oem-hotspot-log",
+      "path": "src/runner/oem-hotspot-log.py",
+      "sha256": "113c88f761c5d0e9fb9523f7a2f133aa7ec6ad7b9026864c5949bdf701c77d02",
+      "purpose": "oem-hotspot-log",
+      "read_only": false
+    },
+    {
+      "name": "original-console-tx",
+      "path": "src/runner/original-console-tx.py",
+      "sha256": "3beed872ffb788a5f413207f7567918d1e007277619157f3ca0bb47ca7d0951c",
+      "purpose": "original-console-tx",
+      "read_only": false
+    },
+    {
+      "name": "original-linux-observer",
+      "path": "src/runner/original-linux-observer.py",
+      "sha256": "97dec1b4e8b0fc30c292a44d79e20ee9dd90a9e3db3fb02063a8e55c4f7c3e44",
+      "purpose": "original-linux-observer",
+      "read_only": false
+    },
+    {
+      "name": "probe-vlm-console",
+      "path": "src/runner/probe-vlm-console.py",
+      "sha256": "f83cbda37e6c9f8078da4ab76ff84da3c4436a437f261d4517ec41f2f837a494",
+      "purpose": "probe-vlm-console",
+      "read_only": false
+    },
+    {
+      "name": "qnx-bootmarkers",
+      "path": "src/runner/qnx-bootmarkers.py",
+      "sha256": "5b5d10a9cb7a9d80a4c7a6c6d7851c447f192f96ca61b386f6aa2a5f532c7c9c",
+      "purpose": "qnx-bootmarkers",
+      "read_only": false
+    },
+    {
+      "name": "qnx-buffer-capture",
+      "path": "src/runner/qnx-buffer-capture.py",
+      "sha256": "f8a5c3f5014235d28ea286489d1bd1499cd7f0c2ac6fbe1a4d67435ba410b63c",
+      "purpose": "qnx-buffer-capture",
+      "read_only": false
+    },
+    {
+      "name": "qnx-dp0-fault-evidence",
+      "path": "src/runner/qnx-dp0-fault-evidence.py",
+      "sha256": "949f90829464ebb8d68cfa727396e9d843b9ddced1d9d62b8529ceded3004104",
+      "purpose": "qnx-dp0-fault-evidence",
+      "read_only": false
+    },
+    {
+      "name": "qnx-screen-stage2",
+      "path": "src/runner/qnx-screen-stage2.py",
+      "sha256": "ff7bc78d4534fb571066a799e7943992729194e6ad3b73773eec4c1236f48258",
+      "purpose": "qnx-screen-stage2",
+      "read_only": false
+    },
+    {
+      "name": "seed-oem-getty",
+      "path": "src/runner/seed-oem-getty.py",
+      "sha256": "4d71d415f8c750ba45f45e82056efa33a82aa7416b76cf1e4825ee043afbe551",
+      "purpose": "seed-oem-getty",
+      "read_only": false
+    },
+    {
+      "name": "seed-oem-nav-data",
+      "path": "src/runner/seed-oem-nav-data.py",
+      "sha256": "4889cfd02222ed283e0f579f340683db19a55c82573b27f250251d6919372721",
+      "purpose": "seed-oem-nav-data",
+      "read_only": false
+    },
+    {
+      "name": "test-early-boot-ring",
+      "path": "src/runner/test-early-boot-ring.py",
+      "sha256": "e489797a10a0d51d160bc2cbcd496c5507a0a0048603fd18c700ce3207426763",
+      "purpose": "test-early-boot-ring",
+      "read_only": false
+    },
+    {
+      "name": "test-native-linux-scanout",
+      "path": "src/runner/test-native-linux-scanout.py",
+      "sha256": "58026553c35f5df54767a2d5046d3ec359c9b0dcf72b6aed364859dcad6a8809",
+      "purpose": "test-native-linux-scanout",
+      "read_only": false
+    },
+    {
+      "name": "test-pmu-om-input",
+      "path": "src/runner/test-pmu-om-input.py",
+      "sha256": "631089a1733b254d1054e830dbc9b10facbffe2431358182cc800198e38c2e41",
+      "purpose": "test-pmu-om-input",
+      "read_only": false
+    },
+    {
+      "name": "trace-native-boot",
+      "path": "src/runner/trace-native-boot.py",
+      "sha256": "56496722b57f24312229803b05936f2bb510edc71965cca628b7393f3b34a0ff",
+      "purpose": "trace-native-boot",
+      "read_only": false
+    },
+    {
+      "name": "trace-native-live",
+      "path": "src/runner/trace-native-live.py",
+      "sha256": "80fa3ef66c5642f1e4148543c42a78a408171be2af25d712a6350253ad47dab5",
+      "purpose": "trace-native-live",
+      "read_only": false
+    },
+    {
+      "name": "trace-offline-budget",
+      "path": "src/runner/trace-offline-budget.py",
+      "sha256": "65b6d812585fba6672158d1b4dcf3e4e2859cea4964205607016ec00249bdaf9",
+      "purpose": "trace-offline-budget",
+      "read_only": false
+    },
+    {
+      "name": "trace-offline-live",
+      "path": "src/runner/trace-offline-live.py",
+      "sha256": "f56abf6241e7e57ff43d7435cd72859ea78cb851fb1c7d07e7e0f640f8f1e74f",
+      "purpose": "trace-offline-live",
+      "read_only": false
+    },
+    {
+      "name": "verify-live-console",
+      "path": "src/runner/verify-live-console.py",
+      "sha256": "ffb540d15c8296b03f5a755e0e97145dbf5b646adf6aed60a3aa688ab8dba25e",
+      "purpose": "verify-live-console",
+      "read_only": false
+    },
+    {
+      "name": "verify-oem-runtime",
+      "path": "src/runner/verify-oem-runtime.py",
+      "sha256": "e72c6dd2482ffafa561ed27463834d48bec4e573823dbc28f293e7e5e8c9f2d1",
+      "purpose": "verify-oem-runtime",
+      "read_only": false
+    },
+    {
+      "name": "verify-qnx-rootfs-runtime",
+      "path": "src/runner/verify-qnx-rootfs-runtime.py",
+      "sha256": "7b8992242826af3ed45f6112ee0e8026b9e4adb257a6f9ca5aaa23b22b7441dc",
+      "purpose": "verify-qnx-rootfs-runtime",
+      "read_only": false
+    },
+    {
+      "name": "verify-vw-verity",
+      "path": "src/runner/verify-vw-verity.py",
+      "sha256": "f6a26c99b314d5398a5c5bd996d2d582cf47fd3e4b2ece207232778137a2b5e3",
+      "purpose": "verify-vw-verity",
+      "read_only": false
+    }
+  ]
+}

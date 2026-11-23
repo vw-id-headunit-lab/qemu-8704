@@ -1,0 +1,55 @@
+{
+  "host": "darwin",
+  "upstream_sha256": "6ee1d1a61f68212476b27108c26da5f449dc09b626d42f8279ba0dc2e08fa858",
+  "overrides": {
+    "native/overrides/accel/tcg/tcg-all.c": "a62862960ca8b1ceba33b92bfb9b107ac6807fa731ea1f2aa071da491fcb39a1",
+    "native/overrides/backends/hostmem-ram.c": "665d0da335c84d7d71aefdebef27f618ec941c6e373c774c83f2a214966a9bdb",
+    "native/overrides/gdbstub/system.c": "5f6a94037a056b5c947c8f8ef899ada45e2407ccf90ba86d69deb8d4a5a6e85b",
+    "native/overrides/hw/arm/Kconfig": "80ab296921565f7866dc932f981a99ee63da48bbe8fbdb1800c83d576a1cf308",
+    "native/overrides/hw/arm/exynos-auto9-sss-native.inc.c": "83b5f0879c733672d4dc24f023a9050f9409524651e75e7f3aa5f235bdd8d32e",
+    "native/overrides/hw/arm/exynos-auto9-sysmmu-native.inc.c": "a3ff021f4599ba31c25169095da24890892a06e560d000ad31aef011b69b911d",
+    "native/overrides/hw/arm/qemu-gl-bridge.h": "0f224da1e8355201e9b8f4e0e41fc6e79e8d43cd066e98e0db3b744ffcd4e484",
+    "native/overrides/hw/arm/virt.c": "bf95e9a83ca21545f375c3f059011501f74ebd508f7d0f7ab0fe7f6ae13ccea8",
+    "native/overrides/hw/char/Kconfig": "30c903975e337b80ae4e763651d68005dbe5cd50069983d45647e7dc8e7231b8",
+    "native/overrides/hw/char/exynos4210_uart.c": "ae3cf941c1bfa34da171b110eacae3a222fbdc02cf38f8707b1709c0e4b75ca0",
+    "native/overrides/hw/char/meson.build": "8119cff921dfc39564dbb674b8aa2e8ad3c70083fab85047ebb69643e8b317c7",
+    "native/overrides/hw/core/machine-qmp-cmds.c": "7e4da412608a0513c33ed74eb91d050d29015f64192e3bfe4771822301dc3d6a",
+    "native/overrides/hw/dma/pl330.c": "f4b787c814f86f6b53d77a39fd42096cadb9b08d21b87f0f6dced7ec1767754f",
+    "native/overrides/hw/intc/arm_gic.c": "1be09d3d220d38fdbf4756891ce2d407097c4aea5ff45b1d4d4daff803c703d7",
+    "native/overrides/hw/rtc/Kconfig": "f16c5fc8d1d3ed00038fa91f9e57c79b635f277e994180f05dcef1fc6ec82aba",
+    "native/overrides/hw/rtc/exynos4210_rtc.c": "914ea1b9eb9146ba5531e7cffc36cafd4854f41991861f9328f618cd780a6891",
+    "native/overrides/hw/rtc/meson.build": "03d395b436bd8d0b20e28acfb7ca7c4932536eda6dc65e8016c2a9087497197c",
+    "native/overrides/hw/timer/Kconfig": "253e36eca0ac645e52730f6d8815891b52c5d3871b89dd1019216a3dfaefeaa1",
+    "native/overrides/hw/timer/meson.build": "fb88c994d1568f1346df3cafc9f471de3a1c01fff3a071a1292647f1daa275fc",
+    "native/overrides/hw/ufs/trace-events": "4881f3e98c024a3da77b0b23d1311e72dd19bcda4c48f4f418a1f35b8cdd78bd",
+    "native/overrides/hw/ufs/ufs.c": "7a56c40eec86b4712b1b707a65bc82dfac1b78155f5a8bbc1c0dc00d9a62d383",
+    "native/overrides/hw/ufs/ufs.h": "0b2b34e2dd5b6f7c5dcbd2997f09886887dad3b20855f6503a088e3c461dc645",
+    "native/overrides/include/hw/arm/virt.h": "b7fb1d531dbfda14c0bfb84e553e217bcc510921ba726a77da99776e3754c720",
+    "native/overrides/include/hw/intc/arm_gic_common.h": "58ebcc5ce607b6d4f481fc87ff7a9135255cd014a38004720b8f57b49f41dadb",
+    "native/overrides/include/system/memory.h": "cbba005d15aae84a50818c92be09d9dd4266a6a62e08862cd35f7c94cab2e662",
+    "native/overrides/scripts/symlink-install-tree.py": "39eaa4a737b7bcc385e55e9e844eae8e5b21f4ba2b5be4fe40cafae38158e1e1",
+    "native/overrides/system/physmem.c": "f4455f088cce2db488652d65b546f717b299c9a8d5eae6dfe33492efc8a03a45",
+    "native/overrides/system/qtest.c": "e86b326fecf06621b767db90ede65c8dc8f76d2f07ac8c8d9e51fc5552ca8e2e",
+    "native/overrides/target/arm/cpu.c": "03985a7529c199663300f0d47e1ef610c1554b0e15b13ffbc6553889f01993fa",
+    "native/overrides/target/arm/cpu.h": "580b495bc3726ceb966e79e341dbd91d0c079d08d08aa1c1e6db201e4c67db55",
+    "native/overrides/target/arm/helper.c": "aa9df0b83ab89755b3f513466fed778f6c7ea1dd6299d91e1ab7fb9246d63ed7",
+    "native/overrides/target/arm/tcg/helper-a64-defs.h": "6fa727e01106d6a6685c22f6482e74d86c7bf19170388f5b1cfe3de69ce635bd",
+    "native/overrides/target/arm/tcg/helper-a64.c": "6d7a549fb0f412eafab220846ebbbb458186ec5ebe418e1986cc4aef5adecb69",
+    "native/overrides/target/arm/tcg/op_helper.c": "e944c1fe9dab7b8777f0d9bc48d70b8a55641936e0018d565705bf1d828b0b3c",
+    "native/overrides/target/arm/tcg/tlb_helper.c": "8f45851d4633777542f9dd231116e17d208bb346cee4eae1be7c30dd96737a21",
+    "native/overrides/target/arm/tcg/trace-events": "dd09f8938521632160c4bed45f0ff378e33a70f7452d7d5307df65e8d7598403",
+    "native/overrides/target/arm/tcg/translate-a64.c": "73433340876d4e4025c8a7f193e47973303f49b8835585b447b754eed52bc16d",
+    "native/overrides/util/oslib-posix.c": "d1e28b4f2bdf65ffe4030f48a957824beec056b95ec150120beea2d8d12a4a3f"
+  },
+  "binaries": [
+    {
+      "path": "/Users/diwen/code/MEB-EMU/runtime/darwin/qemu-system-aarch64",
+      "sha256": "23d65f79bfecad61cc5b1bea8a28ad5a20326375e7c50d926f8293b313f82db7"
+    },
+    {
+      "path": "/Users/diwen/code/MEB-EMU/runtime/darwin/qemu-img",
+      "sha256": "a6fc8e05eb5b164d74c0f150f886cc04211c679f84bd799821c4d0d06c74fb38"
+    }
+  ],
+  "firmware_booted": false
+}

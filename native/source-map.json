@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "selected_compiler_inputs": [
+    {
+      "path": "hw/arm/exynos-auto9-sss-native.inc.c",
+      "original_compiler_input_sha256": "ddad42bced3280179653c007ccbd18e9afae5d863095cc5ea0ab0c8178249b42",
+      "public_sha256": "83b5f0879c733672d4dc24f023a9050f9409524651e75e7f3aa5f235bdd8d32e"
+    },
+    {
+      "path": "hw/char/exynos4210_uart.c",
+      "original_compiler_input_sha256": "78f92d326dc3c70450d8a8abf9358ee847fdd7f90334c75877e50a26766e0fbe",
+      "public_sha256": "ae3cf941c1bfa34da171b110eacae3a222fbdc02cf38f8707b1709c0e4b75ca0"
+    },
+    {
+      "path": "hw/arm/exynos-auto9-sysmmu-native.inc.c",
+      "original_compiler_input_sha256": "ffc6412cb3162357ede8bdc0f59dde7868ed4217ba537971d464b3340fa5acee",
+      "public_sha256": "a3ff021f4599ba31c25169095da24890892a06e560d000ad31aef011b69b911d"
+    },
+    {
+      "path": "target/arm/tcg/op_helper.c",
+      "original_compiler_input_sha256": "abef52af2b25bcec2e41ebf68b2dcc06500d8d3de156f2dba72da0e8c421258d",
+      "public_sha256": "e944c1fe9dab7b8777f0d9bc48d70b8a55641936e0018d565705bf1d828b0b3c"
+    },
+    {
+      "path": "target/arm/tcg/translate-a64.c",
+      "original_compiler_input_sha256": "76daf0338a0ee928cdbed481d171ce5b0299fe346ffcde874b99a84cc792bf36",
+      "public_sha256": "73433340876d4e4025c8a7f193e47973303f49b8835585b447b754eed52bc16d"
+    },
+    {
+      "path": "target/arm/tcg/helper-a64.c",
+      "original_compiler_input_sha256": "d878f16355a4a29ca78560a8913956d443a6e30bafbe7465e9dbdc4b22dcad64",
+      "public_sha256": "6d7a549fb0f412eafab220846ebbbb458186ec5ebe418e1986cc4aef5adecb69"
+    }
+  ]
+}

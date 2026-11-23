@@ -1,0 +1,1089 @@
+{
+  "plan": "/Users/diwen/code/MEB-EMU/src/hvf_bench/reports/mesa/package-plan.json",
+  "downloads": [
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libb/libbsd/libbsd0_0.9.1-2+deb10u1_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libbsd0_0.9.1-2+deb10u1_arm64.deb",
+      "sha256": "38a16bfa67657ba928b4ff880a93769d729fde1bb1d46d87a7bbca5e85634f20",
+      "size": 97600,
+      "package": "libbsd0",
+      "version": "0.9.1-2+deb10u1",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libd/libdrm/libdrm-amdgpu1_2.4.97-1_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libdrm-amdgpu1_2.4.97-1_arm64.deb",
+      "sha256": "a790c7160a4443cb76f17c7eb2d6429cd57a16f1a9627aca812e85213a787381",
+      "size": 26568,
+      "package": "libdrm-amdgpu1",
+      "version": "2.4.97-1",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libd/libdrm/libdrm-common_2.4.97-1_all.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libdrm-common_2.4.97-1_all.deb",
+      "sha256": "eea378d3dab56923e06871331838aecc38a35aad997da7fc96a5e8c4e36081a2",
+      "size": 13820,
+      "package": "libdrm-common",
+      "version": "2.4.97-1",
+      "architecture": "all"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libd/libdrm/libdrm-etnaviv1_2.4.97-1_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libdrm-etnaviv1_2.4.97-1_arm64.deb",
+      "sha256": "d32880cf59cabfbbf9e82144ffa2b9c498a42994c5d5d5515fef1b99e76ff740",
+      "size": 20972,
+      "package": "libdrm-etnaviv1",
+      "version": "2.4.97-1",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libd/libdrm/libdrm-nouveau2_2.4.97-1_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libdrm-nouveau2_2.4.97-1_arm64.deb",
+      "sha256": "ed64bbc48aa7b55a4e0a398e058498a246b667949e130522da99e2e9bd13d9d5",
+      "size": 25540,
+      "package": "libdrm-nouveau2",
+      "version": "2.4.97-1",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libd/libdrm/libdrm-radeon1_2.4.97-1_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libdrm-radeon1_2.4.97-1_arm64.deb",
+      "sha256": "828548cad418c8b414f9bbd1a63391498216f14a065f1c695b93f98de04e6931",
+      "size": 30016,
+      "package": "libdrm-radeon1",
+      "version": "2.4.97-1",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libd/libdrm/libdrm2_2.4.97-1_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libdrm2_2.4.97-1_arm64.deb",
+      "sha256": "c1521eb6b63dc794e9487e6fd6956201b97fc230d514ccf5bf767111e0f86efb",
+      "size": 39512,
+      "package": "libdrm2",
+      "version": "2.4.97-1",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libe/libedit/libedit2_3.1-20181209-1_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libedit2_3.1-20181209-1_arm64.deb",
+      "sha256": "031b669ed706a3c524b54fcc0fbd48ccddb0d736aebddae027b72c838f58ad64",
+      "size": 91176,
+      "package": "libedit2",
+      "version": "3.1-20181209-1",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/m/mesa/libegl-mesa0_18.3.6-2+deb10u1_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libegl-mesa0_18.3.6-2+deb10u1_arm64.deb",
+      "sha256": "70bc033e5474b6c730d783d3ab75c906ef3f170a44681f509e41b81fd3e2bd73",
+      "size": 129752,
+      "package": "libegl-mesa0",
+      "version": "18.3.6-2+deb10u1",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libg/libglvnd/libegl1_1.1.0-1_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libegl1_1.1.0-1_arm64.deb",
+      "sha256": "7f8a09aeba00173c817955df9c143246422cbd65599038612cd8910d520d827b",
+      "size": 32848,
+      "package": "libegl1",
+      "version": "1.1.0-1",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/e/elfutils/libelf1_0.176-1.1_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libelf1_0.176-1.1_arm64.deb",
+      "sha256": "7c550a5eb057ec5c38f37e79eba476785e3a84097f7b740866db39012b99470f",
+      "size": 159596,
+      "package": "libelf1",
+      "version": "0.176-1.1",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/e/expat/libexpat1_2.2.6-2+deb10u4_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libexpat1_2.2.6-2+deb10u4_arm64.deb",
+      "sha256": "35469262108a91a75d38fefb46e4bdf3f3b99351792a2c0f73339d2d53adb93d",
+      "size": 87088,
+      "package": "libexpat1",
+      "version": "2.2.6-2+deb10u4",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libf/libffi/libffi6_3.2.1-9_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libffi6_3.2.1-9_arm64.deb",
+      "sha256": "c5f7f4158dc6821bf37dd44ce0fe4399b5798d4ae7e821ad85b63059a2b31c0f",
+      "size": 19340,
+      "package": "libffi6",
+      "version": "3.2.1-9",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/m/mesa/libgbm1_18.3.6-2+deb10u1_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libgbm1_18.3.6-2+deb10u1_arm64.deb",
+      "sha256": "c9c9a3fbc0c7187f28f0ad71f459a3a364803326d2e9175e458b043aa392478c",
+      "size": 67136,
+      "package": "libgbm1",
+      "version": "18.3.6-2+deb10u1",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/m/mesa/libgl1-mesa-dri_18.3.6-2+deb10u1_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libgl1-mesa-dri_18.3.6-2+deb10u1_arm64.deb",
+      "sha256": "140cc58f0f43543c2e521d93467d09a0e9f58cbe1fb22b5a8ca7dc75fd0e5857",
+      "size": 4909604,
+      "package": "libgl1-mesa-dri",
+      "version": "18.3.6-2+deb10u1",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/m/mesa/libglapi-mesa_18.3.6-2+deb10u1_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libglapi-mesa_18.3.6-2+deb10u1_arm64.deb",
+      "sha256": "7407e0533ed4bd7e1254b1f0f992ef4859121cb4e14eba64ae59e7e8c2fd5f48",
+      "size": 74768,
+      "package": "libglapi-mesa",
+      "version": "18.3.6-2+deb10u1",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libg/libglvnd/libgles2_1.1.0-1_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libgles2_1.1.0-1_arm64.deb",
+      "sha256": "b97d9afedf79d0cd39b11ab216c0f1a19475df0514e87846da3a07f731819229",
+      "size": 19812,
+      "package": "libgles2",
+      "version": "1.1.0-1",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libg/libglvnd/libglvnd0_1.1.0-1_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libglvnd0_1.1.0-1_arm64.deb",
+      "sha256": "13d2616b670c03bf0868e35903c53d805af0db236d55b81d7d3f026b85219076",
+      "size": 42440,
+      "package": "libglvnd0",
+      "version": "1.1.0-1",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/l/llvm-toolchain-7/libllvm7_7.0.1-8+deb10u2_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libllvm7_7.0.1-8+deb10u2_arm64.deb",
+      "sha256": "54e5e6a1d8c3f795dae9e7e20695d6294dbd5ecce05aeb1d20d871098d23fb00",
+      "size": 10804796,
+      "package": "libllvm7",
+      "version": "1:7.0.1-8+deb10u2",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/l/lm-sensors/libsensors-config_3.5.0-3_all.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libsensors-config_3.5.0-3_all.deb",
+      "sha256": "a064dbafa1590562e979852aca9802fc10ecfb6fda5403369c903fb38fa9802a",
+      "size": 31568,
+      "package": "libsensors-config",
+      "version": "1:3.5.0-3",
+      "architecture": "all"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/l/lm-sensors/libsensors5_3.5.0-3_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libsensors5_3.5.0-3_arm64.deb",
+      "sha256": "082792b207b72b6720ca0f5b9211a788c299c9359ec14d4cf95c01642bba2ef7",
+      "size": 51828,
+      "package": "libsensors5",
+      "version": "1:3.5.0-3",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/n/ncurses/libtinfo6_6.1+20181013-2+deb10u2_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libtinfo6_6.1+20181013-2+deb10u2_arm64.deb",
+      "sha256": "1b0533fcee638b5c76a07fb6ce3a64e6cb67d5e81574d6541486c0b2130430d5",
+      "size": 320920,
+      "package": "libtinfo6",
+      "version": "6.1+20181013-2+deb10u2",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/w/wayland/libwayland-client0_1.16.0-1_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libwayland-client0_1.16.0-1_arm64.deb",
+      "sha256": "5ca2a549f9ca51016a155227583ee4e1bb8fa065384f5c664bd286565220cac9",
+      "size": 25880,
+      "package": "libwayland-client0",
+      "version": "1.16.0-1",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/w/wayland/libwayland-egl1_1.16.0-1_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libwayland-egl1_1.16.0-1_arm64.deb",
+      "sha256": "4c217c64043e254f0385da167ddbff9332f9e7b6bacc1a259f6f94008582dbf8",
+      "size": 8188,
+      "package": "libwayland-egl1",
+      "version": "1.16.0-1",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/w/wayland/libwayland-server0_1.16.0-1_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libwayland-server0_1.16.0-1_arm64.deb",
+      "sha256": "26b0676cc7471ec928b8ee5104543908ba7a8826687ba3c620457a0af128bc7d",
+      "size": 31780,
+      "package": "libwayland-server0",
+      "version": "1.16.0-1",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libx/libx11/libx11-xcb1_1.6.7-1+deb10u2_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libx11-xcb1_1.6.7-1+deb10u2_arm64.deb",
+      "sha256": "9d12ec860a8c9fb60259a507f7cdcd014ed84a3621a6102afbec26d8a54b5366",
+      "size": 190876,
+      "package": "libx11-xcb1",
+      "version": "2:1.6.7-1+deb10u2",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libx/libxau/libxau6_1.0.8-1+b2_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libxau6_1.0.8-1+b2_arm64.deb",
+      "sha256": "8cd53255084f15705a998ee199d01b5b44568a53f01a0822919f6cccb56e6703",
+      "size": 19310,
+      "package": "libxau6",
+      "version": "1:1.0.8-1+b2",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libx/libxcb/libxcb-dri2-0_1.13.1-2_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libxcb-dri2-0_1.13.1-2_arm64.deb",
+      "sha256": "1dd6c01eccb727a8a4f1fd3803f47d30e4afbcb81437c2ced620c4bef0440d20",
+      "size": 100540,
+      "package": "libxcb-dri2-0",
+      "version": "1.13.1-2",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libx/libxcb/libxcb-dri3-0_1.13.1-2_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libxcb-dri3-0_1.13.1-2_arm64.deb",
+      "sha256": "9675a32d790df192270ea18ea2cd7a453ca8bd489b73dfdd6767c26f4206f38e",
+      "size": 100240,
+      "package": "libxcb-dri3-0",
+      "version": "1.13.1-2",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libx/libxcb/libxcb-present0_1.13.1-2_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libxcb-present0_1.13.1-2_arm64.deb",
+      "sha256": "4aa1de559ae8f65e3d7e07718be410929560d41a138b112435198006ed6f1c08",
+      "size": 99132,
+      "package": "libxcb-present0",
+      "version": "1.13.1-2",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libx/libxcb/libxcb-sync1_1.13.1-2_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libxcb-sync1_1.13.1-2_arm64.deb",
+      "sha256": "293af47784126110fdbfbed162f165fd765157c013279ae941d822b21529ca9b",
+      "size": 102492,
+      "package": "libxcb-sync1",
+      "version": "1.13.1-2",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libx/libxcb/libxcb-xfixes0_1.13.1-2_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libxcb-xfixes0_1.13.1-2_arm64.deb",
+      "sha256": "fb53f8d7f9cad16b639ba984e316900768dd8979331311390c3c2a241470a95a",
+      "size": 102836,
+      "package": "libxcb-xfixes0",
+      "version": "1.13.1-2",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libx/libxcb/libxcb1_1.13.1-2_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libxcb1_1.13.1-2_arm64.deb",
+      "sha256": "3af53969325fb8613b9a01b5cb481efb017fd8c0a3d01ec1bc4b8e8f77732a54",
+      "size": 134704,
+      "package": "libxcb1",
+      "version": "1.13.1-2",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libx/libxdmcp/libxdmcp6_1.1.2-3_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libxdmcp6_1.1.2-3_arm64.deb",
+      "sha256": "e92569ac33247261aa09adfadc34ced3994ac301cf8b58de415a2d5dbf15ccfc",
+      "size": 25358,
+      "package": "libxdmcp6",
+      "version": "1:1.1.2-3",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/libx/libxshmfence/libxshmfence1_1.3-1_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/libxshmfence1_1.3-1_arm64.deb",
+      "sha256": "fa2edaae6902681ecd02534dcdf8389ac48714d3385d572cc17747160957acc8",
+      "size": 8712,
+      "package": "libxshmfence1",
+      "version": "1.3-1",
+      "architecture": "arm64"
+    },
+    {
+      "url": "https://archive.debian.org/debian/pool/main/z/zlib/zlib1g_1.2.11.dfsg-1+deb10u1_arm64.deb",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/cache/zlib1g_1.2.11.dfsg-1+deb10u1_arm64.deb",
+      "sha256": "efb684b7738ccbe3bce2a72c18f124224b1afe1d724011f21f2295b5afbf74b2",
+      "size": 88308,
+      "package": "zlib1g",
+      "version": "1:1.2.11.dfsg-1+deb10u1",
+      "architecture": "arm64"
+    }
+  ],
+  "members": [
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libbsd.so.0.9.1",
+      "package": "libbsd0",
+      "size": 84208,
+      "sha256": "5958b4bb068c251e7daf0f37cc148bc26ffa37b7839d18a2431f51a7ff2d2961",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libbsd0/copyright",
+      "package": "libbsd0",
+      "size": 25857,
+      "sha256": "df6d8e1b5b3a5b06376c658c8ad3afc82687f1c0e0404cec4738ad14b2675708",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libdrm_amdgpu.so.1.0.0",
+      "package": "libdrm-amdgpu1",
+      "size": 35128,
+      "sha256": "d0fecb742993dbf8d64a146ba812f3b3e97a5efce2e12b6896efe89fe0c56060",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libdrm-amdgpu1/copyright",
+      "package": "libdrm-amdgpu1",
+      "size": 15612,
+      "sha256": "512c9a57fd8b449aa157351da9df07bf8e19f767e496a72205a4020268ddb2e0",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libdrm-common/copyright",
+      "package": "libdrm-common",
+      "size": 15612,
+      "sha256": "512c9a57fd8b449aa157351da9df07bf8e19f767e496a72205a4020268ddb2e0",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libdrm_etnaviv.so.1.0.0",
+      "package": "libdrm-etnaviv1",
+      "size": 22696,
+      "sha256": "aed6ada648e678d97245d6149f17b0a7b761ebd7b827b83fb5bb43cc4b531b27",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libdrm-etnaviv1/copyright",
+      "package": "libdrm-etnaviv1",
+      "size": 15612,
+      "sha256": "512c9a57fd8b449aa157351da9df07bf8e19f767e496a72205a4020268ddb2e0",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libdrm_nouveau.so.2.0.0",
+      "package": "libdrm-nouveau2",
+      "size": 30944,
+      "sha256": "65c125f631988f6ee60f7847eb36aa3c53a11863621039084c7b3faaa2229b40",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libdrm-nouveau2/copyright",
+      "package": "libdrm-nouveau2",
+      "size": 15612,
+      "sha256": "512c9a57fd8b449aa157351da9df07bf8e19f767e496a72205a4020268ddb2e0",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libdrm_radeon.so.1.0.1",
+      "package": "libdrm-radeon1",
+      "size": 47224,
+      "sha256": "125d4cdec101502d6b2441f21edb9226301280d0281a65464d92b602178d8e95",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libdrm-radeon1/copyright",
+      "package": "libdrm-radeon1",
+      "size": 15612,
+      "sha256": "512c9a57fd8b449aa157351da9df07bf8e19f767e496a72205a4020268ddb2e0",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libdrm.so.2.4.0",
+      "package": "libdrm2",
+      "size": 72384,
+      "sha256": "d3ec1e3d2aa6c6c31f30a79035a505a605ec4e425e54203914a8419e009bf604",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libdrm2/copyright",
+      "package": "libdrm2",
+      "size": 15612,
+      "sha256": "512c9a57fd8b449aa157351da9df07bf8e19f767e496a72205a4020268ddb2e0",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libedit.so.2.0.59",
+      "package": "libedit2",
+      "size": 204312,
+      "sha256": "4c54f4ab9abc65cb1669cf99dbbe02e86edb6ea0e4f6d8c3673b1baf84358d1e",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libedit2/copyright",
+      "package": "libedit2",
+      "size": 1840,
+      "sha256": "2b53671050f6319be6fcdcafa434e8ccb8af629359b4afc83185867204f3927d",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libEGL_mesa.so.0.0.0",
+      "package": "libegl-mesa0",
+      "size": 254920,
+      "sha256": "bb6c0129f094a0683d63990dc94ca6a729be14eb3404f2215ffeaffc5db86756",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libegl-mesa0/copyright",
+      "package": "libegl-mesa0",
+      "size": 12912,
+      "sha256": "ce929149a990254cac8861a18cb9c105580c64f0a3cfb2f873aa3ac38ff9ee0e",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/glvnd/egl_vendor.d/50_mesa.json",
+      "package": "libegl-mesa0",
+      "size": 105,
+      "sha256": "cd3881df4227c13ca7f9cfe6c78820f21d5f7a00a41b299214f6f827e63be369",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libEGL.so.1.1.0",
+      "package": "libegl1",
+      "size": 80392,
+      "sha256": "f491a577f881a9f4adcce5fe38160ebfb29fcb322922afdf817df8aec84cb4fd",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libegl1/copyright",
+      "package": "libegl1",
+      "size": 4697,
+      "sha256": "ac46af725b407445f63c9c88a36b46a58476583c586677bf5f0b4b8f32dc3c5b",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libelf-0.176.so",
+      "package": "libelf1",
+      "size": 113144,
+      "sha256": "08232d23973f9b1dca053580783929fa8437f7e928ed3fc6c4cb2e72f7373cd4",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libelf1/copyright",
+      "package": "libelf1",
+      "size": 2601,
+      "sha256": "e03e3eeebf5cf6553fef2001e3ff1b7cac0ee878dec48344ccfacea73eeb89df",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "lib/aarch64-linux-gnu/libexpat.so.1.6.8",
+      "package": "libexpat1",
+      "size": 190536,
+      "sha256": "0de98806bdf06f268698a37f89826da646afdadb319abce61bf022aeb33b0f8c",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libexpatw.so.1.6.8",
+      "package": "libexpat1",
+      "size": 194632,
+      "sha256": "0718dc33ae0b702824557751ffa60554087dc8dd077d190b3f4795e3c19c9b87",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libexpat1/copyright",
+      "package": "libexpat1",
+      "size": 1755,
+      "sha256": "15721756f0bdfd8fb83d3ae9fd9f76ceb3285b0ecacb0532a547e9e2f324c35c",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libffi.so.6.0.4",
+      "package": "libffi6",
+      "size": 31016,
+      "sha256": "0bb7bd6e3db2dda8cbf500c09f3f8854287558454837aedcd4ef12e470d80f34",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libffi6/copyright",
+      "package": "libffi6",
+      "size": 3440,
+      "sha256": "7258c8acc378030d8dbe1fcdf394e915769fa31dcbaf3d2991d9a79891f3bcdc",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libgbm.so.1.0.0",
+      "package": "libgbm1",
+      "size": 60272,
+      "sha256": "b0c46d38bf8dd985d8ad0dba33e2a44371017857cd60c83c15a605df55f01b59",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libgbm1/copyright",
+      "package": "libgbm1",
+      "size": 12912,
+      "sha256": "ce929149a990254cac8861a18cb9c105580c64f0a3cfb2f873aa3ac38ff9ee0e",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/dri/kms_swrast_dri.so",
+      "package": "libgl1-mesa-dri",
+      "size": 12629320,
+      "sha256": "0ae40c63e9b77d6f8cd8e40c4464c3397932b4111ddd4753e266cb9eb8beccd9",
+      "original_tar_type": "1"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/dri/swrast_dri.so",
+      "package": "libgl1-mesa-dri",
+      "size": 12629320,
+      "sha256": "0ae40c63e9b77d6f8cd8e40c4464c3397932b4111ddd4753e266cb9eb8beccd9",
+      "original_tar_type": "1"
+    },
+    {
+      "path": "usr/share/doc/libgl1-mesa-dri/copyright",
+      "package": "libgl1-mesa-dri",
+      "size": 12912,
+      "sha256": "ce929149a990254cac8861a18cb9c105580c64f0a3cfb2f873aa3ac38ff9ee0e",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libglapi.so.0.0.0",
+      "package": "libglapi-mesa",
+      "size": 272552,
+      "sha256": "e780293829598c7b191d0a04ac9808dec1d838a109892db6e6c7c5bee7e54e3e",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libglapi-mesa/copyright",
+      "package": "libglapi-mesa",
+      "size": 12912,
+      "sha256": "ce929149a990254cac8861a18cb9c105580c64f0a3cfb2f873aa3ac38ff9ee0e",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libGLESv2.so.2.1.0",
+      "package": "libgles2",
+      "size": 157936,
+      "sha256": "3928b02343ffda4be866b712d8cb390f3cc26d686891c6b44f8f15a87478a42a",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libgles2/copyright",
+      "package": "libgles2",
+      "size": 4697,
+      "sha256": "ac46af725b407445f63c9c88a36b46a58476583c586677bf5f0b4b8f32dc3c5b",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libGLdispatch.so.0.0.0",
+      "package": "libglvnd0",
+      "size": 1042752,
+      "sha256": "1c8ab011ee154fbec9ce77a2499c708e543369d11dc8fcb8b87f57c8ca8b9121",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libglvnd0/copyright",
+      "package": "libglvnd0",
+      "size": 4697,
+      "sha256": "ac46af725b407445f63c9c88a36b46a58476583c586677bf5f0b4b8f32dc3c5b",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libLLVM-7.so.1",
+      "package": "libllvm7",
+      "size": 53723280,
+      "sha256": "89ab1cf579d92647396a22dbe26285c8daef26deddba776810bc1661a4f10529",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libllvm7/copyright",
+      "package": "libllvm7",
+      "size": 20661,
+      "sha256": "49e1cfbef01062e701446eee7d8b7e6d8d99bc989522a01f689f6026e21d074d",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libsensors-config/copyright",
+      "package": "libsensors-config",
+      "size": 2907,
+      "sha256": "ecdfb02781fb442f1de838cb58c424a7b31683c9c96daee740548c0522428676",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libsensors.so.5.0.0",
+      "package": "libsensors5",
+      "size": 63832,
+      "sha256": "3786f96817041e765ab3b7456d27f78d573625de4e450759c21c3feb77a570f0",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libsensors5/copyright",
+      "package": "libsensors5",
+      "size": 2907,
+      "sha256": "ecdfb02781fb442f1de838cb58c424a7b31683c9c96daee740548c0522428676",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "lib/aarch64-linux-gnu/libtinfo.so.6.1",
+      "package": "libtinfo6",
+      "size": 187528,
+      "sha256": "b509b40b7de377c928d5275a21bbb42872236fbf193cb40039b1c9b8586e3748",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libtic.so.6.1",
+      "package": "libtinfo6",
+      "size": 63400,
+      "sha256": "5b78c40accbd4d99c453fc2f7f6e9fb3b38eeee1658b1a882e38221571085f06",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libtinfo6/copyright",
+      "package": "libtinfo6",
+      "size": 6366,
+      "sha256": "5e8ee902c8906ddb7779fd36dc9979cb08b51fbebf7c0b1a9aeb78af382af590",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libwayland-client.so.0.3.0",
+      "package": "libwayland-client0",
+      "size": 60624,
+      "sha256": "2d9a8d70f84e39beedfc6e0dbcb48bf302a40fbf1e7341f2532532d59d6c4326",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libwayland-client0/copyright",
+      "package": "libwayland-client0",
+      "size": 1829,
+      "sha256": "3a943debedeac62002ce65da7a9b647875612c3d45840f0b001ae27fb76522a6",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libwayland-egl.so.1.0.0",
+      "package": "libwayland-egl1",
+      "size": 5944,
+      "sha256": "74b8fa8a97b8a51a655b56f0e6b2bcf029df9370fd218224536488014a6ab287",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libwayland-egl1/copyright",
+      "package": "libwayland-egl1",
+      "size": 1829,
+      "sha256": "3a943debedeac62002ce65da7a9b647875612c3d45840f0b001ae27fb76522a6",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libwayland-server.so.0.1.0",
+      "package": "libwayland-server0",
+      "size": 77256,
+      "sha256": "1dace9423463eaff040f53035fc96b9b16fa23c242bae3355703c5741bf44dbf",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libwayland-server0/copyright",
+      "package": "libwayland-server0",
+      "size": 1829,
+      "sha256": "3a943debedeac62002ce65da7a9b647875612c3d45840f0b001ae27fb76522a6",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libX11-xcb.so.1.0.0",
+      "package": "libx11-xcb1",
+      "size": 5928,
+      "sha256": "9fd97baa200ee503c47d2d6f71ec91bc195a56d2e0091a86a3def66932027771",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libx11-xcb1/copyright",
+      "package": "libx11-xcb1",
+      "size": 47102,
+      "sha256": "0b380a7fd5b2228f26e9585e56f14812efd3350f3df307507d2bc055dfd8de3e",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libXau.so.6.0.0",
+      "package": "libxau6",
+      "size": 10280,
+      "sha256": "433de0cc7381b16e1b400ffedb3fb05d8df5b814d92dd99f72c801c2bf38118e",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libxau6/copyright",
+      "package": "libxau6",
+      "size": 1223,
+      "sha256": "d311410a8af7cfb1b16ae2d22765641ba4e2a1a9431f229f59326bca0f99cdac",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libxcb-dri2.so.0.0.0",
+      "package": "libxcb-dri2-0",
+      "size": 18424,
+      "sha256": "77ac0a76c4b7b7d14b7bf00ce88ec4894777493a9ca7b9c059539119318086e5",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libxcb-dri2-0/copyright",
+      "package": "libxcb-dri2-0",
+      "size": 1781,
+      "sha256": "4f7cb9db6bf6542f5417e3d674c780d3a5fd12291a54d63054fb576ee0cfae80",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libxcb-dri3.so.0.0.0",
+      "package": "libxcb-dri3-0",
+      "size": 14352,
+      "sha256": "f89544cf74441c8904473eb2b2d6588c2d550bb7adf3f32fc5bee446929132d9",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libxcb-dri3-0/copyright",
+      "package": "libxcb-dri3-0",
+      "size": 1781,
+      "sha256": "4f7cb9db6bf6542f5417e3d674c780d3a5fd12291a54d63054fb576ee0cfae80",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libxcb-present.so.0.0.0",
+      "package": "libxcb-present0",
+      "size": 10216,
+      "sha256": "e6662e6bf49c848d113695711d7d67279b530b139f857efb5f3409ee12edcba8",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libxcb-present0/copyright",
+      "package": "libxcb-present0",
+      "size": 1781,
+      "sha256": "4f7cb9db6bf6542f5417e3d674c780d3a5fd12291a54d63054fb576ee0cfae80",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libxcb-sync.so.1.0.0",
+      "package": "libxcb-sync1",
+      "size": 26688,
+      "sha256": "77dc84d52981ce0e174451f1c4269642a420c72f7a5a5c3336025426cf0be272",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libxcb-sync1/copyright",
+      "package": "libxcb-sync1",
+      "size": 1781,
+      "sha256": "4f7cb9db6bf6542f5417e3d674c780d3a5fd12291a54d63054fb576ee0cfae80",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libxcb-xfixes.so.0.0.0",
+      "package": "libxcb-xfixes0",
+      "size": 30704,
+      "sha256": "94dcb524f71d83f236914c10c822360afccf2db9732062017d7010762e10ecdc",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libxcb-xfixes0/copyright",
+      "package": "libxcb-xfixes0",
+      "size": 1781,
+      "sha256": "4f7cb9db6bf6542f5417e3d674c780d3a5fd12291a54d63054fb576ee0cfae80",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libxcb.so.1.1.0",
+      "package": "libxcb1",
+      "size": 158568,
+      "sha256": "2211a1981a5ba0fb63783c7292bd5d0d5cec92efe38d4d52a8346c5f87031804",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libxcb1/copyright",
+      "package": "libxcb1",
+      "size": 1781,
+      "sha256": "4f7cb9db6bf6542f5417e3d674c780d3a5fd12291a54d63054fb576ee0cfae80",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libXdmcp.so.6.0.0",
+      "package": "libxdmcp6",
+      "size": 22576,
+      "sha256": "cff589ca553d339123ba32528cdf45f071761624aef1ebb4b3970fe9180b7e3b",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libxdmcp6/copyright",
+      "package": "libxdmcp6",
+      "size": 1265,
+      "sha256": "1bcbb50f8603fe8b86d330bfa460b772ea04fbd3c70e4499f0768b5340b9fd6e",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libxshmfence.so.1.0.0",
+      "package": "libxshmfence1",
+      "size": 10104,
+      "sha256": "9d5f0d1a96550d66fdc8a0a88903dcf21219971dad40ab32e06080df56f4b50c",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/libxshmfence1/copyright",
+      "package": "libxshmfence1",
+      "size": 1215,
+      "sha256": "6a76b32c9174c0cb9e3d94c323a14d33d6a42bd2a61579b189cbc5addeb94abe",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "lib/aarch64-linux-gnu/libz.so.1.2.11",
+      "package": "zlib1g",
+      "size": 108920,
+      "sha256": "c04232295eea718750a414fbaa4110973a31bda9c4a021e2166589c748ebc5cb",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/share/doc/zlib1g/copyright",
+      "package": "zlib1g",
+      "size": 2920,
+      "sha256": "d77204eee882807240f6351c4f5ae2a4bcdb5b773ff77d10647b9b66b826b2fb",
+      "original_tar_type": "0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libmali.so.0",
+      "package": "local-loader-bridge",
+      "size": 2736,
+      "sha256": "7711e75f0ae1062dd04decc4c5c94a2ae79727dc0b1be7818baa84a05910a673"
+    }
+  ],
+  "links": [
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libbsd.so.0",
+      "target": "libbsd.so.0.9.1",
+      "package": "libbsd0",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libdrm_amdgpu.so.1",
+      "target": "libdrm_amdgpu.so.1.0.0",
+      "package": "libdrm-amdgpu1",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libdrm_etnaviv.so.1",
+      "target": "libdrm_etnaviv.so.1.0.0",
+      "package": "libdrm-etnaviv1",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libdrm_nouveau.so.2",
+      "target": "libdrm_nouveau.so.2.0.0",
+      "package": "libdrm-nouveau2",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libdrm_radeon.so.1",
+      "target": "libdrm_radeon.so.1.0.1",
+      "package": "libdrm-radeon1",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libdrm.so.2",
+      "target": "libdrm.so.2.4.0",
+      "package": "libdrm2",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libedit.so.2",
+      "target": "libedit.so.2.0.59",
+      "package": "libedit2",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libEGL_mesa.so.0",
+      "target": "libEGL_mesa.so.0.0.0",
+      "package": "libegl-mesa0",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libEGL.so.1",
+      "target": "libEGL.so.1.1.0",
+      "package": "libegl1",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libelf.so.1",
+      "target": "libelf-0.176.so",
+      "package": "libelf1",
+      "type": "symlink"
+    },
+    {
+      "path": "lib/aarch64-linux-gnu/libexpat.so.1",
+      "target": "libexpat.so.1.6.8",
+      "package": "libexpat1",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libexpatw.so.1",
+      "target": "libexpatw.so.1.6.8",
+      "package": "libexpat1",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libffi.so.6",
+      "target": "libffi.so.6.0.4",
+      "package": "libffi6",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libgbm.so.1",
+      "target": "libgbm.so.1.0.0",
+      "package": "libgbm1",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libglapi.so.0",
+      "target": "libglapi.so.0.0.0",
+      "package": "libglapi-mesa",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libGLESv2.so.2",
+      "target": "libGLESv2.so.2.1.0",
+      "package": "libgles2",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libGLdispatch.so.0",
+      "target": "libGLdispatch.so.0.0.0",
+      "package": "libglvnd0",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libLLVM-7.so",
+      "target": "libLLVM-7.so.1",
+      "package": "libllvm7",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libsensors.so.5",
+      "target": "libsensors.so.5.0.0",
+      "package": "libsensors5",
+      "type": "symlink"
+    },
+    {
+      "path": "lib/aarch64-linux-gnu/libtinfo.so.6",
+      "target": "libtinfo.so.6.1",
+      "package": "libtinfo6",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libtic.so.6",
+      "target": "libtic.so.6.1",
+      "package": "libtinfo6",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libwayland-client.so.0",
+      "target": "libwayland-client.so.0.3.0",
+      "package": "libwayland-client0",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libwayland-egl.so.1",
+      "target": "libwayland-egl.so.1.0.0",
+      "package": "libwayland-egl1",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libwayland-server.so.0",
+      "target": "libwayland-server.so.0.1.0",
+      "package": "libwayland-server0",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libX11-xcb.so.1",
+      "target": "libX11-xcb.so.1.0.0",
+      "package": "libx11-xcb1",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libXau.so.6",
+      "target": "libXau.so.6.0.0",
+      "package": "libxau6",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libxcb-dri2.so.0",
+      "target": "libxcb-dri2.so.0.0.0",
+      "package": "libxcb-dri2-0",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libxcb-dri3.so.0",
+      "target": "libxcb-dri3.so.0.0.0",
+      "package": "libxcb-dri3-0",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libxcb-present.so.0",
+      "target": "libxcb-present.so.0.0.0",
+      "package": "libxcb-present0",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libxcb-sync.so.1",
+      "target": "libxcb-sync.so.1.0.0",
+      "package": "libxcb-sync1",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libxcb-xfixes.so.0",
+      "target": "libxcb-xfixes.so.0.0.0",
+      "package": "libxcb-xfixes0",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libxcb.so.1",
+      "target": "libxcb.so.1.1.0",
+      "package": "libxcb1",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libXdmcp.so.6",
+      "target": "libXdmcp.so.6.0.0",
+      "package": "libxdmcp6",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libxshmfence.so.1",
+      "target": "libxshmfence.so.1.0.0",
+      "package": "libxshmfence1",
+      "type": "symlink"
+    },
+    {
+      "path": "lib/aarch64-linux-gnu/libz.so.1",
+      "target": "libz.so.1.2.11",
+      "package": "zlib1g",
+      "type": "symlink"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libmali.so",
+      "target": "libmali.so.0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libEGL_adreno.so",
+      "target": "libmali.so.0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libGLESv2_adreno.so",
+      "target": "libmali.so.0"
+    },
+    {
+      "path": "usr/lib/aarch64-linux-gnu/libwaylandegl.so.1",
+      "target": "libmali.so.0"
+    }
+  ],
+  "runtime_archive": {
+    "path": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/mesa/mesa-runtime.tar.gz",
+    "bytes": 30107307,
+    "sha256": "488d7b53e3b6b1e231dd81bb155fd71d010eef42d862ad2e322388aae504ecdf"
+  },
+  "actual_tree_bytes": 113156339
+}

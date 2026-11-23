@@ -1,0 +1,17 @@
+{
+  "qemu": "/Users/diwen/code/MEB-EMU/runtime/darwin/qemu-system-aarch64",
+  "qemu_data": "/Users/diwen/code/MEB-EMU/.local/build/darwin/qemu-11.1.0/pc-bios",
+  "kernel": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/alpine/vmlinuz-virt",
+  "initramfs": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/alpine/initramfs-virt",
+  "modules": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/alpine/modloop-virt",
+  "firmware_root": "/Users/diwen/code/MEB-EMU/var/inputs/analysis/cpu/ivi/icas3cn-gp-image-euto-v9.ext4",
+  "firmware_hmi": "/Users/diwen/code/MEB-EMU/var/inputs/hmi/vw-restored/vw-hmi.ext4",
+  "hmi_jar": "/Users/diwen/code/MEB-EMU/src/hvf_bench/local/compile/hmi.jar",
+  "osgi_jar": "/Users/diwen/code/MEB-EMU/src/hvf_bench/local/compile/osgi.jar",
+  "adapter_jar": "/Users/diwen/code/MEB-EMU/src/hvf_bench/build/bench-platform.jar",
+  "mesa_archive": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/mesa/mesa-runtime.tar.gz",
+  "egl_bridge": "/Users/diwen/code/MEB-EMU/src/hvf_bench/build/libegl-forward-bridge.so",
+  "novnc": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/novnc",
+  "output": "/Users/diwen/code/MEB-EMU/var/hvf",
+  "firmware_custom": "/Users/diwen/code/MEB-EMU/var/inputs/support/vw-verity-native/overlay-verity/lg-custom.ext4"
+}

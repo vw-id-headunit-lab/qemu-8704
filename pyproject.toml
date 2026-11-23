@@ -1,0 +1,12 @@
+[project]
+name = "meb-emu"
+version = "0.1.0.dev1"
+description = "Windows Exynos Auto9 emulation preview with private OEM firmware inputs"
+requires-python = ">=3.14"
+license = {file = "LICENSE"}
+
+[tool.meb-emu]
+release = "0.1.0-preview.1"
+entry = "MEB-EMU.ps1"
+private-inputs = "var/inputs"
+runtime-output = "var/sessions"

@@ -1,0 +1,45 @@
+{
+  "profile": "original-hmi-egl-v1",
+  "assets": {
+    "host": {
+      "path": "runtime/darwin/gl-host",
+      "sha256": "c62c9a357d160033b56d498e46420ea32538e6c6e584e4c7512d14b6d96c5ba9",
+      "bytes": 95832
+    },
+    "carrier": {
+      "path": "runtime/darwin/qemu-system-aarch64",
+      "sha256": "23d65f79bfecad61cc5b1bea8a28ad5a20326375e7c50d926f8293b313f82db7",
+      "bytes": 37717856
+    },
+    "agent": {
+      "path": "runtime/guest/hmi-agent",
+      "bytes": 47720,
+      "sha256": "807e313942e1a8e0219b5d2893c8737c286aaaa965136f727baf5c9334a9d7fd"
+    },
+    "library": {
+      "path": "runtime/guest/liboem_gl_forward.so",
+      "bytes": 289944,
+      "sha256": "f91abf539d333f6c2210973936a02dcee1d2a693977c289b6eba924b44725ccf"
+    },
+    "jni": {
+      "path": "var/inputs/derived/hmi/jni.so",
+      "sha256": "cdfd296a12bad68dbf2418435741f4d18157ef8763136c8c2f6ec08491ea0554",
+      "bytes": 268184
+    },
+    "font": {
+      "path": "var/inputs/derived/hmi/font.so",
+      "sha256": "554bbc72f3973f474668bde0756dbb1f3d79a75e5b3cd3d50ef4a8de3d91d474",
+      "bytes": 115136
+    },
+    "java": {
+      "path": "var/inputs/derived/hmi/java",
+      "sha256": "5e23d0e3d9517655a09d299c829eca0272de5a6da351e56f30fb096b72b1ed92",
+      "bytes": 78176
+    },
+    "java_rollback": {
+      "path": "var/inputs/derived/hmi/java-rollback",
+      "sha256": "b3db9b25a18c8b29da3cbdf60b0a7561b2df6c83473b55766866849d6cc4344a",
+      "bytes": 6320
+    }
+  }
+}

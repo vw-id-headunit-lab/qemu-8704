@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# See docs/devel/tracing.rst for syntax documentation.
+
+# gicv5-cpuif.c
+gicv5_recalc_ppi_hppi(int domain, uint32_t id, uint8_t prio) "domain %d new PPI HPPI id 0x%x prio %u"
+gicv5_gicr_cdia_fail(int domain, const char *reason) "domain %d CDIA attempt failed: %s"
+gicv5_gicr_cdia(int domain, uint32_t id) "domain %d CDIA acknowledge of interrupt 0x%x"
+gicv5_cdeoi(int domain) "domain %d CDEOI performing priority drop"
+gicv5_cddi(int domain, uint32_t id) "domain %d CDDI deactivating interrupt ID 0x%x"
+gicv5_update_irq_fiq(bool irq, bool fiq, bool nmi) "now IRQ %d FIQ %d NMI %d"
+gicv5_update_ppi_state(int ppi, bool level) "PPI %d source level now %d"
+
+# Read-only classification of original QNX TEE boot calls.
+auto9_qnx_tee_edge(int cpu, uint32_t call, int el, const char *route) "cpu=%d call=0x%x el=%d route=%s"
+# Original VM3 Linux kernel signal frame input for the HMI JVM.
+auto9_vm3_hmi_signal(int cpu, unsigned seq, uint32_t tgid, uint32_t tid, unsigned sig, int32_t code, uint64_t pc, uint64_t addr) "cpu=%d seq=%u tgid=%u tid=%u sig=%u code=%d pc=0x%"PRIx64" addr=0x%"PRIx64
+auto9_vm3_kipc_watch(int cpu, unsigned seq, const char *edge, unsigned src, unsigned dst, const char *kind) "cpu=%d seq=%u edge=%s src=%u dst=%u kind=%s"

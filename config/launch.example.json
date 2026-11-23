@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "environment": {
+    "OEM_8704_OFFLINE_DEVELOPMENT": "android-private-unencrypted-v1",
+    "OEM_8704_NATIVE_LIFETIME": "until-stop-v1",
+    "OEM_8704_ISOLATED_LINUX_UART": "4",
+    "OEM_8704_VM3_SECOND_BANK": "original-b0-v1",
+    "OEM_8704_OFFLINE_BASE_RAM": "file-v1",
+    "OEM_8704_NATIVE_WALL_CLOCK": "half-v1",
+    "OEM_8704_GL_FORWARD_BOOT": "original-hmi-egl-v1",
+    "OEM_8704_OFFLINE_KEYSTORE": "stock-software-v1"
+  },
+  "arguments": {
+    "Native": true,
+    "NoBrowser": true,
+    "NativeWindow": true,
+    "Seconds": 240,
+    "Port": 18740,
+    "ConsolePort": 32228,
+    "NativeParallelTcg": true,
+    "NativeStockWeston": true,
+    "LinuxDataFrom": "var/inputs/seeds/linux",
+    "LinuxHmiInstallMedia": "var/inputs/hmi/install-overlay/result.json",
+    "QnxDataFrom": "var/inputs/seeds/qnx"
+  }
+}

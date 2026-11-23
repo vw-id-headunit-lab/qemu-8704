@@ -1,0 +1,14 @@
+{
+  "qemu": "runtime/qemu-system-aarch64.exe",
+  "qemu_img": ".local/deps/bin/qemu-img.exe",
+  "original": "var/inputs/original",
+  "assets": "var/inputs/generated",
+  "sessions": "var/sessions",
+  "ivi_root": "var/inputs/analysis/cpu/ivi/icas3cn-gp-image-euto-v9.ext4",
+  "android_system": "var/inputs/android/system_a.ext4",
+  "android_vendor": "var/inputs/android/vendor_a.ext4",
+  "memory_mib": 2048,
+  "cpus": 2,
+  "http_port": 18740,
+  "serial_byte_delay_ms": 3
+}
