@@ -19,6 +19,7 @@ def build(files, *, odm_files=None, odm_links=None, odm_labels=None):
     if (b'import /oem/offline-dev/init.zygote64_32.rc\n' in files['init.rc'])!=(zygote in files):
         raise ValueError('Unpaired private zygote import and configuration')
     if (odm_files is None)!=(odm_links is None):raise ValueError('Require complete paired private ODM view')
+    if odm_files is None:raise ValueError('Vendor init requires the private ODM view')
     if odm_files is not None:
         required_odm={'NOTICE.xml.gz','build.prop','group','passwd','fstab.offline-dev'}
         routing={'offline-keystore','init/offline-keystore.rc'}
@@ -37,9 +38,8 @@ def build(files, *, odm_files=None, odm_links=None, odm_labels=None):
             raise ValueError('Require exact private software-keymaster VINTF override')
         if set(odm_links)!={'app','bin','firmware','framework','lib','lib64','overlay','priv-app','usr'}:raise ValueError('Incomplete preserved ODM links')
         if any(t!='/vendor/odm/'+n for n,t in odm_links.items()):raise ValueError('Unexpected original ODM link')
-        paths={'/odm','/odm/etc'}|{'/odm/'+n for n in odm_links}|{'/odm/etc/'+n for n in odm_files}
+        paths={'/odm','/odm/etc','/odm/etc/init','/odm/etc/init/offline-vendor.rc'}|{'/odm/'+n for n in odm_links}|{'/odm/etc/'+n for n in odm_files}
         if 'vintf/manifest.xml' in odm_files:paths.add('/odm/etc/vintf')
-        if software_routing:paths.add('/odm/etc/init')
         if odm_labels is None or set(odm_labels)!=paths:raise ValueError('Require complete original ODM SELinux metadata')
         allowed={'vendor_file','vendor_configs_file','vendor_app_file','vendor_framework_file','vendor_overlay_file'}
         for name,context in odm_labels.items():
@@ -81,9 +81,9 @@ def build(files, *, odm_files=None, odm_links=None, odm_labels=None):
             code += [adr('x0',string(target)),'mov x1, #-100',adr('x2',string('/odm/'+name)),'mov x8, #36','svc #0',checked(f'symlink_{i}')]
     if odm_files is not None and 'vintf/manifest.xml' in odm_files:
         code += ['mov x0, #-100',adr('x1',string('/odm/etc/vintf')),'mov x2, #493','mov x8, #34','svc #0',checked('mkdir_vintf')]
-    if odm_files is not None and software_routing:
-        code += ['mov x0, #-100',adr('x1',string('/odm/etc/init')),'mov x2, #493','mov x8, #34','svc #0',checked('mkdir_keystore_init')]
-    writes={'/oem/offline-dev/'+n:(b,0o644)for n,b in files.items()}
+    if odm_files is not None:
+        code += ['mov x0, #-100',adr('x1',string('/odm/etc/init')),'mov x2, #493','mov x8, #34','svc #0',checked('mkdir_vendor_init')]
+    writes={('/odm/etc/init/offline-vendor.rc'if n=='vendor-init.rc'else'/oem/offline-dev/'+n):(b,0o644)for n,b in files.items()}
     if odm_files is not None:writes.update({'/odm/etc/'+n:(b,mode)for n,(b,mode)in odm_files.items()})
     for i,(name,(raw,mode))in enumerate(writes.items()):
         executable=odm_files is not None and software_routing and name=='/odm/etc/offline-keystore'
@@ -130,5 +130,7 @@ def build(files, *, odm_files=None, odm_links=None, odm_labels=None):
     elf=(hdr+ph).ljust(4096,b'\0')+native
     elf=elf.ljust(DATA-BASE,b'\0')+blob
     return bytes(elf),{'sha256':hashlib.sha256(elf).hexdigest(),'code_bytes':len(native),'data_bytes':len(blob),
+      'configuration_paths':list(writes),'vendor_init_script':'/odm/etc/init/offline-vendor.rc',
+      'vendor_init_context':'u:r:vendor_init:s0','selinux_policy_changed':False,
       'asm':asm,'syscalls':{'mount':40,'umount2':39,'mknodat':33,'ioctl':29,'mkdirat':34,'symlinkat':36,'lsetxattr':6,'openat':56,'write':64,'close':57,'execve':221,'exit_group':94},
       'scope':'Explicit offline preinit; no libc, driver emulation, entropy injection, secure-return patch or factory security claim'}

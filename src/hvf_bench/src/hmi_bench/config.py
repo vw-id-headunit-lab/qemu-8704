@@ -12,6 +12,9 @@ PATH_KEYS = (
 )
 
 
+OPTIONAL_PATH_KEYS = ("firmware_navigation", "navigation_data", "navigation_map", "navigation_uplink")
+
+
 @dataclass(frozen=True)
 class Config:
     source: Path
@@ -21,11 +24,11 @@ class Config:
     def load(cls, path: Path | str) -> "Config":
         source = Path(path).expanduser().resolve()
         raw = json.loads(source.read_text(encoding="utf-8-sig"))
-        unknown = set(raw) - set(PATH_KEYS)
+        unknown = set(raw) - set(PATH_KEYS) - set(OPTIONAL_PATH_KEYS)
         if unknown:
             raise ValueError("Unknown configuration keys: " + ", ".join(sorted(unknown)))
         paths = {}
-        for key in PATH_KEYS:
+        for key in PATH_KEYS + tuple(key for key in OPTIONAL_PATH_KEYS if key in raw):
             value = raw.get(key)
             if not isinstance(value, str) or not value.strip():
                 raise ValueError("Missing path setting: " + key)
@@ -44,6 +47,12 @@ class Config:
             required += ["modules", "firmware_root"]
         if mode == "hmi":
             required += ["firmware_hmi", "firmware_custom", "adapter_jar", "mesa_archive", "egl_bridge", "novnc", "qemu_data"]
+        if mode == "hmi" and "firmware_navigation" in self.paths:
+            required += ["firmware_navigation"]
+        if mode == "hmi" and "navigation_map" in self.paths:
+            required += ["navigation_map"]
+        if mode == 'hmi' and 'navigation_uplink' in self.paths:
+            required += ['navigation_uplink']
         return required
 
     def validate(self, mode: str, *, gpu: bool = False) -> None:

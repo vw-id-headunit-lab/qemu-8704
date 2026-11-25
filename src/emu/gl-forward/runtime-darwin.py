@@ -25,12 +25,12 @@ def assets():
 def carrier():return assets()['carrier']
 
 def hmi_payload(inputs):
- run=b'''#!/bin/sh
+ prepare=b'''#!/bin/sh
 set -eu
 r=/run/oem-gl-forward
-exec >"$r/guest.stdout" 2>"$r/guest.stderr"
-chmod 0644 "$r/guest.stdout" "$r/guest.stderr"
-trap 'rc=$?;printf "%s\\n" "$rc" >"$r/guest.exit";chmod 0644 "$r/guest.stdout" "$r/guest.stderr" "$r/guest.exit"' 0
+exec >"$r/prepare.stdout" 2>"$r/prepare.stderr"
+chmod 0644 "$r/prepare.stdout" "$r/prepare.stderr"
+trap 'rc=$?;printf "%s\\n" "$rc" >"$r/prepare.exit";chmod 0644 "$r/prepare.stdout" "$r/prepare.stderr" "$r/prepare.exit"' 0
 n=0
 until grep -q ' /vw ext4 rw[, ]' /proc/mounts;do n=$((n+1));[ "$n" -le 120 ] || exit 82;/bin/sleep 1;done
 d=/vw/oem-gl-forward
@@ -92,7 +92,26 @@ done
 chmod 0644 "$r/hmi-security.stdout"
 mkdir "$r/ipc"
 chmod 0755 "$r/ipc"
-exec "$d/agent"
+printf "ORIGINAL_HMI_PRIVATE_PREPARATION_COMPLETE\\n"
+'''
+ run=b'''#!/bin/sh
+set -eu
+r=/run/oem-gl-forward
+exec >"$r/guest.stdout" 2>"$r/guest.stderr"
+chmod 0644 "$r/guest.stdout" "$r/guest.stderr"
+exec /vw/oem-gl-forward/agent
+'''
+ prepare_unit=b'''[Unit]
+Description=Prepare private original HMI graphics files and labels
+DefaultDependencies=no
+Requires=post-init.service
+After=post-init.service
+Before=oem-gl-forward.service
+[Service]
+Type=oneshot
+ExecStart=/bin/sh /run/oem-gl-forward/prepare
+TimeoutStartSec=600
+RemainAfterExit=yes
 '''
  wrapper=b'''#!/bin/sh
 export OEM_8704_GL_FORWARD=private-hmi-service-v1
@@ -102,6 +121,8 @@ exec /bin/sh -c '/vw/oem-gl-forward/hmiroot.sh'
  unit=b'''[Unit]
 Description=Private graphics hardware service for original HMI
 DefaultDependencies=no
+Requires=post-init.service oem-gl-prepare.service
+After=post-init.service oem-gl-prepare.service
 [Service]
 Type=notify
 NotifyAccess=all
@@ -116,7 +137,7 @@ After=oem-gl-forward.service
 ExecStart=
 ExecStart=/bin/sh /vw/oem-gl-forward/hmi-entry
 '''
- return dict(agent=inputs['agent'].read_bytes(),library=inputs['library'].read_bytes(),jni=inputs['jni'].read_bytes(),font=inputs['font'].read_bytes(),java=inputs['java'].read_bytes(),java_rollback=inputs['java_rollback'].read_bytes(),run=run,unit=unit,entry=wrapper,dropin=dropin)
+ return dict(agent=inputs['agent'].read_bytes(),library=inputs['library'].read_bytes(),jni=inputs['jni'].read_bytes(),font=inputs['font'].read_bytes(),java=inputs['java'].read_bytes(),java_rollback=inputs['java_rollback'].read_bytes(),run=run,prepare=prepare,prepare_unit=prepare_unit,unit=unit,entry=wrapper,dropin=dropin)
 
 def stage(raw,output):
  from vlm_platform import parse_dtb,rebuild_fdt
@@ -151,7 +172,7 @@ TimeoutStartSec=150
  hmi=PROFILE=='original-hmi-egl-v1'
  payload=hmi_payload(inputs)if hmi else{'agent':inputs['agent'].read_bytes(),'library':inputs['library'].read_bytes(),'fixture':inputs['fixture'].read_bytes(),'run':run,'unit':unit}
  prefix='d=/run/oem-gl-forward;mkdir -p "$d"||exit 80;chmod 0755 "$d"||exit 80;'
- files={'agent':'agent','library':'gfx.so','jni':'libjopengl_es3.so','font':'libFontSPINative.so','java':'java','java_rollback':'java-rollback','run':'run','unit':'unit','entry':'hmi-entry','dropin':'hmi-dropin'}if hmi else{'agent':'agent','library':'liboem_gl_forward.so','fixture':'fixture','run':'run','unit':'unit'}
+ files={'agent':'agent','library':'gfx.so','jni':'libjopengl_es3.so','font':'libFontSPINative.so','java':'java','java_rollback':'java-rollback','run':'run','prepare':'prepare','prepare_unit':'prepare-unit','unit':'unit','entry':'hmi-entry','dropin':'hmi-dropin'}if hmi else{'agent':'agent','library':'liboem_gl_forward.so','fixture':'fixture','run':'run','unit':'unit'}
  hashes={};encodings={};stored_hashes={}
  for name,b in payload.items():
   packed=hmi and b.startswith(b'\x7fELF');stored=gzip.compress(b,mtime=0)if packed else b
@@ -160,11 +181,12 @@ TimeoutStartSec=150
   prefix+='printf "%s  %s\\n" '+h+' "$d/'+files[name]+'"|/usr/bin/sha256sum -c -||exit 80;'
  prefix+='chmod 0755 "$d/agent"'+(''if hmi else' "$d/fixture"')+'||exit 80;mkdir -p /run/systemd/system/basic.target.wants||exit 80;'
  prefix+='cp "$d/unit" /run/systemd/system/oem-gl-forward.service||exit 80;ln -s ../oem-gl-forward.service /run/systemd/system/basic.target.wants/oem-gl-forward.service||exit 80;'
- if hmi:prefix+='mkdir -p /run/systemd/system/vw-hmi.service.d||exit 80;cp "$d/hmi-dropin" /run/systemd/system/vw-hmi.service.d/90-private-graphics.conf||exit 80;'
+ if hmi:prefix+='cp "$d/prepare-unit" /run/systemd/system/oem-gl-prepare.service||exit 80;mkdir -p /run/systemd/system/vw-hmi.service.d||exit 80;cp "$d/hmi-dropin" /run/systemd/system/vw-hmi.service.d/90-private-graphics.conf||exit 80;'
  chosen['oem-stage']=script.replace(b'exec /sbin/init',prefix.encode()+b'exec /sbin/init',1)
  out=rebuild_fdt(data,nodes)
  if len(out)>0x100000 or parse_dtb(out)!=nodes:raise ValueError('GL private DTB exceeds one MiB or differs')
  meta.update(panel_geometry=list(__import__('offline_bench_hmi').panel_geometry())if hmi else None,profile=PROFILE,parent_sha256=hashlib.sha256(raw).hexdigest(),sha256=hashlib.sha256(out).hexdigest(),bytes=len(out),guest_files=files,payload_sha256=hashes,payload_storage_encoding=encodings,payload_storage_sha256=stored_hashes,guest_executable_directory='/vw/oem-gl-forward',original_mount_options_unchanged=True,original_HMI_configuration_changed=False,private_HMI_dropin=hmi)
+ if 'oem-touch-manifest'in chosen:meta['native_touch']=json.loads(chosen['oem-touch-manifest'])
  (Path(output)/'gl-forward-boot.json').write_text(json.dumps(meta,indent=2)+'\n',encoding='utf8')
  return out
 

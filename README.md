@@ -41,6 +41,8 @@ var/inputs/support/abox-dsp-native/virtual-lun0-dsp/ufs-lun0.raw
 
 仓库包含当前启动所需的载体、内核和 Mesa 运行归档；可再生的解包缓存不纳入 Git。重新构建 QEMU 时，源码准备脚本会从 QEMU 官方获取固定版本，并强制校验锁定的 SHA256；这不是 8704 资源下载。Git 克隆和当前预编译载体运行不再依赖 Git LFS。
 
+macOS 日常操作、源码职责和验收边界见 [Mac 运行指南](docs/Mac运行.md)。
+
 ## 历史 Windows 工程预览
 
 **0.1.0-preview.1 · Windows x64 工程预览版**
@@ -58,8 +60,15 @@ Exynos Auto9 模拟器、原厂 Linux／Android／QNX 引导代码、中控原�
 
 - [导入输入与启动](docs/使用.md)
 - [源码与构建](docs/开发.md)
-- [预发布状态](发布状态.md)
+- [预发布状态](docs/发布状态.md)
 - [第三方声明](NOTICE.md)
-- [运行边界](运行边界.md)
+- [运行边界](docs/运行边界.md)
 
 公开包保留 `src/`、`tools/`、`native/`、`runtime/`、`config/`、`tests/`、`licenses/` 与必要文档；本机输入和输出分别位于 `var/inputs/`、`var/sessions/`。`var/`、`.local/`、`.venv/` 不进入发布包。
+
+## 目录约定
+
+- 根目录仅保留入口、依赖声明、README、许可证和工程配置；运行、开发、发布及边界说明统一在 `docs/`，见 [目录结构与清理规则](docs/目录结构.md)。
+- 私有固件与实车资料放在 `var/inputs/`；根目录的实车导出包及说明已原字节归档到 `var/inputs/packages/car-export-20261124/`，不进入 Git 或发布包。
+- 历史截图放在 `var/screenshots/`，不是当前实时画面；会话产物放在 `var/hvf/`、`var/sessions/`，不进入 Git。
+- 本机已有 `8704/` 是私有更新包提取目录，维持路径不搬动；新输入仍按首次运行约定放入 `var/inputs/`。

@@ -429,13 +429,10 @@ public final class BenchPlatform {
         }
     }
 
-    /** Deterministic typed RAM store; absent keys receive INVALID_KEY so HMI uses its defaults. */
     private static final class Persistence extends Endpoint {
         final Map<String, Object> values = Collections.synchronizedMap(new HashMap<String, Object>());
         Persistence(BundleContext context) {
             super(context, DSIPersistence.class, DSIPersistenceListener.class);
-            // Original DiagnosisDataProvider reads this identification block.
-            // Do not override ConfigurationManager or heartbeat output directly.
             values.put("Buffer:" + IDENTIFICATION_NAMESPACE + ":" + MU_SOFTWARE_VERSION_KEY,
                     MOCK_MU_SOFTWARE_VERSION.getBytes(StandardCharsets.US_ASCII));
             String codingPath = System.getProperty("bench.diagnosis.coding");
@@ -448,8 +445,46 @@ public final class BenchPlatform {
                     System.out.println(TAG + "supplied ID3 coding namespace=33554432 key=1536 bytes=" + coding.length);
                 } catch (IOException error) { throw new IllegalStateException("Supplied ID3 coding unreadable", error); }
             }
+            String recordsPath = System.getProperty("bench.diagnosis.records");
+            if (recordsPath != null) {
+                if (!"/tmp/bench-diagnosis-records.properties".equals(recordsPath))
+                    throw new IllegalArgumentException("Unexpected supplied diagnosis records path");
+                try {
+                    Map<String, byte[]> records = readRecords(new FileInputStream(recordsPath));
+                    for (Map.Entry<String, byte[]> row : records.entrySet()) {
+                        Object existing = values.get(row.getKey());
+                        if (row.getKey().equals("Buffer:33554432:1536") && existing != null
+                                && !Arrays.equals((byte[]) existing, row.getValue()))
+                            throw new IOException("Supplied diagnosis coding sources differ");
+                    }
+                    values.putAll(records);
+                    System.out.println(TAG + "supplied diagnosis records=" + records.size());
+                } catch (IOException error) { throw new IllegalStateException("Supplied diagnosis records unreadable", error); }
+            }
             System.out.println(TAG + "diagnosis fixture namespace=" + IDENTIFICATION_NAMESPACE
-                    + " key=" + MU_SOFTWARE_VERSION_KEY + " muSoftwareVersion=" + MOCK_MU_SOFTWARE_VERSION);
+                    + " key=" + MU_SOFTWARE_VERSION_KEY + " muSoftwareVersion="
+                    + new String((byte[]) values.get("Buffer:" + IDENTIFICATION_NAMESPACE + ":" + MU_SOFTWARE_VERSION_KEY), StandardCharsets.US_ASCII));
+        }
+        static Map<String, byte[]> readRecords(InputStream input) throws IOException {
+            Properties records = new Properties();
+            try { records.load(input); } finally { input.close(); }
+            if (records.size() == 0 || records.size() > 256) throw new IOException("Invalid supplied record count");
+            Map<String, byte[]> result = new HashMap<String, byte[]>();
+            for (String name : records.stringPropertyNames()) {
+                if (!name.matches("[0-9]+/[0-9]+")) throw new IOException("Invalid diagnosis record address");
+                String[] address = name.split("/");
+                long namespace = Long.parseLong(address[0]), key = Long.parseLong(address[1]);
+                if (!(namespace == 16777216L || namespace == 16777472L || namespace == 33554432L
+                        || namespace == 50331648L || namespace == 67108864L || namespace == 678364556L)
+                        || key < 0 || key > 4294967295L) throw new IOException("Unknown diagnosis namespace or key");
+                String hex = records.getProperty(name);
+                if (hex.length() < 2 || hex.length() > 8192 || (hex.length() & 1) != 0
+                        || !hex.matches("[0-9a-fA-F]+")) throw new IOException("Invalid diagnosis record bytes");
+                byte[] bytes = new byte[hex.length() / 2];
+                for (int i = 0; i < bytes.length; i++) bytes[i] = (byte) Integer.parseInt(hex.substring(i * 2, i * 2 + 2), 16);
+                result.put("Buffer:" + namespace + ":" + key, bytes);
+            }
+            return result;
         }
         static byte[] readCoding(InputStream input) throws IOException {
             try {
@@ -796,40 +831,20 @@ public final class BenchPlatform {
         }
     }
 
-    /** Stateful decoder for ordered physical pointer transitions from the viewer. */
-    /** 8704 exposes InputManager devices, not the legacy 2995 DSI touch subscription. */
-    private static final class NativeTouch implements de.vw.mib.input.devices.TouchHoverInputDevice {
-        de.vw.mib.input.InputManager manager;
-        de.vw.mib.input.devices.TouchHoverInputDeviceListener listener;
-        public int getType() { return TYPE_TOUCH_HOVER_DEVICE; }
-        public int getResolutionHorizontal() { return 1920; }
-        public int getResolutionVertical() { return 1080; }
-        public int getActiveAreaHorizontal() { return 286; }
-        public int getActiveAreaVertical() { return 161; }
-        public int getPixelDensity() { return 174; }
-        public void addInputDeviceListener(de.vw.mib.input.devices.InputDeviceListener value) {
-            if (value instanceof de.vw.mib.input.devices.TouchHoverInputDeviceListener)
-                listener = (de.vw.mib.input.devices.TouchHoverInputDeviceListener)value;
-        }
-        public void removeInputDeviceListener(de.vw.mib.input.devices.InputDeviceListener value) {
-            if (listener == value) listener = null;
-        }
+    private static final class NativeTouch {
+        private OutputStream channel;
         synchronized boolean pointer(String action, int x, int y) {
-            if (manager == null) {
-                ServiceReference ref = context.getServiceReference(de.vw.mib.input.InputManager.class.getName());
-                if (ref == null) return false;
-                manager = (de.vw.mib.input.InputManager)context.getService(ref);
-                if (manager == null) return false;
-                manager.registerInputDevice(this);
-                System.out.println(TAG + "8704_INPUT_DEVICE registered original InputManager");
+            try {
+                if (channel == null) channel = new FileOutputStream("/tmp/bench-touch-events");
+                channel.write((action + " " + x + " " + y + "\n").getBytes(StandardCharsets.US_ASCII));
+                channel.flush();
+                return true;
+            } catch (IOException error) {
+                if (channel != null) try { channel.close(); } catch (IOException ignored) { }
+                channel = null;
+                System.out.println(TAG + "original touch provider: " + error.toString());
+                return false;
             }
-            if (listener == null) return false;
-            int type = "down".equals(action) ? de.vw.mib.gesture.TouchPoint.PRESS :
-                ("up".equals(action) ? de.vw.mib.gesture.TouchPoint.RELEASE : de.vw.mib.gesture.TouchPoint.DRAG);
-            de.vw.mib.input.data.InputPointList points = manager.getInputPointListFactory().createInputPointList();
-            points.add(manager.getInputPointFactory().createInputPoint(0, type, x, y, 0));
-            listener.updateTouchInput(points, "up".equals(action) ? 0 : 1, 1, (int)(System.nanoTime()/1000000L));
-            return true; // Original InputManager owns and disposes the pooled point list.
         }
     }
 
@@ -855,7 +870,7 @@ public final class BenchPlatform {
                 reject("no ATTR_GESTURE2 subscriber yet"); return false;
             }
             pressed = !up;
-            System.out.println(TAG + "POINTER " + action + " " + x + " " + y + " -> DSI gesture=" + gesture);
+            System.out.println(TAG + "POINTER " + action + " " + x + " " + y + " -> original touch event=" + gesture);
             return true;
         }
         String vehicleReply(String line) throws Exception {

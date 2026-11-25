@@ -129,3 +129,21 @@ static char *auto9_gic_decon_snapshot(Object *obj, Error **errp)
     g_string_append_c(out, ']');
     return g_string_free(out, false);
 }
+
+static char *auto9_gic_eqos_snapshot(Object *obj, Error **errp)
+{
+    GICState *s = ARM_GIC_COMMON(obj);
+    if (s->revision != 2 || !s->virt_extn || GIC_INTERNAL + 327 >= s->num_irq) {
+        error_setg(errp, "Auto9 EQOS snapshot needs the native virtual GICv2");
+        return NULL;
+    }
+    GString *out = g_string_new("[");
+    for (unsigned spi = 312; spi <= 327; spi++) {
+        if (spi != 312) {
+            g_string_append_c(out, ',');
+        }
+        auto9_gic_append_irq(out, s, GIC_INTERNAL + spi);
+    }
+    g_string_append_c(out, ']');
+    return g_string_free(out, false);
+}

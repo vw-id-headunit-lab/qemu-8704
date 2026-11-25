@@ -1,4 +1,4 @@
-"""Synthetic HVAC objects for the original guest RSI mockup, not live car data."""
+"""HVAC startup data selected by the local vehicle profile."""
 from .fixtures import element
 
 
@@ -15,6 +15,11 @@ def objects():
     References contain only id/name/uri so rows/zones never create JSON cycles.
     References are shared by the desktop and its temperature/seat overlays.
     """
+    from .car_hvac import objects as captured_objects
+    captured = captured_objects()
+    if captured is not None:
+        return captured
+
     values = {name: [] for name in RESOURCES}
 
     def add(resource, name, **fields):

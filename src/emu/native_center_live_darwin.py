@@ -16,9 +16,10 @@ class NativeCenterReader:
  def __init__(self,session):
   from vlm_platform import factory_file
   self.session=Path(session).resolve(strict=True)
-  if self.session.parent!=BASE or (self.session/'integrity.json').exists():raise ValueError('Require current owned native session')
+  if self.session.parent not in (BASE,ROOT/'var/hvf') or (self.session/'integrity.json').exists():raise ValueError('Require current owned native session')
   rt=json.loads((self.session/'native-runtime-state.json').read_bytes());self.pid=rt['qemu_pid']
   if not rt['running']:raise ValueError('Original board is not running')
+  self.check_current_owner()
   self.maps=[];self.handle=self.pid
   try:
    from macos_process import executable,alive
@@ -44,6 +45,13 @@ class NativeCenterReader:
      if original!=runtime and not (runtime==0xd503201f and original&0xfc000000==0x14000000):raise ValueError('Unexpected original runtime prefix change')
    self.verified_image=self.scan['VerifiedFactoryImage'](self.symbols);self.last_raw=None;self.last_image=None
   except BaseException:self.close();raise
+ def check_current_owner(self):
+  if self.session.parent==ROOT/'var/hvf':
+   from hvf_qnx import owner
+   from native_domain_state import require_running
+   session,pid=owner()
+   if session!=self.session or pid!=self.pid:raise ValueError('Original native HMI epoch differs')
+   require_running(session,pid,3)
  def close(self):
   for lo,hi,mapping in getattr(self,'maps',[]):mapping.close()
   self.maps=[];self.handle=None
@@ -61,6 +69,7 @@ class NativeCenterReader:
   def read(va):return word(int(walk_guest_4k(va,self.tcr,self.ttbr,word)['physical_target'],16))
   return self.scan['inspect'](self.symbols,read,self.session,sysmmu={},verified_image=self.verified_image)
  def sample(self,*,raw_pixels=False):
+  self.check_current_owner()
   start=time.monotonic();rt=json.loads((self.session/'native-runtime-state.json').read_bytes())
   if not rt['running']or rt['qemu_pid']!=self.pid or (self.session/'integrity.json').exists():raise ValueError('Original session ended')
   a=self.proof()

@@ -53,9 +53,9 @@ def make_argv(config: Config, mode: str, initrd: Path, *, nbd_port: int = 9000,
               rfb_port: int = 5901, qmp_port: int = 9001, input_port: int = 9002,
               debug_port: int | None = None, api_backend_port: int | None = None,
               sdk_backend_port: int | None = None, clock_port: int | None = None,
-              gpu: bool = False) -> list[str]:
+              gpu: bool = False, domain_port: int | None = None) -> list[str]:
     argv = [str(config["qemu"]), "-machine", "virt,gic-version=3", "-cpu", "host", "-accel", "hvf",
-            "-smp", "4" if mode == "hmi" else "2", "-m", "2048" if mode == "hmi" else "1024",
+            "-smp", "4" if mode == "hmi" else "2", "-m", "3072" if mode == "hmi" else "1024",
             "-display", "gtk,gl=on,zoom-to-fit=on" if gpu else "none", "-serial", "stdio", "-monitor", "none", "-no-reboot", "-nic", "none",
             "-kernel", str(config["kernel"]), "-initrd", str(initrd),
             "-append", "console=ttyAMA0 rdinit=/probe-init", "-qmp",
@@ -65,6 +65,22 @@ def make_argv(config: Config, mode: str, initrd: Path, *, nbd_port: int = 9000,
             argv += ["-drive", f"file={path.as_posix().replace(',', ',,')},format=raw,if=none,id={name},readonly=on",
                      "-device", f"virtio-blk-device,drive={name}"]
     if mode == "hmi":
+        if 'navigation_uplink' in config.paths:
+            from .navigation_fixture import uplink
+            uplink(config['navigation_uplink'])
+        if domain_port is not None:
+            argv += ['-netdev', f'socket,id=bench-domain,listen=127.0.0.1:{domain_port}',
+                     '-device', 'virtio-net-device,netdev=bench-domain,mac=52:54:00:87:04:01']
+        if 'firmware_navigation' in config.paths:
+            media={'driver':'qcow2','node-name':'bench-navi-media','read-only':True,
+                   'file':{'driver':'file','filename':str(config['firmware_navigation'])}}
+            argv += ['-blockdev',json.dumps(media)]
+            argv += ['-blockdev',json.dumps({'driver': 'raw', 'node-name': 'bench-navi-core', 'file': 'bench-navi-media', 'read-only': True, 'offset': 32548847616, 'size': 1073741824}),'-device','virtio-blk-device,drive=bench-navi-core,serial=bench-navi-core']
+            if 'navigation_map' in config.paths:
+                argv += ['-drive',f"file={config['navigation_map']},format=raw,if=none,id=bench-navi-car-map,readonly=on",'-device','virtio-blk-device,drive=bench-navi-car-map,serial=bench-navi-map']
+            else:
+                argv += ['-blockdev',json.dumps({'driver': 'raw', 'node-name': 'bench-navi-map', 'file': 'bench-navi-media', 'read-only': True, 'offset': 33958133760, 'size': 43325587456}),'-device','virtio-blk-device,drive=bench-navi-map,serial=bench-navi-map']
+            argv += ['-drive',f"file={config['navigation_data']},format=raw,if=none,id=bench-navi-data",'-device','virtio-blk-device,drive=bench-navi-data,serial=bench-navi-data']
         if api_backend_port is not None:
             from .guest_gateway import netdev_arguments
             argv += netdev_arguments(api_backend_port, sdk_backend_port)
@@ -170,6 +186,7 @@ def run(config: Config, mode: str, seconds: int, open_viewer: bool = False, debu
             ports = {"qmp_port": free_port()}
             nbd = viewer = None
             if mode == "hmi":
+                ports["domain_port"] = free_port()
                 from .host_clock import HostClockFeed
                 clock = HostClockFeed(output)
                 cleanup.callback(clock.close)
@@ -237,23 +254,58 @@ def run(config: Config, mode: str, seconds: int, open_viewer: bool = False, debu
             record['milestone_wall_seconds'] = {}
             def capture(name: str) -> None:
                 seen = b''
+                target = None
+                retry_at = 0
                 from .progress import MARKERS
-                with (output / (name + ".txt")).open("wb", buffering=0) as target:
+                state = record.setdefault('capture_io', {}).setdefault(name, {'dropped_bytes': 0})
+                def persist():
+                    with record_lock:
+                        try:
+                            write_json(session_path, record)
+                        except OSError as error:
+                            state['metadata_error'] = str(error)
+                try:
                     while chunk := getattr(process, name).read1(65536):
-                        target.write(chunk)
+                        offset = 0
+                        try:
+                            if target is None and time.monotonic() >= retry_at:
+                                target = (output / (name + ".txt")).open("ab", buffering=0)
+                            if target is not None:
+                                while offset < len(chunk):
+                                    count = target.write(chunk[offset:])
+                                    if not count:
+                                        raise OSError('Capture write made no progress')
+                                    offset += count
+                                if state.pop('active_error', None) is not None:
+                                    state['recovered_wall_seconds'] = round(time.monotonic() - started, 3)
+                                    persist()
+                        except OSError as error:
+                            state.update(active_error=str(error), last_error=str(error), errno=error.errno)
+                            if target is not None:
+                                target.close()
+                                target = None
+                            retry_at = time.monotonic() + 1
+                        if offset < len(chunk):
+                            state['dropped_bytes'] += len(chunk) - offset
+                            persist()
                         if name == 'stdout':
                             seen = (seen + chunk)[-32768:]
                             for marker, phase, _ in MARKERS:
                                 if phase not in record['milestone_wall_seconds'] and marker.encode() in seen:
                                     record['milestone_wall_seconds'][phase] = round(time.monotonic() - started, 3)
                             if measurement:
-                                measurement.observe_log(seen)
-                                # Persist live metadata only at coarse milestones, not every log line.
+                                try:
+                                    measurement.observe_log(seen)
+                                except OSError as error:
+                                    state['measurement_error'] = str(error)
                                 count = len(record['milestone_wall_seconds'])
                                 if count != getattr(threading.current_thread(), '_saved_milestones', -1):
                                     threading.current_thread()._saved_milestones = count
-                                    with record_lock:
-                                        write_json(session_path, record)
+                                    persist()
+                finally:
+                    if target is not None:
+                        target.close()
+                    persist()
             readers = [threading.Thread(target=capture, args=(name,), daemon=True) for name in ("stdout", "stderr")]
             for reader in readers:
                 reader.start()

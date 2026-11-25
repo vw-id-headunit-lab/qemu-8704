@@ -9,8 +9,8 @@
     },
     {
       "path": ".gitignore",
-      "bytes": 85,
-      "sha256": "e091554a57e257ced54ce0642c849c349cfa1695c9cfcef491e51243f4fdf2c4"
+      "bytes": 871,
+      "sha256": "9d324b58a877c3753c2a9fcadad01cf38d060581a059c4816ed0a4860199d9a5"
     },
     {
       "path": "LICENSE",
@@ -23,14 +23,19 @@
       "sha256": "c0a280cd1e6dae2ab75320da1dde3372796eb6e402627258ea7395a758483ce7"
     },
     {
+      "path": "MEB-EMU.sh",
+      "bytes": 968,
+      "sha256": "8fa2365971883a5168641097ee1aa3c5806dba6900fda46a6fde6d7ad9ffb886"
+    },
+    {
       "path": "NOTICE.md",
       "bytes": 840,
       "sha256": "5f627ffaefb920fe766009af20c6ca80e754f21c44f986bebfc1002ce8abc023"
     },
     {
       "path": "README.md",
-      "bytes": 730,
-      "sha256": "a1f4ca587c44b20ab674f0149db639f5cbfe9bc0f958c84cf0e5f0789c8f4507"
+      "bytes": 4433,
+      "sha256": "b78de8e4e01b5481052a3b519eb8667fba3d27306e4f7f867ba3d4a1a034c21a"
     },
     {
       "path": "VERSION",
@@ -43,6 +48,11 @@
       "sha256": "dc76eefde96f2aa54e7c40ff07d07c13a534e6f0ee10ec8b1ae8779c42492659"
     },
     {
+      "path": "config/hvf-8704.json",
+      "bytes": 1639,
+      "sha256": "452e144237dc6812e52dbad9668b44c349a453127ed9c1d4fb2ca576e02097a3"
+    },
+    {
       "path": "config/input-bundle.example.json",
       "bytes": 180,
       "sha256": "42efd4b78dd8ea0da3583565bdc4a8ad12a5fa7607dd101ca7ebbd28a0524e88"
@@ -53,9 +63,19 @@
       "sha256": "a607141ea06b4246118ae864346b03276388b0ca836083f25bd1bd542fcb4cf7"
     },
     {
+      "path": "config/navigation-uplink.json",
+      "bytes": 179,
+      "sha256": "b55263c74f0fdae89ace389f8da91577c5d1fe9e23604619b2b3dbe4699240bb"
+    },
+    {
       "path": "config/release-status.json",
       "bytes": 1080,
       "sha256": "7ef8fbed798d2f03fc34deb1e8fc021c8d67eedf8dd27961bc139963ea8251b4"
+    },
+    {
+      "path": "docs/Mac运行.md",
+      "bytes": 2564,
+      "sha256": "dc5e8f9abd22bdbc88e035fe0759c048f20d0efc7b21420873cacbd14779596b"
     },
     {
       "path": "docs/使用.md",
@@ -63,9 +83,29 @@
       "sha256": "87fec32b137b5f2ac6f709f169afbb7bb1163d336ba3ca28fa5d466116b6b250"
     },
     {
+      "path": "docs/发布状态.md",
+      "bytes": 1705,
+      "sha256": "7725cf265236b9108ecf2301e22ec7556ecdb3d15482b1221a0d1e7619329a81"
+    },
+    {
       "path": "docs/开发.md",
       "bytes": 2273,
       "sha256": "f77652acb3ec7cd0f86abdddc0bcf14d86bbcd8456a4d92c8c23362ec025ec4e"
+    },
+    {
+      "path": "docs/目录结构.md",
+      "bytes": 3561,
+      "sha256": "ec086dd7c524c9253a8f3443d4d8c66a0c289474af1ee01206d85f722b8d0758"
+    },
+    {
+      "path": "docs/运行边界.md",
+      "bytes": 2203,
+      "sha256": "bc9fbbde6826a26e67ae4e317708dba61fa00a675676dc1778a57627d37d3ad5"
+    },
+    {
+      "path": "docs/首次运行验证.md",
+      "bytes": 2586,
+      "sha256": "cb72ab1c1587211eebd18a37c2ec5b2e8d16dfadbd86fcc2288353a1b70e6361"
     },
     {
       "path": "licenses/ANGLE-LICENSE",
@@ -228,6 +268,11 @@
       "sha256": "7055266497633c9025b777c78eb7235af13922117480ed5c674677adc381c9d8"
     },
     {
+      "path": "native/contracts/exynos4210_pwm.c",
+      "bytes": 13170,
+      "sha256": "ffb440b4cc76f1f60a3854e623e4ac44f75ee53ad410205d54563850196e32c7"
+    },
+    {
       "path": "native/overrides/accel/tcg/tcg-all.c",
       "bytes": 10084,
       "sha256": "a62862960ca8b1ceba33b92bfb9b107ac6807fa731ea1f2aa071da491fcb39a1"
@@ -241,6 +286,26 @@
       "path": "native/overrides/gdbstub/system.c",
       "bytes": 17096,
       "sha256": "5f6a94037a056b5c947c8f8ef899ada45e2407ccf90ba86d69deb8d4a5a6e85b"
+    },
+    {
+      "path": "native/overrides/hw/arm/Kconfig",
+      "bytes": 14195,
+      "sha256": "80ab296921565f7866dc932f981a99ee63da48bbe8fbdb1800c83d576a1cf308"
+    },
+    {
+      "path": "native/overrides/hw/arm/exynos-auto9-88q2112.inc.c",
+      "bytes": 5412,
+      "sha256": "25f2dfdc36b61935778826e8c59165e4bf85885507c980007d0fe82fad98bc7e"
+    },
+    {
+      "path": "native/overrides/hw/arm/exynos-auto9-eqos-net.inc.c",
+      "bytes": 11965,
+      "sha256": "d5b31d443f6d54d2469c0f274b9121034363ed7f6c95809633595e99929c3802"
+    },
+    {
+      "path": "native/overrides/hw/arm/exynos-auto9-eqos.inc.c",
+      "bytes": 40791,
+      "sha256": "d044138194add15437b3e6f98ec5439d83cbdb023e44a9923bbcfc948cc54bfb"
     },
     {
       "path": "native/overrides/hw/arm/exynos-auto9-sss-native.inc.c",
@@ -259,8 +324,13 @@
     },
     {
       "path": "native/overrides/hw/arm/virt.c",
-      "bytes": 1664446,
-      "sha256": "bf95e9a83ca21545f375c3f059011501f74ebd508f7d0f7ab0fe7f6ae13ccea8"
+      "bytes": 1649811,
+      "sha256": "3ac28aef412005ab4472738a60966401702bea5538dc0ab3413eed481d65c7d9"
+    },
+    {
+      "path": "native/overrides/hw/char/Kconfig",
+      "bytes": 1225,
+      "sha256": "30c903975e337b80ae4e763651d68005dbe5cd50069983d45647e7dc8e7231b8"
     },
     {
       "path": "native/overrides/hw/char/exynos4210_uart.c",
@@ -288,6 +358,11 @@
       "sha256": "1be09d3d220d38fdbf4756891ce2d407097c4aea5ff45b1d4d4daff803c703d7"
     },
     {
+      "path": "native/overrides/hw/rtc/Kconfig",
+      "bytes": 452,
+      "sha256": "f16c5fc8d1d3ed00038fa91f9e57c79b635f277e994180f05dcef1fc6ec82aba"
+    },
+    {
       "path": "native/overrides/hw/rtc/exynos4210_rtc.c",
       "bytes": 18711,
       "sha256": "914ea1b9eb9146ba5531e7cffc36cafd4854f41991861f9328f618cd780a6891"
@@ -298,9 +373,19 @@
       "sha256": "03d395b436bd8d0b20e28acfb7ca7c4932536eda6dc65e8016c2a9087497197c"
     },
     {
+      "path": "native/overrides/hw/timer/Kconfig",
+      "bytes": 871,
+      "sha256": "253e36eca0ac645e52730f6d8815891b52c5d3871b89dd1019216a3dfaefeaa1"
+    },
+    {
       "path": "native/overrides/hw/timer/meson.build",
       "bytes": 2587,
       "sha256": "fb88c994d1568f1346df3cafc9f471de3a1c01fff3a071a1292647f1daa275fc"
+    },
+    {
+      "path": "native/overrides/hw/ufs/trace-events",
+      "bytes": 5185,
+      "sha256": "4881f3e98c024a3da77b0b23d1311e72dd19bcda4c48f4f418a1f35b8cdd78bd"
     },
     {
       "path": "native/overrides/hw/ufs/ufs.c",
@@ -378,9 +463,19 @@
       "sha256": "8f45851d4633777542f9dd231116e17d208bb346cee4eae1be7c30dd96737a21"
     },
     {
+      "path": "native/overrides/target/arm/tcg/trace-events",
+      "bytes": 1284,
+      "sha256": "dd09f8938521632160c4bed45f0ff378e33a70f7452d7d5307df65e8d7598403"
+    },
+    {
       "path": "native/overrides/target/arm/tcg/translate-a64.c",
       "bytes": 367550,
       "sha256": "73433340876d4e4025c8a7f193e47973303f49b8835585b447b754eed52bc16d"
+    },
+    {
+      "path": "native/overrides/util/oslib-posix.c",
+      "bytes": 29064,
+      "sha256": "d1e28b4f2bdf65ffe4030f48a957824beec056b95ec150120beea2d8d12a4a3f"
     },
     {
       "path": "native/source-map.json",
@@ -388,19 +483,229 @@
       "sha256": "216c749ba88c02515276594cd605c4ddd235b3ee0fdb88072dc6bbfc5617fad4"
     },
     {
-      "path": "native/upstream/qemu-11.1.0.tar.xz",
-      "bytes": 141831772,
-      "sha256": "6ee1d1a61f68212476b27108c26da5f449dc09b626d42f8279ba0dc2e08fa858"
-    },
-    {
       "path": "pyproject.toml",
       "bytes": 322,
       "sha256": "34a0179f83a9951abc958b9e76e9d599679b7ab8f9cf9fb0c952e2f51bcadea4"
     },
     {
+      "path": "requirements-macos.txt",
+      "bytes": 108,
+      "sha256": "132f918c57ecf0177fe41f75b5ac88e03992b8c246cd116ed2244c1427717bea"
+    },
+    {
       "path": "requirements.txt",
       "bytes": 116,
       "sha256": "0f63f4b32b507351e0fc6e23285479ae82485aab3f07739c91c11c85e347063e"
+    },
+    {
+      "path": "runtime/darwin/build.json",
+      "bytes": 6006,
+      "sha256": "07cc7d8a50688947a0841b7a5428e16b49179d99591fc247ce894966856854b7"
+    },
+    {
+      "path": "runtime/darwin/gl-host",
+      "bytes": 114904,
+      "sha256": "84feb689843f3fc6e9e5eb026aca673e9e0fa7ca5f105a4b6158618b2cbcb3bb"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/ar",
+      "bytes": 28605,
+      "sha256": "059ab719df4296edb800d399501e3823e1e6f470cc06a3a4564f4bb2dbd5c1fc"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/bepo",
+      "bytes": 27809,
+      "sha256": "01ccdb7e2d0b20f517e03d39cc70802ad83dfc1ed2e5d50ff9b4a4f77e37a9f8"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/cz",
+      "bytes": 29209,
+      "sha256": "3664b3f13e6cfff0e6d05f12000aa6610eff04f570707261ec35ca830ded6c36"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/da",
+      "bytes": 29230,
+      "sha256": "95ef0c168f0b25e936a7ff944da820a43af8028b515cc6709724f457e105c187"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/de",
+      "bytes": 29183,
+      "sha256": "cda7dc9656f007ca3e88e5bac50f20c7f61f934bcec2e87c6d61859e632ddb98"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/de-ch",
+      "bytes": 29214,
+      "sha256": "3260cb64fdcdf48e2b53c5d0573dc2a9410d7d3aae227ed42dda945f9ab74e06"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/en-gb",
+      "bytes": 29219,
+      "sha256": "e14229b7f9165bf226bf4de968fd5f6a504014a2179de08c2b2184cefe68174e"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/en-us",
+      "bytes": 27086,
+      "sha256": "52cf4c523e686078699ed58761c7e1443080305237a5f67a3716832570c5c8e5"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/es",
+      "bytes": 29203,
+      "sha256": "d9b1da8193232882705bd4a312c0923b6d91268f1e1a8eed2afbd7fc37681c06"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/et",
+      "bytes": 27291,
+      "sha256": "95af1e25132185e3cb271d491086ccf09cb667033afb718f1a11e974e80a838f"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/fi",
+      "bytes": 28604,
+      "sha256": "4c5cd5359c18635187d7af9570088a7bbd21f96d961aedbc4c9fb1e5df099281"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/fo",
+      "bytes": 29217,
+      "sha256": "3750b8090caea3cf6c827b97f5ecc2d1172c33d960141c50f96e61c53f682ccf"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/fr",
+      "bytes": 29204,
+      "sha256": "60d9baa3565b7727b4178704100bffb02cbd5b527a9dcc9f9ca76d76767b166e"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/fr-be",
+      "bytes": 29211,
+      "sha256": "522b5e758375e3d796fba096a46077766bd44548c8c61a4abe946e3116c1ad97"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/fr-ca",
+      "bytes": 27564,
+      "sha256": "9ee3fc13beec6e74f40fb6d150d7fe3b0afe4557fdf0769601e662a122a88cc0"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/fr-ch",
+      "bytes": 29215,
+      "sha256": "7b2ad2929f3b7b4f5d60176bd7e1852f91efbcfe2700e8df9bc9b891609a7170"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/hr",
+      "bytes": 29255,
+      "sha256": "e8391ed09015ce8459a98e3470daddd3a6d95c4c7e93b750098f5a321fd57482"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/hu",
+      "bytes": 29207,
+      "sha256": "763a938ed2fdd224b9cb8ad606d02aabc93a0e3fb7a5e5e9caafa0ec8c05d422"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/is",
+      "bytes": 29254,
+      "sha256": "6eb4e5bd93ca2f7a2059a31fd014444108eb684ecd97902da2492b0a0f6e3cdc"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/it",
+      "bytes": 29312,
+      "sha256": "12d090cdcb6af0e95a0c0330b8b7f0ac0446ab8cf7140b4f8c6c797c08e9c219"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/ja",
+      "bytes": 27163,
+      "sha256": "a4561aefcc2fd2f4ba01604001c9c0dc67469514ea0a665063b72e79d5d9c687"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/lt",
+      "bytes": 29166,
+      "sha256": "0bfc98e913451c0b9082d0317deffa03c6f0c53a1422cb4f4c1ef64dc3939d2f"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/lv",
+      "bytes": 28618,
+      "sha256": "be4f1e28325ae2ea927bd51e31863a327e64c0a938725fd02c2a7260660bdf77"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/meson.build",
+      "bytes": 1544,
+      "sha256": "ed373272262fb1fe66f43ca5eba606871b5ca635633dfb19ea4fed2fd14e47a3"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/mk",
+      "bytes": 27685,
+      "sha256": "71068ffe163ce6684b35f423e897e00c97debe0c3df555c43d26b46a79ca68e7"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/nl",
+      "bytes": 29268,
+      "sha256": "70cb1b41f184d61520867e639e6b69cddea4b0e2458c5502c7c40512301876c7"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/no",
+      "bytes": 29563,
+      "sha256": "95b3fe5258264b827ba01acc7a774bd9edbaec52c54e582a0737c33087a92514"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/pl",
+      "bytes": 29327,
+      "sha256": "5f3da802f81f385c58179272e48c4f8680dfdfe55383c504a6d84b3b7a8aadfb"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/pt",
+      "bytes": 29195,
+      "sha256": "29161e1b8b61b761c3f3bff237ca73ce4ee3316a99090890b32469824b5eed8a"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/pt-br",
+      "bytes": 29175,
+      "sha256": "fbb9491c0bfc4253cced9d8a20965aca98d0249c4626fe6e7d31358b24e34e8d"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/ru",
+      "bytes": 27704,
+      "sha256": "afa015a736cd935fc38a0df62fd6ab2f3c64b44c48b3e6d95969cbbfcdc43e91"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/sl",
+      "bytes": 4632,
+      "sha256": "bea8fe8ac0ca281038ac0e1788c39f090507ff0646bd4f57cc18f6873b030147"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/sv",
+      "bytes": 3346,
+      "sha256": "97731fbe91f254d81c005ffc232180a8dd7baeb6d699f0f0fc15e341672f96b3"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/th",
+      "bytes": 27829,
+      "sha256": "6dd9562a2b10c81f658ad96075fd87832777e87357620e89c7d070e4097fbbb9"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/keymaps/tr",
+      "bytes": 29142,
+      "sha256": "f59f8cc154f0dc8b45166b524b9c1e649ba027e39381aac286663ad2227ddce8"
+    },
+    {
+      "path": "runtime/darwin/pc-bios/vgabios-virtio.bin",
+      "bytes": 39424,
+      "sha256": "02853140c262001ecb7245b151ffe47a0f0c79767a6fb2a9eb60f5f1938c5cee"
+    },
+    {
+      "path": "runtime/darwin/qemu-img",
+      "bytes": 2769608,
+      "sha256": "a6fc8e05eb5b164d74c0f150f886cc04211c679f84bd799821c4d0d06c74fb38"
+    },
+    {
+      "path": "runtime/darwin/qemu-nbd",
+      "bytes": 2899192,
+      "sha256": "2dcbc82566a82646239bc1b6d57a1e3520556b475f9d2e22124096a5e7cd4567"
+    },
+    {
+      "path": "runtime/darwin/qemu-system-aarch64",
+      "bytes": 37736384,
+      "sha256": "19f33ea32086ad8aa495705b28855cf6a1ab2e7297ed5ecce38de9d72afe1873"
+    },
+    {
+      "path": "runtime/darwin/qemu-system-xtensa",
+      "bytes": 20756360,
+      "sha256": "cff366aced44793a074b342b3eb6e5aad28f01e86908b9b136ae4539ffcfb3b2"
     },
     {
       "path": "runtime/gl-host.exe",
@@ -413,9 +718,49 @@
       "sha256": "807e313942e1a8e0219b5d2893c8737c286aaaa965136f727baf5c9334a9d7fd"
     },
     {
+      "path": "runtime/guest/libmeb-qnx-gl-abi.so",
+      "bytes": 24504,
+      "sha256": "326250319938c4bb85cd1182c3f75af8a3bdde4011143bd6b7a74a6f6aad1447"
+    },
+    {
       "path": "runtime/guest/liboem_gl_forward.so",
       "bytes": 289944,
       "sha256": "f91abf539d333f6c2210973936a02dcee1d2a693977c289b6eba924b44725ccf"
+    },
+    {
+      "path": "runtime/guest/native-touch/manifest.json",
+      "bytes": 5583,
+      "sha256": "6958775ae3bc2338e3b48fe9bd834fcbe5ae749100a8899ab46fc4303ae984dd"
+    },
+    {
+      "path": "runtime/guest/native-touch/provider.so",
+      "bytes": 8320,
+      "sha256": "4a5048e02968d1abdf118faa96d087f3e3d0d90d8ba2114f9ad401716f523157"
+    },
+    {
+      "path": "runtime/guest/native-touch/relay",
+      "bytes": 11960,
+      "sha256": "ff9c561150c1bc126ae4ab3dc39336565a670ec4064d41bea57b669e7e72717c"
+    },
+    {
+      "path": "runtime/guest/native-touch/touch-app",
+      "bytes": 1930656,
+      "sha256": "1c1b813949e572d08356832e06b47be1b0a8777ab5c5110e59ae494b3e4f4302"
+    },
+    {
+      "path": "runtime/guest/qnx-gl/libMEBGL2.so",
+      "bytes": 807328,
+      "sha256": "b0b20b9482d54d4645106c3df087c79b1a6d4bb3f6225ea88fc5621e07c84a4b"
+    },
+    {
+      "path": "runtime/guest/qnx-gl/libMEG.so",
+      "bytes": 807320,
+      "sha256": "dbad9e73ffb5d0594ce0a9a077fa48b8944a37b0e11c706dce7126a60bb243e0"
+    },
+    {
+      "path": "runtime/guest/qnx-gl/libmeb-qnx-gl-forward.so",
+      "bytes": 125048,
+      "sha256": "9a4ea9d9faaf32af367d42de882ce447b6113101c2e50b4f2466cf707ad8af6f"
     },
     {
       "path": "runtime/qemu-system-aarch64.exe",
@@ -478,6 +823,11 @@
       "sha256": "240cdae7405e899eb038c2c1c18353510faade3ef4c85c9de6442628980b7173"
     },
     {
+      "path": "src/emu/android_local_shell_darwin.py",
+      "bytes": 9561,
+      "sha256": "22c9b02d2a0a603de53dd21491d32ac6f8172716930016c7cc68469be825e04d"
+    },
+    {
       "path": "src/emu/android_task_context.py",
       "bytes": 5553,
       "sha256": "3cc3e8e30d7567dad5810c9eac42878db53a34ff03b0189738b06ff9d9f11dc8"
@@ -496,6 +846,11 @@
       "path": "src/emu/bench-anonymous-users.json",
       "bytes": 275,
       "sha256": "5d04dbfcae8161b8c6a948de878219c34e1f7fb4b0d798207173f58faacf1c24"
+    },
+    {
+      "path": "src/emu/bench-vehicle-states-darwin.json",
+      "bytes": 1270,
+      "sha256": "07280e45ecb5920c9ea34dd2af9307dd3bbb900e6f1414bc6c448a2368a5658a"
     },
     {
       "path": "src/emu/bench-vehicle-states.json",
@@ -548,6 +903,11 @@
       "sha256": "d911e0cf7d4bdc08d879aebd8ce86ce02f77ceb99ab5a96506061d3db75b12dd"
     },
     {
+      "path": "src/emu/console-darwin.html",
+      "bytes": 26154,
+      "sha256": "8a4f8f82ceb901d59bfee879f1d2f9e6daf95f3edd018bb190d8ec567b536226"
+    },
+    {
       "path": "src/emu/console.html",
       "bytes": 26041,
       "sha256": "fcaddde7ad0f92509cc2abb032e7d53343f1a415f6c2d1c89715d313304f2a44"
@@ -569,13 +929,13 @@
     },
     {
       "path": "src/emu/eqos_platform.py",
-      "bytes": 62028,
-      "sha256": "a2e94ba8cdf74dc8d24952f9bc3c150ded6de6ca8c3f9ab4963b9dc485544dd7"
+      "bytes": 62994,
+      "sha256": "00a8742828ed9afc3be60a149da36cfd489335c1aa6062664265dc5d4225db23"
     },
     {
       "path": "src/emu/exynos-auto9-88q2112.inc.c",
-      "bytes": 5434,
-      "sha256": "5b70b5c45c664c3fd2221320733cc9c3e00ea5da3a7752b766c94d5d09da2e30"
+      "bytes": 5412,
+      "sha256": "25f2dfdc36b61935778826e8c59165e4bf85885507c980007d0fe82fad98bc7e"
     },
     {
       "path": "src/emu/exynos-auto9-abox-gic.inc.c",
@@ -663,9 +1023,14 @@
       "sha256": "5ef55c885a429e5a9fa156319210b2045eadb3c79ef1634b0fab2f0b9a680593"
     },
     {
+      "path": "src/emu/exynos-auto9-eqos-net.inc.c",
+      "bytes": 12078,
+      "sha256": "808267ed85cc1257b57f8e0967b0072121990102f8c69e2952321bc343cd9dd5"
+    },
+    {
       "path": "src/emu/exynos-auto9-eqos.inc.c",
-      "bytes": 32753,
-      "sha256": "85f5f403b20014c1916323e4fced7f42f029c015e4d82790f579c95a94e2f78f"
+      "bytes": 40791,
+      "sha256": "d044138194add15437b3e6f98ec5439d83cbdb023e44a9923bbcfc948cc54bfb"
     },
     {
       "path": "src/emu/exynos-auto9-g2d-reset.inc.c",
@@ -674,8 +1039,8 @@
     },
     {
       "path": "src/emu/exynos-auto9-gic-ufs-observer.inc.c",
-      "bytes": 5462,
-      "sha256": "f9317e3d91d0053adf381f047fae9bcefd58bb25d8afbb0b1f4aba2f685406cf"
+      "bytes": 6058,
+      "sha256": "1acc3618c447a54e2e77ba82054c23b329fe6c11956bbe095629f54bd9ecdbdf"
     },
     {
       "path": "src/emu/exynos-auto9-gpio.inc.c",
@@ -914,13 +1279,18 @@
     },
     {
       "path": "src/emu/gl-forward/egl-client.h",
-      "bytes": 12481,
-      "sha256": "c8d18d9e5e7e22157ce0f180b0eca81b5922fdaceb8a3bf73ce4f8e4485927d8"
+      "bytes": 13941,
+      "sha256": "902eee13fb932d7558e24b083fbc19d03551f46ade704efa6511b8afa34b26e1"
     },
     {
       "path": "src/emu/gl-forward/egl-fixture.c",
       "bytes": 4675,
       "sha256": "03947e01a035d76d3a6abb62cb5a90f1af0462ccbeb80bf50a30658a30a70fc3"
+    },
+    {
+      "path": "src/emu/gl-forward/egl-host-darwin.h",
+      "bytes": 19208,
+      "sha256": "6f18bd437154dbec736b3a1a052a272c94fc6a4f1f46e6ecc92d1c16195a7853"
     },
     {
       "path": "src/emu/gl-forward/egl-host.h",
@@ -939,18 +1309,28 @@
     },
     {
       "path": "src/emu/gl-forward/fd-transport.h",
-      "bytes": 6291,
-      "sha256": "e761adc26b21b4a45f5bcc2f72eb29876dd87a5bb405fa894bf24d63866b8f95"
+      "bytes": 6408,
+      "sha256": "74ca5ec1a0c177e7ab6c784d1248a4576a870e9d78fa58ba5ec894f30cf23497"
+    },
+    {
+      "path": "src/emu/gl-forward/gl-buffer-map-host.h",
+      "bytes": 4933,
+      "sha256": "cc33538506718ccf6b93988006359e49a7b212e7e59367c91178f704c061a6ca"
     },
     {
       "path": "src/emu/gl-forward/gl-procs.inc",
-      "bytes": 3041,
-      "sha256": "24b792c7f9943207cb348c5416eec6a31dd9a912383ecb0ca45f575d671ab7a0"
+      "bytes": 3786,
+      "sha256": "f5ca9fcf6980ce375f1d13b7f7ba5be0dd54276948276897780fe486bd1467f9"
     },
     {
       "path": "src/emu/gl-forward/gles-client.c",
-      "bytes": 21187,
-      "sha256": "7f445fc628c2f3904605d54a775e3e6e9e30424b1192189ada7a9cb4e2d6090f"
+      "bytes": 30401,
+      "sha256": "1fe47514c40c859be80740d5fecc7533ff62f1fb96eb331278d86c67b346ab60"
+    },
+    {
+      "path": "src/emu/gl-forward/glhost-darwin.c",
+      "bytes": 54588,
+      "sha256": "48f4b7eb95537bc02bbc6db2b890e1ae68063e0f85f5b6b4ad6c917d1789bf73"
     },
     {
       "path": "src/emu/gl-forward/glhost-win32.c",
@@ -966,6 +1346,11 @@
       "path": "src/emu/gl-forward/hmi-agent.c",
       "bytes": 9529,
       "sha256": "39cbb1b19ff04347da738751e936dfe8eae29516c2f689f78951b38f1057fc6e"
+    },
+    {
+      "path": "src/emu/gl-forward/hmi-runtime-inputs-darwin.json",
+      "bytes": 1465,
+      "sha256": "011fef58c93b132e7082972a80930c7f8998b947e0dafda5a81e5b45fb43dc4a"
     },
     {
       "path": "src/emu/gl-forward/hmi-runtime-inputs.json",
@@ -998,6 +1383,11 @@
       "sha256": "94b72a02fae9a4a14424b087bb7eb76734b74793681b3e748aed861eb3b425d9"
     },
     {
+      "path": "src/emu/gl-forward/native-readback-host.h",
+      "bytes": 3256,
+      "sha256": "10f317ddfce34f6a3833d606edc72ed4c6d7a2495cb2a291d66d40aa45a9b227"
+    },
+    {
       "path": "src/emu/gl-forward/native_frames.h",
       "bytes": 1787,
       "sha256": "1fe602800b0da3a42e1b870bc21473f52b7d7c3ce81a63beb7d54d3a3b3f5724"
@@ -1008,9 +1398,39 @@
       "sha256": "0f224da1e8355201e9b8f4e0e41fc6e79e8d43cd066e98e0db3b744ffcd4e484"
     },
     {
+      "path": "src/emu/gl-forward/qnx-abi-probe.c",
+      "bytes": 1927,
+      "sha256": "118d5780abb9329f966070d89f40c4aecb96398d8f7627ea66f72bbee89ebf52"
+    },
+    {
+      "path": "src/emu/gl-forward/qnx-buffer-map.h",
+      "bytes": 3101,
+      "sha256": "498aad6414bb712851b8e5d5b4f6b966e08f20ae90d910af9d0c5bafcc318b66"
+    },
+    {
+      "path": "src/emu/gl-forward/qnx-required-gl-procs.inc",
+      "bytes": 3926,
+      "sha256": "8d35cdcde91431182de6ada2b510fa558f25dfed4e3d7f28cb0099a7f318a0ff"
+    },
+    {
+      "path": "src/emu/gl-forward/qnx-required-gl.inc",
+      "bytes": 14431,
+      "sha256": "4413f534419d8a59362531ec62b11be8ec5a54d65a4b72c975ee7e7b7128c44b"
+    },
+    {
+      "path": "src/emu/gl-forward/qnx-transport.h",
+      "bytes": 17839,
+      "sha256": "b0867dfccc743dfa2e0a3cb8bb13b6628e56eca4185cdb2835a792b9676917b2"
+    },
+    {
       "path": "src/emu/gl-forward/reserve-guest.py",
       "bytes": 2633,
       "sha256": "699d4fb813c1042ea3ee4adcd59ca1c96b42be171a00102622e2fb297db40b66"
+    },
+    {
+      "path": "src/emu/gl-forward/runtime-darwin.py",
+      "bytes": 15418,
+      "sha256": "671fa16b714e93e17354d33cdb85914dba5e161ce2691a49da2955d653f3989b"
     },
     {
       "path": "src/emu/gl-forward/runtime-inputs.json",
@@ -1031,6 +1451,11 @@
       "path": "src/emu/gl_center_live.py",
       "bytes": 7847,
       "sha256": "876c07b5bf25109018cf2506d933a0ef9040428356e5fd83ca4c0482ecbf1e20"
+    },
+    {
+      "path": "src/emu/gl_center_live_darwin.py",
+      "bytes": 7381,
+      "sha256": "255af92cbc97738898f62806d06b12cbfcc44e9fc285a04d49aaf4c4f526b69c"
     },
     {
       "path": "src/emu/inspect_boot_crash.py",
@@ -1143,6 +1568,11 @@
       "sha256": "4f05577715118b67375ca7b625522648e94fcc8129a83ce6447fc253b7660904"
     },
     {
+      "path": "src/emu/macos_process.py",
+      "bytes": 511,
+      "sha256": "0b506ac88c52e3a39f0661994511110bb37fab1a834ceaec05cbaa10138fd6e6"
+    },
+    {
       "path": "src/emu/mali_g3d1_platform.py",
       "bytes": 12655,
       "sha256": "eaf5cdbc5cb9f49d60fb244dc6e1708343d1c355b95baa1d4ec680747a220706"
@@ -1153,9 +1583,19 @@
       "sha256": "50cdc02f73244fbea960d9d04cd7833346e903eb9fc46a3d44269f677c434fdc"
     },
     {
+      "path": "src/emu/native-touch-relay.c",
+      "bytes": 2862,
+      "sha256": "93d9d27a9642f64cc15696cd0e43570e330bbeece8fe7424cb52aad656c5deda"
+    },
+    {
       "path": "src/emu/native_center_live.py",
       "bytes": 9524,
       "sha256": "8d72ab98e8504a5f9f235df58bc769603cec7abea6a18233c61845ae706b0e02"
+    },
+    {
+      "path": "src/emu/native_center_live_darwin.py",
+      "bytes": 7612,
+      "sha256": "1d47578d41e93e0aaa62009e776b38987e1c893ea5ed775e55b539800364bdc2"
     },
     {
       "path": "src/emu/native_center_window.py",
@@ -1183,6 +1623,21 @@
       "sha256": "f474354e7c44191e3233e819e67d18a3b1792c9a00dce6a75c53b7f8f6119f55"
     },
     {
+      "path": "src/emu/native_offline_console_darwin.py",
+      "bytes": 18795,
+      "sha256": "44a6b56e29a28ac49ad9a77a966ef1eb9b6fd6c253d23b12ffd2a93edada72c1"
+    },
+    {
+      "path": "src/emu/native_psci_watch.py",
+      "bytes": 6054,
+      "sha256": "6a8666db2724c2b5195035429a08879c05494603f1b215116b2d96590f5ffeb2"
+    },
+    {
+      "path": "src/emu/native_touch_stage.py",
+      "bytes": 3956,
+      "sha256": "db042495133c6766c319d82c53c90f5b6849d00bd8f0b40a2bb0ad563ad7a821"
+    },
+    {
       "path": "src/emu/native_uart_console.py",
       "bytes": 6088,
       "sha256": "0f3441950377106dcba31940859658e6a61790aaf69b7cc9ca5ceadb36f61d91"
@@ -1199,8 +1654,8 @@
     },
     {
       "path": "src/emu/offline_android_seed.py",
-      "bytes": 3538,
-      "sha256": "551c7c9bf0f69d3d63ccaecc3dbf65c22dbbd0d4748661b86b38000d967bc1c3"
+      "bytes": 5621,
+      "sha256": "c0f786352cf0ecc38c4c034500b003977172be7bc3bfd4fe5e8060c100502bf1"
     },
     {
       "path": "src/emu/offline_android_waits.py",
@@ -1213,14 +1668,19 @@
       "sha256": "c2354419fec546a26522fbd58cf84972638dc3ddbcc6a983365f1bb43d9e74b0"
     },
     {
+      "path": "src/emu/offline_bench_hmi_darwin.py",
+      "bytes": 25496,
+      "sha256": "b6a3e863c2da4bc7faa8bf7db412888506b8ef4e185f78f7e171faf53efb0a02"
+    },
+    {
       "path": "src/emu/offline_clock.py",
       "bytes": 1140,
       "sha256": "00164d0d45c8b6328b5f561b521541ba68f05f932a7d9b5c85ed2fb98f223d8c"
     },
     {
       "path": "src/emu/offline_development.py",
-      "bytes": 19427,
-      "sha256": "dd5bbd9eed01331153911a25fbef59ca3b91868493c818bd5b45417a9ad96a5e"
+      "bytes": 20986,
+      "sha256": "295bfad27f12863f82b4252138281141a796c7f0a36b56c29c961a1e9b117979"
     },
     {
       "path": "src/emu/offline_id3_config.py",
@@ -1244,8 +1704,8 @@
     },
     {
       "path": "src/emu/offline_preinit.py",
-      "bytes": 10362,
-      "sha256": "521a00126bfba2b96362d7984460c954f8af4374d0c62d961fd48384d2fdefa5"
+      "bytes": 10660,
+      "sha256": "aa81c6240dd40153e26b38f594ab7d7faf2772a071e1ece6f555adc9ce79fae7"
     },
     {
       "path": "src/emu/offline_software_keystore.py",
@@ -1259,13 +1719,13 @@
     },
     {
       "path": "src/emu/original_8704_vm.py",
-      "bytes": 66249,
-      "sha256": "13bb82e0f1d7169d2dd339ac39d222d20782b669268dda5e37f91e2db840020c"
+      "bytes": 66526,
+      "sha256": "e62e85c6f795cf6f6ed441909f58bc266423ccf09d994703e73d0d4087f1d98b"
     },
     {
       "path": "src/emu/patch_qemu_exynos.py",
-      "bytes": 88704,
-      "sha256": "599249edc73b57d2db7081b77250124ffdfe1f33cd6b6c515150226cdf117a5f"
+      "bytes": 89159,
+      "sha256": "321eabe4d7627e821bb9b37b1214962cdaaf53428b07223e4da624e69d395f2a"
     },
     {
       "path": "src/emu/patch_qemu_xtensa_audio.py",
@@ -1348,9 +1808,19 @@
       "sha256": "1d3aee7021bfb6a336786712bd5caff07401e26170432a25dad394df1a82d884"
     },
     {
+      "path": "src/emu/qnx_gl_forward.py",
+      "bytes": 18773,
+      "sha256": "1cf270bc79383e61a8bb068d496c9e8388a1a17a9cb4d67c988125f6cfb56f51"
+    },
+    {
       "path": "src/emu/qnx_hud_startup.py",
-      "bytes": 3956,
-      "sha256": "2b4531f1b6f0633b0a1faf8242766320e36013ae427e343a22cb4531fc0344c3"
+      "bytes": 4248,
+      "sha256": "38012e1877eb6e151ec57199afb97ad1b570e95f564fddc4ab59dbbe4f316734"
+    },
+    {
+      "path": "src/emu/qnx_mcu_uart.py",
+      "bytes": 8426,
+      "sha256": "100e489c89a2d8ca17b344d7161ae90dd9c69752cc44588ea3d6f52b78039cf1"
     },
     {
       "path": "src/emu/qnx_native_display.py",
@@ -1366,6 +1836,11 @@
       "path": "src/emu/qnx_tmu_platform.py",
       "bytes": 13047,
       "sha256": "dc929324a14231c4f3b6ab30a10a8309ba178dd21390e4ff9a372296983ad784"
+    },
+    {
+      "path": "src/emu/qnx_vci_startup.py",
+      "bytes": 1067,
+      "sha256": "554f12e5540901b6fd832a24bf463547c85a25277c2d930e78c8e81f3fe55caa"
     },
     {
       "path": "src/emu/scaler_reset_platform.py",
@@ -1638,6 +2113,11 @@
       "sha256": "b940f05990f75176eb879133d87dde11c831ef0a83e61ebdf23ed751529e4bed"
     },
     {
+      "path": "src/emu/ufs_virtual_disk_darwin.py",
+      "bytes": 23243,
+      "sha256": "ac96b195205387f6dd0007e080dccbb7ea2381be2a3c6fccb0d09cc6632316ce"
+    },
+    {
       "path": "src/emu/usi_i2c_platform.py",
       "bytes": 15395,
       "sha256": "d821a55dcffe8b5ca43d5af0eaccfa78fb1442b336874e178b9754b94295c8d0"
@@ -1653,6 +2133,11 @@
       "sha256": "6d729388c6093f9a65db3e25bcff8a3e721d5b24a6064beb2ca86891499e3c1f"
     },
     {
+      "path": "src/emu/vlm_offline_live_darwin.py",
+      "bytes": 286157,
+      "sha256": "7d9990c0ad31f72524de79cb9168c253f0282a9d006c487d63fdf76691483ec6"
+    },
+    {
       "path": "src/emu/vlm_platform.py",
       "bytes": 268279,
       "sha256": "874e5d8e4e9a590bab302ef7fd38735ed69edb04b75d52069db75fbd14614c1f"
@@ -1666,6 +2151,1151 @@
       "path": "src/firmware/inspect_debug_device_tree.py",
       "bytes": 3563,
       "sha256": "d0345f32b85943c15cfe84694f503e7aa57a6d33ae96af187a6f1196fac82eab"
+    },
+    {
+      "path": "src/hvf_android/LICENSE",
+      "bytes": 1432,
+      "sha256": "4730d85bcefeb04a8f6473d7f81486da9aef5d9f85088ed6819cd6d486ab2c6b"
+    },
+    {
+      "path": "src/hvf_android/build/domain-tap",
+      "bytes": 5624,
+      "sha256": "23611e77bf68f1dd4a7470e7f8a2c8a8c5274e40a5c8ad6f7805b4dc816978da"
+    },
+    {
+      "path": "src/hvf_android/build/gralloc.bench.so",
+      "bytes": 826632,
+      "sha256": "093aa40ea933db90ece31fdbe5f5b86cd01b3b255308f6321f0bb61f7380cfa2"
+    },
+    {
+      "path": "src/hvf_android/build/hwcomposer.bench.so",
+      "bytes": 29224,
+      "sha256": "16503e8e5d620d28ded5969bd016e98ac04cd81b04c118cb91fdee691ed47dbe"
+    },
+    {
+      "path": "src/hvf_android/build/keystore-software",
+      "bytes": 447770,
+      "sha256": "0ad4c29c8f217cac38851a024ae1cd712c6989cbd2bfc9bc546ba3f122532aaa"
+    },
+    {
+      "path": "src/hvf_android/build/keystore-software.json",
+      "bytes": 737,
+      "sha256": "2c6fedd058e3678a158ef9bf09e6de5dfcdaecc9b7d03b46441b09279166b58d"
+    },
+    {
+      "path": "src/hvf_android/frame.py",
+      "bytes": 2149,
+      "sha256": "a4e5c618ebed5adc8315e82cabc5482ef9f9a577edc2d235c7b546d13e32896d"
+    },
+    {
+      "path": "src/hvf_android/guest/arm32-setup.sh",
+      "bytes": 588,
+      "sha256": "041d6c4a71359e5ec09ffade71ec3e0836a32a967ec8bbe2dd285ed9cc9cf47c"
+    },
+    {
+      "path": "src/hvf_android/guest/control.sh",
+      "bytes": 396,
+      "sha256": "82798cb42faaca139f7375acec4304d83bb3aa9d4f42a6ed1e251331162c5289"
+    },
+    {
+      "path": "src/hvf_android/guest/framework-setup.sh",
+      "bytes": 6711,
+      "sha256": "030678c1ac378e68f3f4649a141a5122a1bf53f76dfafee5f987c9aac38fc861"
+    },
+    {
+      "path": "src/hvf_android/guest/network.sh",
+      "bytes": 1657,
+      "sha256": "15730ff5d1bf5f472fbdaa10967bf7470665f9b0fe3eeadd3d51486831e69917"
+    },
+    {
+      "path": "src/hvf_android/guest/probe-init.sh",
+      "bytes": 2885,
+      "sha256": "ae7c990e0b7ce2343618541bba60a0d15cdefdeb16c2066cbd4121f70d36f097"
+    },
+    {
+      "path": "src/hvf_android/local/link/libc.so",
+      "bytes": 978264,
+      "sha256": "46164595086e73447460c3384b01fb4a0a956d23e4870182dba0d4774696957d"
+    },
+    {
+      "path": "src/hvf_android/local/link/libcutils.so",
+      "bytes": 70456,
+      "sha256": "f891555e3f0b7743b537520a0aa8267c2ca134153b345fca668c19c861059a4d"
+    },
+    {
+      "path": "src/hvf_android/local/link/libdl.so",
+      "bytes": 14176,
+      "sha256": "cf34c08cb33b841e96c6005a8de1509f9175c61e0f4db94bff04e861493e2ad0"
+    },
+    {
+      "path": "src/hvf_android/local/link/libhardware.so",
+      "bytes": 11232,
+      "sha256": "bf8628edb011bd14cb9ea595b29243e68151f49647f1e650bc9944c9624ebe13"
+    },
+    {
+      "path": "src/hvf_android/local/link/liblog.so",
+      "bytes": 72008,
+      "sha256": "568fc7cd164deabd8fa6b5351683c5f6d7b63fc69b6bebc33870635b3630ec8f"
+    },
+    {
+      "path": "src/hvf_android/local/link/provenance.json",
+      "bytes": 1179,
+      "sha256": "6b3293332a278c990eb3bcfe4ac7d04378078d87bc5376058d0deba4a10085ac"
+    },
+    {
+      "path": "src/hvf_android/media.py",
+      "bytes": 3042,
+      "sha256": "fb106a2bddd27c8f308a92e1fd6f768ad57b26e2f8cff212a176023883b32deb"
+    },
+    {
+      "path": "src/hvf_android/native/arm32-exec.c",
+      "bytes": 1055,
+      "sha256": "5ffe5e814987d55429a5be2b6a6fe0c1c0987297c5702658c8118766c6adda19"
+    },
+    {
+      "path": "src/hvf_android/native/domain-tap.c",
+      "bytes": 2930,
+      "sha256": "2928aadfe1162fcf19155215abd537e9fda9773e8c101c3daccbfb31d9245bc9"
+    },
+    {
+      "path": "src/hvf_android/native/gralloc-bench.c",
+      "bytes": 5934,
+      "sha256": "49c18e9b78ed5f49b2171b350bdda2c34db5e948ee0e361667943e2fde03f2b3"
+    },
+    {
+      "path": "src/hvf_android/native/hwc2-headers-provenance.json",
+      "bytes": 531,
+      "sha256": "c181dbcfadb5cf338fb82f58285d153e10d415e8b1dfd92d8837fc501cad5553"
+    },
+    {
+      "path": "src/hvf_android/native/hwcomposer-bench.c",
+      "bytes": 11202,
+      "sha256": "d5dc25129a05ceed9519a08e11bf77ca7a2debba308c98c526c5fd64b1b12ed6"
+    },
+    {
+      "path": "src/hvf_android/native/include/cutils/native_handle.h",
+      "bytes": 2922,
+      "sha256": "a41ac0296d0ed09b034a8759753cab9369d14a9441d0ef1682ef8a95d5f01ea3"
+    },
+    {
+      "path": "src/hvf_android/native/include/hardware/fb.h",
+      "bytes": 5548,
+      "sha256": "2b23a40596f20c85d59dda0bd68869be87019043f99f6360a0bcc2814353870f"
+    },
+    {
+      "path": "src/hvf_android/native/include/hardware/gralloc.h",
+      "bytes": 15522,
+      "sha256": "0a11f494b3977978c318177b88a38e0164f23ed33d6d5ef08fb65dfb185ecb6b"
+    },
+    {
+      "path": "src/hvf_android/native/include/hardware/hardware.h",
+      "bytes": 8063,
+      "sha256": "05cc2f0108d6c87e36384380559943d34acd104e3c2ade9aeba4415cfb23aee8"
+    },
+    {
+      "path": "src/hvf_android/native/include/hardware/hwcomposer.h",
+      "bytes": 34855,
+      "sha256": "e7632e93e090e3d0321315766abde924bbfd7f405471cbd188545b1a80e1298a"
+    },
+    {
+      "path": "src/hvf_android/native/include/hardware/hwcomposer2.h",
+      "bytes": 138838,
+      "sha256": "b9692465ab7cf6991841a60b90cccbd32fe534ca93f48721d665f8a0f3d47260"
+    },
+    {
+      "path": "src/hvf_android/native/include/hardware/hwcomposer_defs.h",
+      "bytes": 11740,
+      "sha256": "231a19dc77192167118007157e83ab40f825857e7a9cee497111fb45e4b3c46e"
+    },
+    {
+      "path": "src/hvf_android/native/include/sys/cdefs.h",
+      "bytes": 42,
+      "sha256": "f17440075eaa40e3d696892d98f12e0eead346578f83cb31965c667c8d784e2b"
+    },
+    {
+      "path": "src/hvf_android/native/include/sys/types.h",
+      "bytes": 61,
+      "sha256": "557e511fecf69663e7162388539f2e81d07873b6e0be28cf178fe91cc5d5f526"
+    },
+    {
+      "path": "src/hvf_android/native/include/system/graphics.h",
+      "bytes": 194,
+      "sha256": "c35957f8942771d647cab4c913807ebdce2d0ba9f540728db4cf99923910028f"
+    },
+    {
+      "path": "src/hvf_android/platform_manifest.py",
+      "bytes": 1682,
+      "sha256": "88b194dfa37190551862ec9c6528110fc23b32785010fcb46e57a68bef39e38a"
+    },
+    {
+      "path": "src/hvf_android/probe.py",
+      "bytes": 6837,
+      "sha256": "86d1d426d17821990206aa0a31cab01325d67adfea732c4db59a6bba32212208"
+    },
+    {
+      "path": "src/hvf_android/runtime/arm32/COPYING",
+      "bytes": 17880,
+      "sha256": "dd3ce02338c3a48abb6ba59b48809f7108a8bd242cb0cc8be90daafa30707c28"
+    },
+    {
+      "path": "src/hvf_android/runtime/arm32/COPYING.LIB",
+      "bytes": 26415,
+      "sha256": "31c90ce76b6f5aab90a205851e71d5c27e31c0aa3d7017a4383b98a6fe3f1faa"
+    },
+    {
+      "path": "src/hvf_android/runtime/arm32/arm32-exec",
+      "bytes": 67504,
+      "sha256": "d5aa1d75118cfb71c2b5d7057bc56e3d826b9e10fd451f8ddfd3e4f972db856a"
+    },
+    {
+      "path": "src/hvf_android/runtime/arm32/dependencies.txt",
+      "bytes": 346,
+      "sha256": "addd10dbf76ba890736302b0736355ea7cc87a3fbe84a71d2a42bd217a65bf33"
+    },
+    {
+      "path": "src/hvf_android/runtime/arm32/native-build.json",
+      "bytes": 2613,
+      "sha256": "6175053284ca1c1a764f1cffdb384515ed17a5f283768a49727ce9a6fcc1695e"
+    },
+    {
+      "path": "src/hvf_android/runtime/arm32/qemu-android-abi.patch",
+      "bytes": 3097,
+      "sha256": "da3843159dc358c818fb8bbcf42d251865b171aee966642f20be2457cd2f16e7"
+    },
+    {
+      "path": "src/hvf_android/runtime/arm32/qemu-arm",
+      "bytes": 3283008,
+      "sha256": "8854397ef2fe43065169baade1ecb6a98215c9789708613b47443c710d713d23"
+    },
+    {
+      "path": "src/hvf_android/runtime/arm32/qemu-libs/ld-musl-aarch64.so.1",
+      "bytes": 723480,
+      "sha256": "652a04bcb0326733f762eca799887bbc9e070df0a0d6668238769f6dfcdc77c2"
+    },
+    {
+      "path": "src/hvf_android/runtime/arm32/qemu-libs/libglib-2.0.so.0",
+      "bytes": 1445168,
+      "sha256": "5708c608ecf9ecad77c467cd9b8316bf385e7186cb0358f14f2d4e601e92799a"
+    },
+    {
+      "path": "src/hvf_android/runtime/arm32/qemu-libs/libintl.so.8",
+      "bytes": 198408,
+      "sha256": "8c2588462fad390737fb2bf4bb474642e60e728e6f94c3eff9ce55c21eff1831"
+    },
+    {
+      "path": "src/hvf_android/runtime/arm32/qemu-libs/libpcre2-8.so.0",
+      "bytes": 788464,
+      "sha256": "070987f1cfe8cd02a5f188913e4562906dffc9dae12461c996ef2d422901c3b3"
+    },
+    {
+      "path": "src/hvf_android/runtime/arm32/qemu-libs/libz.so.1",
+      "bytes": 133008,
+      "sha256": "5f05cb927503c68316a56a1588611cb72b7d05c160b780d92bfa6b8cfccda762"
+    },
+    {
+      "path": "src/hvf_android/runtime/kernel/COPYING",
+      "bytes": 18693,
+      "sha256": "af8067302947c01fd9eee72befa54c7e3ef8a48fecde7fd71277f2290b2bf0f7"
+    },
+    {
+      "path": "src/hvf_android/runtime/kernel/Image",
+      "bytes": 26210816,
+      "sha256": "22d5678eecbced78556e4a44293a15bcac54feb3364fecdd392ab6551c112650"
+    },
+    {
+      "path": "src/hvf_android/runtime/kernel/kernel.config",
+      "bytes": 146616,
+      "sha256": "97273c3403db5d6448d5e4a60a5bbbc766b54568506f91567038b8266b5552e4"
+    },
+    {
+      "path": "src/hvf_android/runtime/kernel/provenance.json",
+      "bytes": 658,
+      "sha256": "196f2783fd4364ffbff1cdcded5b1c09a7fe5e77203dd56a8507354b8c892cd7"
+    },
+    {
+      "path": "src/hvf_android/runtime/mapper/android.hardware.graphics.allocator@2.0-impl.so",
+      "bytes": 24912,
+      "sha256": "e9ddd342b5e86923abe89cfb51786c204a5878e32b1d52a3062fc7e3f7d11bb1"
+    },
+    {
+      "path": "src/hvf_android/runtime/mapper/android.hardware.graphics.allocator@2.0-service",
+      "bytes": 11584,
+      "sha256": "3cd4865412585a79ae34dcbf6c4c7e77fd303e5a183973650da8bc43425a338b"
+    },
+    {
+      "path": "src/hvf_android/runtime/mapper/android.hardware.graphics.mapper@2.0-impl.so",
+      "bytes": 34432,
+      "sha256": "74ed457539df186142af4ad259cfe3975829e49b01ba13ab8c83ea62666bead9"
+    },
+    {
+      "path": "src/hvf_android/runtime/mapper/android11-dependencies.json",
+      "bytes": 1263,
+      "sha256": "28542684c31dc3aa3f399799a4d5609436c33113e1c63a945f9bf0527d6778c3"
+    },
+    {
+      "path": "src/hvf_android/runtime/mapper/provenance.json",
+      "bytes": 1222,
+      "sha256": "2745a15fff5aa0644a895e1592ebc022e9ca081798c8c1dc785c92c55ef2aa08"
+    },
+    {
+      "path": "src/hvf_android/runtime/modules/provenance.json",
+      "bytes": 1705,
+      "sha256": "a16666cd58acd5eec30c07e3da0f68e8005310c8fbf6a6efe83bb5d07bff05c6"
+    },
+    {
+      "path": "src/hvf_android/runtime/modules/virtio-rng.ko",
+      "bytes": 220672,
+      "sha256": "be5ef3b9d46c552ed218e044bdc6a1fa9044453e43af9e9ab00781dcd6a84219"
+    },
+    {
+      "path": "src/hvf_android/runtime/modules/virtio_blk.ko",
+      "bytes": 367696,
+      "sha256": "bdccc4d9f29ded33852187580341c89303602f444d6a0ed0bb6e2f8991ada158"
+    },
+    {
+      "path": "src/hvf_android/runtime/modules/virtio_console.ko",
+      "bytes": 519816,
+      "sha256": "6fd0a39a331cc638860ab2f137d4d65e70260487c155265fc8fc143648243475"
+    },
+    {
+      "path": "src/hvf_android/runtime/modules/virtio_mmio.ko",
+      "bytes": 313592,
+      "sha256": "dbb6e2cb6815243ff8595a1c8385067a876e4f16297383fe2a857d47852e9912"
+    },
+    {
+      "path": "src/hvf_android/runtime/renderer/libEGL_swiftshader.so",
+      "bytes": 2723168,
+      "sha256": "bff96edc9965e7889db7cd770fc2305e6f8f2d3b46f9c527825e04be4c9d8760"
+    },
+    {
+      "path": "src/hvf_android/runtime/renderer/libGLESv1_CM_swiftshader.so",
+      "bytes": 13412832,
+      "sha256": "fc4e2ced2010f4fb7b5125e701ed11fadaaa85e275f34438cac2b0d1f8e6c2b3"
+    },
+    {
+      "path": "src/hvf_android/runtime/renderer/libGLESv2_swiftshader.so",
+      "bytes": 14037264,
+      "sha256": "e415dd4b2c5a9a3075078645c243c6eafe3dee59998e30060a503bef62768e8d"
+    },
+    {
+      "path": "src/hvf_android/runtime/renderer/provenance.json",
+      "bytes": 1476,
+      "sha256": "5b97a47145699e67d12dfd053702b0da144debf09ca52c589da0542965ceab4f"
+    },
+    {
+      "path": "src/hvf_bench/LICENSE",
+      "bytes": 1084,
+      "sha256": "b7608db088187942f84e7f703733ff8986b9ea48faad1e8827b776d4a2e0bb8b"
+    },
+    {
+      "path": "src/hvf_bench/build/bench-platform.jar",
+      "bytes": 50678,
+      "sha256": "143059afe140a9f0aa8b6e088f11b336937a494c010b683371c9d57b5b8cabd4"
+    },
+    {
+      "path": "src/hvf_bench/build/libegl-forward-bridge.so",
+      "bytes": 19784,
+      "sha256": "8d2e48bb77716bfc64a9a24dbaede74d5a7c0664485e3c75375d56dc5fd36bda"
+    },
+    {
+      "path": "src/hvf_bench/build/libmali.so.0",
+      "bytes": 2736,
+      "sha256": "7711e75f0ae1062dd04decc4c5c94a2ae79727dc0b1be7818baa84a05910a673"
+    },
+    {
+      "path": "src/hvf_bench/build/libnavigation-gnss.so",
+      "bytes": 6496,
+      "sha256": "f445f6bba4ff49aa19df09a4d221ac2d1aa5c49cf126c13b7707c6d5ab2fa7c8"
+    },
+    {
+      "path": "src/hvf_bench/build/libunified-touch.so",
+      "bytes": 9152,
+      "sha256": "224a15ce1a4bc80995952d48aa5de7781d75a526ae854f84f46688bc62208f52"
+    },
+    {
+      "path": "src/hvf_bench/build/rem-input.so",
+      "bytes": 9400,
+      "sha256": "ab81d5043bba88c459c039530ccf80ef0bd5013f26132f44e5580f3b48588a44"
+    },
+    {
+      "path": "src/hvf_bench/guest/baseline-init.sh",
+      "bytes": 152,
+      "sha256": "6982c74cb41f7ae4f181ece5bcdf69bdb2bc603a4ae129cbeec65bfb37355624"
+    },
+    {
+      "path": "src/hvf_bench/guest/display-map-apply.sh",
+      "bytes": 674,
+      "sha256": "db2ef0ca3f9edb5cff9f9b9c35179e83ad628e9540b5845eaad1b4e96c8e6be8"
+    },
+    {
+      "path": "src/hvf_bench/guest/display-map-setup.sh",
+      "bytes": 2671,
+      "sha256": "8e436d4f1cb9eceb7d9cdf9557eb2fc9b4fe428cac28bb6018517d047899c369"
+    },
+    {
+      "path": "src/hvf_bench/guest/display-setup.sh",
+      "bytes": 3541,
+      "sha256": "604a9ac8192d2851c4a07bddae37fd7281e1767cec3a0a8ff31fdec0e27fc5a6"
+    },
+    {
+      "path": "src/hvf_bench/guest/domain-network.sh",
+      "bytes": 643,
+      "sha256": "e3f6384de20b3ca964cbda0344882509648ab090e71fd094c8dec2bdc0d3b3f6"
+    },
+    {
+      "path": "src/hvf_bench/guest/gateway-probe.py",
+      "bytes": 3037,
+      "sha256": "d7a34e7cf69053ac192869e0196943c209b1fe3236cb00796438858ac686975f"
+    },
+    {
+      "path": "src/hvf_bench/guest/gateway-setup.sh",
+      "bytes": 3978,
+      "sha256": "581c69f0af2a32cca116a720aaa6081c64d610fb15db6b3a9f45975258b788d2"
+    },
+    {
+      "path": "src/hvf_bench/guest/hmi-init.sh",
+      "bytes": 15194,
+      "sha256": "51a80514756a0bda474734d25401b57842cbd0bd07f1f6145c0bbf903f1c9e1f"
+    },
+    {
+      "path": "src/hvf_bench/guest/host-clock-setup.sh",
+      "bytes": 1094,
+      "sha256": "3b4ba6fcabb96a7021371fe9fb93805cc13b19e03e746eab33ef333443a27a1c"
+    },
+    {
+      "path": "src/hvf_bench/guest/host-clock.py",
+      "bytes": 4293,
+      "sha256": "6fb83016235241ffa76ca5420f3b8b4904f5677e3c37b1d403194852548ff928"
+    },
+    {
+      "path": "src/hvf_bench/guest/native-pointer.py",
+      "bytes": 2335,
+      "sha256": "86a05b3b03a428ec6eb3beea7e3ed6a6aa6a877a25f77fe6eed04b547569bf07"
+    },
+    {
+      "path": "src/hvf_bench/guest/native-rsi-setup.sh",
+      "bytes": 1386,
+      "sha256": "76fb3300a406a5fe1fade85eee30462e9f9f4962fc11a54d1e035430724e6b06"
+    },
+    {
+      "path": "src/hvf_bench/guest/navigation-log.py",
+      "bytes": 1001,
+      "sha256": "a5fe93336d6c582f74240aa5ead680bad4e54786b5abf86a1227886f8fd6cac5"
+    },
+    {
+      "path": "src/hvf_bench/guest/navigation-memory.sh",
+      "bytes": 670,
+      "sha256": "7a391fd159346f25a232379a3418bf9eddeea9137b9d016392da33aef419ad38"
+    },
+    {
+      "path": "src/hvf_bench/guest/navigation-motion.py",
+      "bytes": 6103,
+      "sha256": "55b26d80bc38133d15b8a51211e96a564126f70160e8236a7f79f1c0af46d334"
+    },
+    {
+      "path": "src/hvf_bench/guest/navigation-network.sh",
+      "bytes": 1186,
+      "sha256": "f16f52f0c8cb1189415763efd4fa139228f0e035e75a1cb9212c0376c34f212a"
+    },
+    {
+      "path": "src/hvf_bench/guest/navigation-run.sh",
+      "bytes": 4883,
+      "sha256": "ff7720d51711e7facc2e5c98535105c218c354df946adc3de6b40ab22bc8dcec"
+    },
+    {
+      "path": "src/hvf_bench/guest/navigation-setup.sh",
+      "bytes": 2373,
+      "sha256": "a485184287239acf1d990384584a319a80a56089f95e89efa31dd17cb1424743"
+    },
+    {
+      "path": "src/hvf_bench/guest/online-service.py",
+      "bytes": 5245,
+      "sha256": "51ada40786b998ad9806a31e2f7a810e91fd6a9351071a086a2004e5b6239812"
+    },
+    {
+      "path": "src/hvf_bench/guest/permission-service.py",
+      "bytes": 4370,
+      "sha256": "a22086b8b69f98efcf7083ec6d353ccd27e97a877781ae4f21ac391220a4b444"
+    },
+    {
+      "path": "src/hvf_bench/guest/platform-readiness.py",
+      "bytes": 10795,
+      "sha256": "309f98f01e95883ae19b05c57597e7c54152989e533bd49086f0e112ead033b1"
+    },
+    {
+      "path": "src/hvf_bench/guest/platform-setup.sh",
+      "bytes": 5396,
+      "sha256": "b6bec4d0ae0a960d20a7d262dbe58541ca11f20645d517bf3a56820fa5892a24"
+    },
+    {
+      "path": "src/hvf_bench/guest/probe-init.sh",
+      "bytes": 1463,
+      "sha256": "854bff278cb3e5db5b1eba12f9d01d3cc73742a4d7fd78f28d59525c0d005513"
+    },
+    {
+      "path": "src/hvf_bench/guest/qnx-gl-relay.py",
+      "bytes": 3389,
+      "sha256": "1e158aac864e6d309334ba9c518ee147b7f39375cda9557bc8c4edf7afad777a"
+    },
+    {
+      "path": "src/hvf_bench/guest/update-service.sh",
+      "bytes": 4794,
+      "sha256": "abeebfc5070be8b674c80682594fb7b8f4a50f4fa37799809ff1d579077d2b88"
+    },
+    {
+      "path": "src/hvf_bench/guest/update-watch.py",
+      "bytes": 1980,
+      "sha256": "0e82c68ecddf3f57f0dbc65158b9fe35f0e111c1c7478c9cb6eb3c06c386fd2e"
+    },
+    {
+      "path": "src/hvf_bench/guest/vehicle-rsi-setup.py",
+      "bytes": 2175,
+      "sha256": "df858458b462b8cd3eaca41923841d6c92c22c4988c6c53d95f160c668510bcc"
+    },
+    {
+      "path": "src/hvf_bench/local/car-configuration.json",
+      "bytes": 34463,
+      "sha256": "36c2f8ec43ee6f54b25daddd047a56151e23c14fff68e303209135386026114f"
+    },
+    {
+      "path": "src/hvf_bench/local/car-hvac-capture.json",
+      "bytes": 51632,
+      "sha256": "6171f43b0bb860ce876871f79f911529db3e6e8cc022b0fd6ddc4c385bbda954"
+    },
+    {
+      "path": "src/hvf_bench/local/compile/8704-provenance.json",
+      "bytes": 247,
+      "sha256": "778d81e322100696e3277084758775a0c83972472ab0e80106697815e74336f1"
+    },
+    {
+      "path": "src/hvf_bench/local/compile/hmi.jar",
+      "bytes": 87868200,
+      "sha256": "c23959ed50dce25d33aa0e8c503533b4a16336a07d26a61270d357d66d5f6c00"
+    },
+    {
+      "path": "src/hvf_bench/local/compile/osgi.jar",
+      "bytes": 12062,
+      "sha256": "69a64d1a1c4dd99b292f9d52af0bb25ad9d6d6b1260f6ce03f7fc7608b43844b"
+    },
+    {
+      "path": "src/hvf_bench/local/ric-id3-coding.bin",
+      "bytes": 25,
+      "sha256": "9ab9f2e91fba6ca5f57e260520de0db537c15556908f36ec7362dbbfed234bc0"
+    },
+    {
+      "path": "src/hvf_bench/local/ric-id3-diagApi.properties",
+      "bytes": 7909,
+      "sha256": "881dfc41c07a7fa8256eec0eebde39d60f1280160ab4d6e255cfce848a6de3d6"
+    },
+    {
+      "path": "src/hvf_bench/local/vehicle-profile.json",
+      "bytes": 1624,
+      "sha256": "80edcb0b8de9651efe094478e1081f1e9beb62156cc63447972a9771eb7c51bd"
+    },
+    {
+      "path": "src/hvf_bench/native/egl-forward-bridge.c",
+      "bytes": 4830,
+      "sha256": "46a2d214c6325abc15c5a7b8023d095109902ac5201d6ec4db118acbc93e10b5"
+    },
+    {
+      "path": "src/hvf_bench/native/guest-tcp-relay/main.go",
+      "bytes": 4580,
+      "sha256": "dbde9dd04812b8a8d13ff8e4fbcafde15e029083bf38727c684a2d24527d24b4"
+    },
+    {
+      "path": "src/hvf_bench/native/mali-compat.c",
+      "bytes": 275,
+      "sha256": "95d9f611c2af58a0d88dd30968175db65a994206936c1311af727d28d3475995"
+    },
+    {
+      "path": "src/hvf_bench/native/missing-ioctl-backoff.c",
+      "bytes": 2890,
+      "sha256": "f129c0f2524026eaea578f42f2fc26e96f19434279d40d810fd19a4e5085c295"
+    },
+    {
+      "path": "src/hvf_bench/native/navigation-gnss.c",
+      "bytes": 4088,
+      "sha256": "317106dda933384756d29c7dd024a94e9399be82f7ae9bab965b56701ac9af6c"
+    },
+    {
+      "path": "src/hvf_bench/native/rem-input.c",
+      "bytes": 2293,
+      "sha256": "84466cbc0923048d2d19a31d14a0b3bba0f354ea16127afe749be18525a26932"
+    },
+    {
+      "path": "src/hvf_bench/native/unified-touch.c",
+      "bytes": 5613,
+      "sha256": "6208f97866f833178d07d2d372e7bdd9d4cc0bd34a74e862fb0c005425b8a7ed"
+    },
+    {
+      "path": "src/hvf_bench/native/virgl-drm-compat.c",
+      "bytes": 1486,
+      "sha256": "8f9ec5362052af0704520926c351108d313644c9c1fdf7ed244a7596f9cea947"
+    },
+    {
+      "path": "src/hvf_bench/platform/BenchPlatform.java",
+      "bytes": 78406,
+      "sha256": "ca728f31e014a65e63d2f70dacf64c287efeea4f0823da7d65f31c44649ff651"
+    },
+    {
+      "path": "src/hvf_bench/reports/boot-download.json",
+      "bytes": 547,
+      "sha256": "7abe8bfceac42ae939d67d0a317da24f1a86a45921a9d8b962b0576e18be994c"
+    },
+    {
+      "path": "src/hvf_bench/reports/mesa/package-plan.json",
+      "bytes": 32612,
+      "sha256": "c64e45bbad13a3c87b4fb302b1a2f532fbe0727b2e00a9126d880eb59fc9a6e4"
+    },
+    {
+      "path": "src/hvf_bench/reports/mesa/runtime-inventory.json",
+      "bytes": 39682,
+      "sha256": "cc64170bdd7cac54060736a2e83d4e22aedfd117097d698b1a3e34b86ee34827"
+    },
+    {
+      "path": "src/hvf_bench/reports/novnc-download.json",
+      "bytes": 10448,
+      "sha256": "be28638a3e9178dbf62cd48e98d90ee0b99449b9f0765b9d1cd3dd2e6f52b3d3"
+    },
+    {
+      "path": "src/hvf_bench/run.py",
+      "bytes": 178,
+      "sha256": "28c6c20562d7d4fc85428f0b018cb35ee494cba9a2a5d9cb9d7d0b94225dcb80"
+    },
+    {
+      "path": "src/hvf_bench/runtime/alpine/initramfs-virt",
+      "bytes": 9404792,
+      "sha256": "189402937646965374ef2df5d37f76467135179ae168c88175df2fe3e264a0b0"
+    },
+    {
+      "path": "src/hvf_bench/runtime/alpine/modloop-virt",
+      "bytes": 17788928,
+      "sha256": "a726889467d1d4fefa4ba1ed710f28b9db1fbd019ca3eba2d4c6c65b33536343"
+    },
+    {
+      "path": "src/hvf_bench/runtime/alpine/vmlinuz-virt",
+      "bytes": 10412544,
+      "sha256": "cd05fed9e617b5df93dc62ece9b78c422fd94e9b432a2f7c092714b139d5eef4"
+    },
+    {
+      "path": "src/hvf_bench/runtime/mesa/mesa-runtime.tar.gz",
+      "bytes": 30048183,
+      "sha256": "48ff9640658b36f1dbce02ab35fdd3d13b901ba5855398bdd2185fed50c1935b"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/AUTHORS",
+      "bytes": 358,
+      "sha256": "16ee0ef356d5107a4bc039f91abc99a341dc62b9aa8dd47547a2baed38507509"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/LICENSE.txt",
+      "bytes": 2163,
+      "sha256": "3ccd2242d7f5b6c5ae831a486f63cce1f18d8cd11c511f6a7a7251673763b2d1"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/README.md",
+      "bytes": 8650,
+      "sha256": "70fb38dacd32911760059b744b44d1991a93b34e5923e61c2c47aa9b8c80ba9a"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/base64.js",
+      "bytes": 4182,
+      "sha256": "76d6b7ec73aed8cbc72b49b8b865bcb334acc59a6b0e96b19bc39c9e8e053ae3"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/crypto/aes.js",
+      "bytes": 5965,
+      "sha256": "00b9a69185f913b882270c4cc7a076b4dd3a083981edb91c1e55db22f8ffcef3"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/crypto/bigint.js",
+      "bytes": 825,
+      "sha256": "e7880d27af8bf439579f6fc40d7b81fd379a9babb1d13c83999effd8c64823ab"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/crypto/crypto.js",
+      "bytes": 3042,
+      "sha256": "e6006697ce1d195c951ef1e986172d17174e533909df19e07be583ac75dd344b"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/crypto/des.js",
+      "bytes": 12723,
+      "sha256": "91d8c8ed596d2beda7da9dd68c9ae1d325c673822e3ccfc8a4091e121c99a316"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/crypto/dh.js",
+      "bytes": 1612,
+      "sha256": "9102454282ba646ee4a4ce34c5db5d2a9979179f9d4606737fc6bb7a669e5ebe"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/crypto/md5.js",
+      "bytes": 4686,
+      "sha256": "364c0f0d44d3f8fd608c18a0e1253e5a77e9b8e4c48e3c6503a0f45c9bb2ff8d"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/crypto/rsa.js",
+      "bytes": 4493,
+      "sha256": "83875db9e5d978ea0eb2a1e2af8afbb7dedfb0f18eca2bab75c2756285037476"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/decoders/copyrect.js",
+      "bytes": 616,
+      "sha256": "da3b571e10984438ea49559738e11034b5d0c85154a68eac1a6bf9ef10e5aa02"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/decoders/h264.js",
+      "bytes": 9322,
+      "sha256": "96d47901c5e26dc02256b152aa642490d936bbcc395f59ffd580356118edff84"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/decoders/hextile.js",
+      "bytes": 6060,
+      "sha256": "63eb86247bea83119af75f3d145a4515a2411ff28a72492d2d7b925268d50163"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/decoders/jpeg.js",
+      "bytes": 4557,
+      "sha256": "6747ac900d09a5899c3a6fff897e58e88607e69b39ff4a6bddddee2e9e6bc6b4"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/decoders/raw.js",
+      "bytes": 1622,
+      "sha256": "bc7d4517213dc1df8626e8198eadf32b2c1946f75228b31387d3916963af0727"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/decoders/rre.js",
+      "bytes": 1114,
+      "sha256": "b3380dbc75310769ef24e956e1fa1f13d8217f8b1d7d6f5c9d08db9a336a4c0d"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/decoders/tight.js",
+      "bytes": 11982,
+      "sha256": "a7f01df99922be812ea21c5e46597b76379a5d8267f99ec8bea9a202bec34130"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/decoders/tightpng.js",
+      "bytes": 687,
+      "sha256": "38bd2fd200f5c8e9b0905eca2389fb8e6ad2151de886e4fa9a9c59cc1c7696f0"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/decoders/zlib.js",
+      "bytes": 1211,
+      "sha256": "1d1c05cdca4840ff46082103ab35aa7696b41504bec91ebd74fae9e0e5f61380"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/decoders/zrle.js",
+      "bytes": 6484,
+      "sha256": "6853c115f97a1d4de39ca71ab8b519a05916bb8c173aa8112ce4881cbb612cbd"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/deflator.js",
+      "bytes": 2589,
+      "sha256": "ceb6763eb3fcc53f34d08534a8d1df9b63af3a95c58f8d96d238ef5ce639ad1f"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/display.js",
+      "bytes": 18386,
+      "sha256": "10d298551124a172c97dcb54d8d30fca416e6038b064c93ba5f7cf079fa4bf1f"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/encodings.js",
+      "bytes": 1819,
+      "sha256": "4975904fe1da6dc22b53ecb8462ec7c9a43e99db72dba4aab9f625c4177e355d"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/inflator.js",
+      "bytes": 1913,
+      "sha256": "b1955cbd1608619911b8dfd451fae07f38c5767098f6f47e4a2a1682c11feb65"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/input/domkeytable.js",
+      "bytes": 11478,
+      "sha256": "5eb985e1a412d1be6b606ba0d7e912fc0842d873d252bd7ec8a363670dfc800c"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/input/fixedkeys.js",
+      "bytes": 3804,
+      "sha256": "6bb21b0a2d5f5d7ad73e75b80ddc1d844ac770c4426b312d5740f2443455f0c0"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/input/gesturehandler.js",
+      "bytes": 18260,
+      "sha256": "c04b67fdae6ac061c7d51cb5ee8ca296ee9c7c80aa246cee5751e74eefe61758"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/input/keyboard.js",
+      "bytes": 10849,
+      "sha256": "46f82adef772b726ae3db144fb9c12b3d03374b7c803b8a5106e422a10ddcdba"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/input/keysym.js",
+      "bytes": 34609,
+      "sha256": "4ddf0e21f07328358974d91aa2d7f839ba2116688b28e43d3f6f4e2eae8c45cf"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/input/keysymdef.js",
+      "bytes": 25374,
+      "sha256": "76f338d45fb73b7decb7d8b4ef6e95edf7ce9583722c5220642a9be85fc2cc89"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/input/util.js",
+      "bytes": 6069,
+      "sha256": "2e156ea656404afcb6cc54dd85cbe5dd2dd0ba209ae9a6fb1b78ec5db17d01ce"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/input/vkeys.js",
+      "bytes": 2509,
+      "sha256": "9a1ce4393e1aa4ace5dcdcf7e032f4a1c03a9cb964b4e0e7b7fcffd3a982eb84"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/input/xtscancodes.js",
+      "bytes": 14400,
+      "sha256": "f0fc982627e1c02feaac1bd50d7fdd3bcbb05f0062b910d8002f47d1b08967a6"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/ra2.js",
+      "bytes": 12474,
+      "sha256": "4aeffb60af9c163365170e2af392acb6f0a7c21a0cb6827f85dd776d33277bee"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/rfb.js",
+      "bytes": 122306,
+      "sha256": "c46dfefbf869eda0c6d06c5dd86c42e96fc8a77c125e91599a2cdf3841261564"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/util/browser.js",
+      "bytes": 7820,
+      "sha256": "592f56dc2195331c3b8329f8e51fa3a444a89ac85d5fa29e2364508aa9303df7"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/util/cursor.js",
+      "bytes": 8347,
+      "sha256": "adabe605d73f38e5f29abd302489d4b9e98a9e495823a06a2edbe7f6744856fa"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/util/element.js",
+      "bytes": 729,
+      "sha256": "13845321fc5abccc1de25594082d8db15405af56c5f4fc32b3bdd0878bd891e3"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/util/events.js",
+      "bytes": 4327,
+      "sha256": "ec7f4da0407ea67f5d6f5ce53bd9b3342155feb9407707de3992c5261e460ead"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/util/eventtarget.js",
+      "bytes": 896,
+      "sha256": "9481965aa6cee36ae2decdccc6ca5203c9371a8afc33346ad4170e471766e0da"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/util/int.js",
+      "bytes": 326,
+      "sha256": "b1c4b7dec2e7767322b3464f3c186b13138cdf341c621db44ddd06ce78180c01"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/util/logging.js",
+      "bytes": 1351,
+      "sha256": "c3a49715c9f908d5bb385de5787e99b824faf34d26036d993eea4740bac9d482"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/util/strings.js",
+      "bytes": 745,
+      "sha256": "77d0604c7bf9e95de780f8cb9764d918ae24c86811a0a1c5b08cd30e50ad2a3a"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/core/websock.js",
+      "bytes": 11258,
+      "sha256": "d1a96fc1316eaab9badcba9b0f1a7a55d748a4d4d26dc0263cc179dba2131cf4"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/docs/API.md",
+      "bytes": 15849,
+      "sha256": "e3846cf626fb1106892c493d51e0bf2ff570b552570ea0fd55ab6db467a9759c"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/docs/LIBRARY.md",
+      "bytes": 1093,
+      "sha256": "5a6d56558d390d52a78c393b40a50858f218c64a0e31e0329992c991b1544b95"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/docs/LICENSE.BSD-2-Clause",
+      "bytes": 1304,
+      "sha256": "f4371b28457e3e9f2db1fc972eb5ba16353dc5f8d7f42b2d5c3c2e576e40dd05"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/docs/LICENSE.BSD-3-Clause",
+      "bytes": 1507,
+      "sha256": "c08e5ef2e6d004c97f92d45eee4f3a0257b6c957a6c68c7b2053d013ec3725c2"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/docs/LICENSE.MPL-2.0",
+      "bytes": 16726,
+      "sha256": "fab3dd6bdab226f1c08630b1dd917e11fcb4ec5e1e020e2c16f83a0a13863e85"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/docs/LICENSE.OFL-1.1",
+      "bytes": 4302,
+      "sha256": "e564f06d018e7b95bc3594c96a17f1d41865af4038c375e7aa974dd69df38602"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/package.json",
+      "bytes": 1736,
+      "sha256": "f8c225592d43c9a63e1ed4cb1ba8e9abee222ad7da9f1108f43f556a6c9db5e7"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/vendor/pako/LICENSE",
+      "bytes": 1084,
+      "sha256": "3bc404ffa7888053253eedcc5a667619aa08dc1be0bea400e5ff28c51602180f"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/vendor/pako/README.md",
+      "bytes": 301,
+      "sha256": "f78ded7db9ffa4be474ce75020659f165d97adc4276ef5c7fcd698a3aa03e6ce"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/vendor/pako/lib/utils/common.js",
+      "bytes": 1062,
+      "sha256": "0749bc4661ed186714b90e7f2321c9625a8ce7c680563bfe3ac6df7aa332bf28"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/vendor/pako/lib/zlib/adler32.js",
+      "bytes": 666,
+      "sha256": "7412dd3ecc015888b99292f45e4d4ba69abc77f208508c9a1c93e8dfe54ba6cd"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/vendor/pako/lib/zlib/constants.js",
+      "bytes": 1334,
+      "sha256": "9d2c0dd36349e6eec9d41a37f965b2ff7e7374fbf00fb139e3116d428b551898"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/vendor/pako/lib/zlib/crc32.js",
+      "bytes": 764,
+      "sha256": "897fa9eabd2bb239ec632326dbff85bc72cc81d4da80265cde59520db339f405"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/vendor/pako/lib/zlib/deflate.js",
+      "bytes": 60286,
+      "sha256": "d2a498ad04bb5d1f67ba01696c31a2e88e8b88e4fc6c36c635294d1c445b22c1"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/vendor/pako/lib/zlib/gzheader.js",
+      "bytes": 1251,
+      "sha256": "9f9b2da72593769fcc97d397ceb771bb11d5b96f202759e2ed014c2be24d40d7"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/vendor/pako/lib/zlib/inffast.js",
+      "bytes": 11690,
+      "sha256": "ec1e0f7abeec681a0d5e3da46d06f499969cbf265eaaa5e21a135d2a9b878c16"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/vendor/pako/lib/zlib/inflate.js",
+      "bytes": 47281,
+      "sha256": "321582ddc4023e47aa981a71caed0e1dad8b58f0d9e93a0b0a34fe7e3c45e05f"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/vendor/pako/lib/zlib/inftrees.js",
+      "bytes": 11527,
+      "sha256": "94780cbdef562bcd0434c7e6f4faca1ff6be6980bf7305a200809d98d419d9c7"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/vendor/pako/lib/zlib/messages.js",
+      "bytes": 560,
+      "sha256": "7860a8d3c873c28e4f5f92db9ca3e45006e21b084210d87b8b7775cddccf05ed"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/vendor/pako/lib/zlib/trees.js",
+      "bytes": 38767,
+      "sha256": "ad9cb5245b9e39edd164234d6ca19febb9dba683f1f99a67af48d62931d91426"
+    },
+    {
+      "path": "src/hvf_bench/runtime/novnc/vendor/pako/lib/zlib/zstream.js",
+      "bytes": 823,
+      "sha256": "240917347c379b1ad33b8bf07cc6981557173bc3408f35e9875866a14b9967b2"
+    },
+    {
+      "path": "src/hvf_bench/scripts/Run-HMI-GPU-Experimental.cmd",
+      "bytes": 796,
+      "sha256": "a7fcc5ce125844251e138b6c9baeafbd73c52d3240c031a1ee725121711478b2"
+    },
+    {
+      "path": "src/hvf_bench/scripts/Run-HMI-Software.cmd",
+      "bytes": 853,
+      "sha256": "cf9a886c9b42bfa11cd976f43b226e62a6e7bedb2f6c47d63f1b9b9549cdaee9"
+    },
+    {
+      "path": "src/hvf_bench/scripts/audit_public.py",
+      "bytes": 4624,
+      "sha256": "f60c21445c4349b4f95f401ebb7b0c909772c06d3e9864d565a1ec3639bfb20b"
+    },
+    {
+      "path": "src/hvf_bench/scripts/build_guest_gateway.py",
+      "bytes": 2501,
+      "sha256": "104d0ca6d5f769b3340ff080fe52be93b278b3c19d9e95a0de124c00b69f5e22"
+    },
+    {
+      "path": "src/hvf_bench/scripts/build_mesa_compat.py",
+      "bytes": 4773,
+      "sha256": "180c2b6f319cb4e4d17d80f05f8554a4f79c13bb7cac8406d3f6615bb647f801"
+    },
+    {
+      "path": "src/hvf_bench/scripts/build_native.py",
+      "bytes": 2968,
+      "sha256": "4b8a6b82226957bf0db005ed486ad4861ccb1908159781735594a09f8d955236"
+    },
+    {
+      "path": "src/hvf_bench/scripts/build_platform.py",
+      "bytes": 3901,
+      "sha256": "d8c5deaa6b255563f9dd5b4919af31beae4ef5dfe8fa64830196a61247eee73b"
+    },
+    {
+      "path": "src/hvf_bench/scripts/dependencies/mesa-buster-arm64.lock.json",
+      "bytes": 32299,
+      "sha256": "cfd00d43e3cbc6df2ce317e832a11bf614033088a76155531bf74ac816a610e9"
+    },
+    {
+      "path": "src/hvf_bench/scripts/dependencies/windows-x64.lock.json",
+      "bytes": 53797,
+      "sha256": "d72443c1296d050de33a6372088ad659428f92c4432554941d22d297e80328ca"
+    },
+    {
+      "path": "src/hvf_bench/scripts/dependency_utils.py",
+      "bytes": 8728,
+      "sha256": "eb2f6faa2432bef038083d2c6898f1e0591f76cc8a942acc6cda0cd4317cd5fa"
+    },
+    {
+      "path": "src/hvf_bench/scripts/prepare_boot.py",
+      "bytes": 1924,
+      "sha256": "e028f37fa67c1494428648d0303ac6bf00a1cb49d8ecefb402f7b84f028465a7"
+    },
+    {
+      "path": "src/hvf_bench/scripts/prepare_dependencies.py",
+      "bytes": 12953,
+      "sha256": "a2144e477c9be22081b853cce4a12baa3fce175a57e9396abf5d03e728d6a9c8"
+    },
+    {
+      "path": "src/hvf_bench/scripts/prepare_mesa.py",
+      "bytes": 10834,
+      "sha256": "2a5e30ceb0cb2890da99bc5344c2e2f08d6389d20dff9e9de7c4781e548f8690"
+    },
+    {
+      "path": "src/hvf_bench/scripts/prepare_novnc.py",
+      "bytes": 2600,
+      "sha256": "32d692b0014765cba125adc0713fa1ebfc45c2af43dd47cfb213594e82a1d194"
+    },
+    {
+      "path": "src/hvf_bench/scripts/prepare_qemu.py",
+      "bytes": 4683,
+      "sha256": "ba3fcb1dd11475862b198ce6e321abc5e90c020e4565e2c211c217e0401a2511"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/__init__.py",
+      "bytes": 99,
+      "sha256": "17136cb55936fe1ed623d6bf12983695873812fb5d3875f102ce4bd0bd19a9c9"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/__main__.py",
+      "bytes": 120,
+      "sha256": "56f61ee2d2a07cec0343b0491b117d4adcc6ff11d805c139daaa9b586ce29911"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/archive.py",
+      "bytes": 8692,
+      "sha256": "5f004b07a705a86e3eafd15b1a3ff1999e2c9f88d23ca9131f6f01782ac141f0"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/car_configuration.py",
+      "bytes": 4237,
+      "sha256": "5f48941c0d2beb09a2e68ac18f0d868da792300a092c4656dce50036b3e74906"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/car_hvac.py",
+      "bytes": 1674,
+      "sha256": "60106f80e72c2a93808ee5f96f2579f0807149befcf2836e6c1f45ff28deb9c4"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/cli.py",
+      "bytes": 10238,
+      "sha256": "814f16e1b87c188dafbcfaa4f1d6e0e55c15e83ab94671672a4b1638f3d817bd"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/config.py",
+      "bytes": 3633,
+      "sha256": "93fc0ba6323571e754159bc81bd46601f8233779d0318bad23a35e519b996036"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/fixtures.py",
+      "bytes": 4249,
+      "sha256": "0dca6598e08350266c761b84105837c6d1fceef2098fc6dcc3e11442dfe0a0f6"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/guest_gateway.py",
+      "bytes": 8622,
+      "sha256": "668da7107b141ba368f9d740e3e00fe13edf5a1a66aed9725de0d6735e277eb2"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/host_clock.py",
+      "bytes": 3508,
+      "sha256": "a64c3b5a41060a8c3a8bd70c3e83a81b68f09a6316abf522d83751c111d941cf"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/hvac_fixture.py",
+      "bytes": 5122,
+      "sha256": "4aa08f91e03336e0d9acdac6709d3875fcaa9e158c056a7ded513b9e9d13ac04"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/launcher.py",
+      "bytes": 20749,
+      "sha256": "24c725df8e54f5faea484519baf522f941dc127b4a25a357880f2d1a352231c1"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/measurement.py",
+      "bytes": 21206,
+      "sha256": "69d5c935545de3a9320de1f1af9c3777122794447de93e40250717198674bdbb"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/navigation_fixture.py",
+      "bytes": 2086,
+      "sha256": "f37ffa23625ffb7a5ba6b78263d33448e07dd2238213ee098370b06b550f6765"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/progress.py",
+      "bytes": 3620,
+      "sha256": "6e605fcfbee2bbbfabe67fdee2d2686625031797de2c9ec70dd135b330be9f8f"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/rsi_contract.py",
+      "bytes": 45220,
+      "sha256": "738d38f3a598cd32e5cc4011f97b6561441dcb36ee19cb8c0a831937ef9604cb"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/rsi_simulator.py",
+      "bytes": 22297,
+      "sha256": "ae2802ab7bb19ad78993835f1c45851bb6f9f1ec21eed70ab48527e291c950da"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/sdk_gateway_simulator.py",
+      "bytes": 22771,
+      "sha256": "18c574764f1d7b7a47ad6c952bbf431a8f42c6962eea917443431ec8b2e3a572"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/sparse_nbd.py",
+      "bytes": 8242,
+      "sha256": "d1d25f8bc68a3e26935af88dde44d0d19091a3e1a3c648ac72c6f9777f2cbb45"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/vehicle_fixture.py",
+      "bytes": 892,
+      "sha256": "8ebfdcbb1101909480a7decd11d41fd1e342feb944b62f42e098686c9f3ed0aa"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/viewer.py",
+      "bytes": 33296,
+      "sha256": "58a7a113f260fa65aa532cd3f79966b0239566ac551c823c6805cd9ad27d9d03"
+    },
+    {
+      "path": "src/hvf_bench/src/hmi_bench/wifi_fixture.py",
+      "bytes": 777,
+      "sha256": "4fc30ea9fc713df041fee1ff6b6642e05e9fd9d3ea77c67cff6181053cc1b113"
     },
     {
       "path": "src/runner/Run-OfflineDevelopment.ps1",
@@ -1858,6 +3488,11 @@
       "sha256": "65b6d812585fba6672158d1b4dcf3e4e2859cea4964205607016ec00249bdaf9"
     },
     {
+      "path": "src/runner/trace-offline-live-darwin.py",
+      "bytes": 75623,
+      "sha256": "febbf6b4bc31cdd327fafb962efabf3915242ebf134fea0a4a6cb397a5e431c2"
+    },
+    {
       "path": "src/runner/trace-offline-live.py",
       "bytes": 75363,
       "sha256": "f56abf6241e7e57ff43d7435cd72859ea78cb851fb1c7d07e7e0f640f8f1e74f"
@@ -1883,6 +3518,566 @@
       "sha256": "f6a26c99b314d5398a5c5bd996d2d582cf47fd3e4b2ece207232778137a2b5e3"
     },
     {
+      "path": "tests/android_frame_identity.py",
+      "bytes": 2418,
+      "sha256": "71527b707041ff19ad0ce5ce88a609678ee7d8a4d7f0c50168b4e5a59b4d23ca"
+    },
+    {
+      "path": "tests/android_location_context.py",
+      "bytes": 2533,
+      "sha256": "0668b224b045ddee6a144ed43700b751282f7b4abc217f6767828911c0e92fbe"
+    },
+    {
+      "path": "tests/capture_io_recovery.py",
+      "bytes": 3076,
+      "sha256": "850d6cbab8f2123ea50b63e5d1f58d178df5cdc9d8ef61497c9c569c406c97b3"
+    },
+    {
+      "path": "tests/darwin_volume_identity.py",
+      "bytes": 1462,
+      "sha256": "7205f14ab88107ca311cedd4ac1e6bec3c4e8c99a5b64ed6efc269d20c2c8217"
+    },
+    {
+      "path": "tests/dashboard_no_duplicate_linux.py",
+      "bytes": 1760,
+      "sha256": "75d0fe7f7dc01f08078ad3ecc874ef8d1bda98efbd762a2351df9b9550c4c786"
+    },
+    {
+      "path": "tests/diagnosis_records.py",
+      "bytes": 3412,
+      "sha256": "451848b5a10a7692a27955e7844dae51815cd6511d94038d448043e3e6eb9a21"
+    },
+    {
+      "path": "tests/eqos_packet_dma.py",
+      "bytes": 4430,
+      "sha256": "f8291a149677e875097acd28a773db085456a1695751662683161e627f537704"
+    },
+    {
+      "path": "tests/eqos_tx_full_ring.py",
+      "bytes": 5313,
+      "sha256": "c33a3e9ca118f2d9baeaaab9154d41a7a2318019cb4100e47741195a75274714"
+    },
+    {
+      "path": "tests/eqos_tx_reclaim.py",
+      "bytes": 5258,
+      "sha256": "289b6a974eab6007aec35f24200f95fef618272f925226a10eeab73929629d0e"
+    },
+    {
+      "path": "tests/gic_monitor_read.py",
+      "bytes": 2581,
+      "sha256": "e370777d6092ebc904060164a8128db59aa30678c84f0c6996782e29b1708d6c"
+    },
+    {
+      "path": "tests/hvf_android_console_path.py",
+      "bytes": 903,
+      "sha256": "9fb98d22d21a5fb941a3dc1f16f497cdf8a63b9c493640e88e13746568650a30"
+    },
+    {
+      "path": "tests/hvf_car_configuration.py",
+      "bytes": 1737,
+      "sha256": "a27ae61ef60afdb5b2c23e76b2486916d9f1bd4645ca3ece1b488c4fb16a6293"
+    },
+    {
+      "path": "tests/hvf_car_hvac.py",
+      "bytes": 2018,
+      "sha256": "f1a3715e9a7b52a2b769584e8e763103de6315629e1d25d2ac2c8d58c54c7ecd"
+    },
+    {
+      "path": "tests/hvf_car_navigation.py",
+      "bytes": 2105,
+      "sha256": "2b0aa12f9e97e80ce482b7513e7395d5a01d8b4dc11a7cf0bfeec8e2a9590ddb"
+    },
+    {
+      "path": "tests/hvf_console_deadline.py",
+      "bytes": 907,
+      "sha256": "157d15c5bffadef775135476338c9d792b5a2099c5e9e1fcaf9aa4093374578b"
+    },
+    {
+      "path": "tests/hvf_map_supplement.py",
+      "bytes": 1681,
+      "sha256": "f5205d2e0e93356e8aa5ddce6bf336a8da73df1a554c005b387170d6b4ee64f0"
+    },
+    {
+      "path": "tests/hvf_navigation_bus.py",
+      "bytes": 2581,
+      "sha256": "d50385916461df4fdef19a9357c3eda859898dccb3f2310f6b7c379d6cb8cd1b"
+    },
+    {
+      "path": "tests/hvf_navigation_car_coding.py",
+      "bytes": 2470,
+      "sha256": "c6b26cc10b07383055e7771f653d562cd007d158b571a247838d6452f13e27cb"
+    },
+    {
+      "path": "tests/hvf_qnx_frame_retention.py",
+      "bytes": 2502,
+      "sha256": "0f8362f230385cff4078b5191e6a3bc71a9088b8529633be56d109334097d223"
+    },
+    {
+      "path": "tests/hvf_qnx_recorded_frame.py",
+      "bytes": 807,
+      "sha256": "ed2af49daf1ec0232799cc1fd1cad15144384a61b61a994c091fbdea49d360a1"
+    },
+    {
+      "path": "tests/hvf_touch_hotplug.py",
+      "bytes": 2727,
+      "sha256": "d93d3ead772d97242973d646a91914ba31671ff5c0b7a712c8e2f85b43f8b138"
+    },
+    {
+      "path": "tests/native_android_cpu_online.py",
+      "bytes": 4080,
+      "sha256": "beffc5a8227d814a4a4aaaabeef2d3919d0e8d42a6464c9c4c4d2713d7d113a0"
+    },
+    {
+      "path": "tests/native_boot_observer.py",
+      "bytes": 2984,
+      "sha256": "38b6d06e6875919b0ddcc32a293a77ee7540a128a62b5769e06e66fdcda5a83f"
+    },
+    {
+      "path": "tests/native_command_pending.py",
+      "bytes": 5096,
+      "sha256": "f1bc7294f215b674c56f6aec8cf5409c5ba697ab77c666d082b430c820632c74"
+    },
+    {
+      "path": "tests/native_console_isolation.py",
+      "bytes": 2040,
+      "sha256": "0df8b76468bd9ab495c6e17f567c2d2de36803df5eb6030ea94409cf09c8268e"
+    },
+    {
+      "path": "tests/native_console_lazy_wire.py",
+      "bytes": 3368,
+      "sha256": "af960faba1ff40e4aac5dc971ff06c946378823b7709646d250abf3eab237098"
+    },
+    {
+      "path": "tests/native_console_prompt.py",
+      "bytes": 1930,
+      "sha256": "0f1ab2b5435554d9bb1668688af03f3988f9e1ee10f68e9bca0415035161b986"
+    },
+    {
+      "path": "tests/native_dual_console.py",
+      "bytes": 1611,
+      "sha256": "03f91cb082cbc1d48ee4d982d5cc20188d2101fcde6b38e534d3ca1081f4ef25"
+    },
+    {
+      "path": "tests/native_gl_post_init.py",
+      "bytes": 1740,
+      "sha256": "63cda96142027ff1754f6cdd24bde7979609e296782a38cc9a41a472e6c95026"
+    },
+    {
+      "path": "tests/native_gl_prepare.py",
+      "bytes": 2303,
+      "sha256": "e28be173bcf99e69aabfccb038f841c661586105896a8b84c6fe9c43ba5a33f9"
+    },
+    {
+      "path": "tests/native_hmi_publication.py",
+      "bytes": 2146,
+      "sha256": "3fbcf7826b83976e03e67615b5787258987820941ae962b5a1ee2e9c6b0c7a99"
+    },
+    {
+      "path": "tests/native_io_lifecycle.py",
+      "bytes": 4796,
+      "sha256": "3f5c7f0fbfb0cd46e7b53932ba4ad032eeca82500187dd67aeecf50b5779eccb"
+    },
+    {
+      "path": "tests/native_language_stage.py",
+      "bytes": 4936,
+      "sha256": "1c7c3df760a4aaf8282a634b0c53546fae4311ce788190efa14fe0ceb019e29e"
+    },
+    {
+      "path": "tests/native_lifecycle_trace.py",
+      "bytes": 1417,
+      "sha256": "aefc0972baa1d59bcc35c1c023d9ef253793ed8d044a7cdb44d63b349216f48b"
+    },
+    {
+      "path": "tests/native_pause_lifecycle.py",
+      "bytes": 3188,
+      "sha256": "15b436ca38db10df4ea1b28cd68afc7264d01f86ba8530c458a91457a5f48c74"
+    },
+    {
+      "path": "tests/native_persistence_prepare.py",
+      "bytes": 3671,
+      "sha256": "776da86f810ce5eb6b0da4b7f48c0dfa90e03dff736689ec61153332ad675ccb"
+    },
+    {
+      "path": "tests/native_psci_watch.py",
+      "bytes": 4535,
+      "sha256": "bcf4dcc32dc7cf5d8574754818e1e4dd4c47e454ff014e50b49d926fa9696a3e"
+    },
+    {
+      "path": "tests/native_real_diagval.py",
+      "bytes": 4703,
+      "sha256": "9b7cb342908cef03e73a1a560c0c0b3ac8a21a5a2dfe76d4ba1e9af147ab9f67"
+    },
+    {
+      "path": "tests/native_single_android.py",
+      "bytes": 2849,
+      "sha256": "f7a846392a35a5e7384c5a03cfda40829f529c9bdb0211fb34469890a19fb1b9"
+    },
+    {
+      "path": "tests/native_status_pending.py",
+      "bytes": 2362,
+      "sha256": "4fe54ca408d59471655b17a4dce443db4f50e29422c326c183f28c9e88c90d47"
+    },
+    {
+      "path": "tests/native_touch_ring.py",
+      "bytes": 2388,
+      "sha256": "46cb6d74f6386fc2bdf076f710792820f11187b5ca5e408c398272d0fd034a7c"
+    },
+    {
+      "path": "tests/native_touch_staging.py",
+      "bytes": 4937,
+      "sha256": "e47a698f1760f3d1c0825d6ca3964682709703569f9df8d60bc27ea1f053336a"
+    },
+    {
+      "path": "tests/native_vendor_init_context.py",
+      "bytes": 3160,
+      "sha256": "6e555eddd16abe4b3b549b63375dcf30731856f16ed8896dd5409e7e41472ccf"
+    },
+    {
+      "path": "tests/navigation_display_board.py",
+      "bytes": 2053,
+      "sha256": "0b218833d9283c5898eefc0f837d8ae51823a20b33ccd2cc7e641ba660c8e46d"
+    },
+    {
+      "path": "tests/navigation_display_input.py",
+      "bytes": 1067,
+      "sha256": "a4d0e59d471a7ea50754b2314dc5b6bbd547c8a59185bd5aa5920f2566c8f9d6"
+    },
+    {
+      "path": "tests/navigation_immediate_widgets.py",
+      "bytes": 751,
+      "sha256": "6285efc1a6bbb029e9965876e7019b933b77c6a4010fea0cf886c74cecb87d8b"
+    },
+    {
+      "path": "tests/navigation_log_bound.py",
+      "bytes": 1178,
+      "sha256": "26f5b2c1ebf07b43c6252471808cde2f5af4046cd39111bb3de4d9dbf505e1bd"
+    },
+    {
+      "path": "tests/navigation_memory.py",
+      "bytes": 1109,
+      "sha256": "c0993d92a1acdff29122e45c57613eee324f999d62e2ea20e483fab7bbc0094f"
+    },
+    {
+      "path": "tests/navigation_mesa_order.py",
+      "bytes": 1657,
+      "sha256": "af96f7baef9ff233b635c04c0b5fff0d02774efc52590423a80a4c4715140878"
+    },
+    {
+      "path": "tests/navigation_online_service.py",
+      "bytes": 2059,
+      "sha256": "efa935a7eb4d7a2c77e750de4279fe09918c7ab9fdfb355ea025d8f6609f01a3"
+    },
+    {
+      "path": "tests/navigation_permission.py",
+      "bytes": 2594,
+      "sha256": "c28112b8dbcc9f4b16e9c076a706d9303d615716c76bed3cde7706f703c1625d"
+    },
+    {
+      "path": "tests/navigation_road_motion.py",
+      "bytes": 3985,
+      "sha256": "f441088261770bfcded7fcef88da6da578dfe243c99cbfffcb71e438a1da820a"
+    },
+    {
+      "path": "tests/navigation_route_retention.py",
+      "bytes": 2524,
+      "sha256": "c83bf559dbde3e9e1451b5ac916f193c497d100bd31c6c8befa6db71336730b3"
+    },
+    {
+      "path": "tests/navigation_shared_memory.py",
+      "bytes": 2355,
+      "sha256": "6c0b4e978961e60d1b67879f1c4b3a4ee880d02c39cb2640ed14b4fb8196abf9"
+    },
+    {
+      "path": "tests/navigation_uplink.py",
+      "bytes": 2750,
+      "sha256": "131d5301f9cde39cd7ddc91398a22c9012f34f1ccd95103b34b12f8a47ad7bf3"
+    },
+    {
+      "path": "tests/original_touch_provider.py",
+      "bytes": 3854,
+      "sha256": "379effb2f9dfc516a175715a906f2c8655608f233f9a12afd79dc9f34b2f2e15"
+    },
+    {
+      "path": "tests/original_touch_timer.py",
+      "bytes": 2981,
+      "sha256": "0945a09127735600b6fdd778f7cd045ffa93578b7fed71d1f4a3eddfb0bb266e"
+    },
+    {
+      "path": "tests/original_touch_timing.py",
+      "bytes": 3398,
+      "sha256": "21176ce28232cbc883f3c9eea4b03b63d289403921ff1d2f8339ad5c3f4e596a"
+    },
+    {
+      "path": "tests/qnx_display_liveness.py",
+      "bytes": 1659,
+      "sha256": "0b8ae0a641435c2afc41ea5e67617c3643689dd77b63fbcc47e6c50c446a90ef"
+    },
+    {
+      "path": "tests/qnx_fault_optin.py",
+      "bytes": 2024,
+      "sha256": "434d64dc1bb92f437c9fcdfed3c525967f68053c4ee4249ee5e324a9a04bbe10"
+    },
+    {
+      "path": "tests/qnx_gl_bindings.py",
+      "bytes": 1430,
+      "sha256": "44bd8dc3ec07358e1b9fee7c8d1ba9fad1d705d23fb07a6efab62d1e409a1444"
+    },
+    {
+      "path": "tests/qnx_gl_buffer_map.py",
+      "bytes": 5107,
+      "sha256": "7d80947d1fe0ded368ee57cf247f1781cb90fc0e83bf5c5354a8122748ce7bfb"
+    },
+    {
+      "path": "tests/qnx_gl_callsite.py",
+      "bytes": 2677,
+      "sha256": "5c1ec54ddbdfa4fac40dd9b6b31119e260a048d47ee672ee58f1b4931d20996a"
+    },
+    {
+      "path": "tests/qnx_gl_client_abort.py",
+      "bytes": 3456,
+      "sha256": "a733453370e8cc268b3acceaabe1cc280dd6ee8c668d420eccc3d57c5c266796"
+    },
+    {
+      "path": "tests/qnx_gl_draw_buffers.py",
+      "bytes": 4374,
+      "sha256": "f47586dec32defd36ece6604c7420c02bec27081696d14a326334db37fc283cf"
+    },
+    {
+      "path": "tests/qnx_gl_fault_context.py",
+      "bytes": 1618,
+      "sha256": "a1b2631b034df60378841d3ee31770e4f6af9d175a6aff0b4392171018152969"
+    },
+    {
+      "path": "tests/qnx_gl_fault_mask.py",
+      "bytes": 1557,
+      "sha256": "a8f758145365fed910d3e1de427cc4f91b74e2ec97ed35260ab66d5fe651b0f2"
+    },
+    {
+      "path": "tests/qnx_gl_fault_trace.py",
+      "bytes": 1352,
+      "sha256": "d18e9500b32ddd317c41f72a6b9d37bcf6a5b86444f0af2bb7e43af97091426e"
+    },
+    {
+      "path": "tests/qnx_gl_forward.py",
+      "bytes": 3202,
+      "sha256": "092717427f65db11c978a6a6f84fe0dd04992b829f870272f661f738bbc39964"
+    },
+    {
+      "path": "tests/qnx_gl_forward_image.py",
+      "bytes": 3477,
+      "sha256": "60f53775c900c27fa64bf79ad2bfe4897830df10c928a37d2207d539d62aa349"
+    },
+    {
+      "path": "tests/qnx_gl_info_logs.py",
+      "bytes": 4698,
+      "sha256": "80548e96f0f16a0e933e86fd83646afbee0860552716dd2b862ba085a519764c"
+    },
+    {
+      "path": "tests/qnx_gl_integer64.py",
+      "bytes": 3528,
+      "sha256": "fbc7879e7ab717d10b001cc51076ea2b1e7e249520dc779f5c889098671f4cc3"
+    },
+    {
+      "path": "tests/qnx_gl_ipc_retry.py",
+      "bytes": 2596,
+      "sha256": "95e15dbda32c1d5af0ddb18d4aed7745f9856f292bdcbe89fb78e1e56d7d38f6"
+    },
+    {
+      "path": "tests/qnx_gl_launch_environment.py",
+      "bytes": 2895,
+      "sha256": "0bf3163238b979c19f9187007dd934a32b8d3bf173ca5259c52e951e494e3184"
+    },
+    {
+      "path": "tests/qnx_gl_launch_exit.py",
+      "bytes": 2510,
+      "sha256": "cb2537173957dc54f62eb95db0e88407d9dd2757dc11faef50f17475f537b9f0"
+    },
+    {
+      "path": "tests/qnx_gl_launch_monitor.py",
+      "bytes": 2816,
+      "sha256": "9072526fb28098d8def4c9d59c070439b0e8f5e94c36b20e3474326c4c0e8741"
+    },
+    {
+      "path": "tests/qnx_gl_loader.py",
+      "bytes": 1893,
+      "sha256": "351bc8dab43032669a9e07de894943a5f2af7e5390f602447ebb38a1229bfc2f"
+    },
+    {
+      "path": "tests/qnx_gl_native_linkage.py",
+      "bytes": 1545,
+      "sha256": "c538c048bb7396ce0fcb7364d4c98986cbd716270aa50a8d30bc94f32a127a51"
+    },
+    {
+      "path": "tests/qnx_gl_native_observer.py",
+      "bytes": 3554,
+      "sha256": "3395f0b1648c1229fcef9edcb8ff8e7d9e7e1b10392f258fe48908598d2f9876"
+    },
+    {
+      "path": "tests/qnx_gl_object_queries.py",
+      "bytes": 5600,
+      "sha256": "c207adb4471e9d333d50087034743ab4cc3783967a1d930c3e54bc258778c797"
+    },
+    {
+      "path": "tests/qnx_gl_observer_commands.py",
+      "bytes": 1224,
+      "sha256": "f246431d17bdb6d8fd35fe73dc777494c67be9915aa14a56dc02bb2dceb274a0"
+    },
+    {
+      "path": "tests/qnx_gl_observer_launch.py",
+      "bytes": 2052,
+      "sha256": "544f7a33e6413a2bfa5ba99e4d3934837a3a4da1f22db57012d995fbc689d787"
+    },
+    {
+      "path": "tests/qnx_gl_pbo_client.py",
+      "bytes": 2155,
+      "sha256": "cc950ce7723f7e9af17e6a5207bdf77276d75bcce25aed37a93d2d0958b232d1"
+    },
+    {
+      "path": "tests/qnx_gl_pbo_readback.py",
+      "bytes": 5199,
+      "sha256": "338a8219b9843d3809813309a245ae9b3ff40e9d70d0d730dea6f58dbe7876dc"
+    },
+    {
+      "path": "tests/qnx_gl_pixel_size.py",
+      "bytes": 2249,
+      "sha256": "e7803d3093931e5cb87f0e02d9828f47c832de98c207bf512adee58a116818f2"
+    },
+    {
+      "path": "tests/qnx_gl_qmp_readiness.py",
+      "bytes": 1636,
+      "sha256": "5f23650ba298a70ead97ef8625a8a3d0cb8e0b6192cc21d80e0d1f4f913cd358"
+    },
+    {
+      "path": "tests/qnx_gl_reflection.py",
+      "bytes": 9225,
+      "sha256": "d6acf1ad282fc707c8c901f9066a58e7abf774ad30e603a20d45ab62cd4d4442"
+    },
+    {
+      "path": "tests/qnx_gl_sampler_guard.py",
+      "bytes": 3495,
+      "sha256": "b8c822cf36203f40fba6602af96f3a9ec9d016903f657f7d7e5e5bfe673fa89f"
+    },
+    {
+      "path": "tests/qnx_gl_samplers.py",
+      "bytes": 4621,
+      "sha256": "2272aa5a879acec7121a1d59a43bdcec21b414683303f20beae53a90a21afc61"
+    },
+    {
+      "path": "tests/qnx_gl_state_query.py",
+      "bytes": 4663,
+      "sha256": "1172d9f3d991f7f2fc80663202c10cac3f140278502d284b7b35249a4424eb0f"
+    },
+    {
+      "path": "tests/qnx_gl_texture_parameters.py",
+      "bytes": 4783,
+      "sha256": "b45d8a0ae084d7e02228339b79602575ef8239353ae28f0e75874d9650241c35"
+    },
+    {
+      "path": "tests/qnx_hud_forward_startup.py",
+      "bytes": 2396,
+      "sha256": "90dc5b1d30b379994204ecc9e2baa06a0fcd3a0ae1878d9475311866920b50c3"
+    },
+    {
+      "path": "tests/qnx_light_observer.py",
+      "bytes": 1428,
+      "sha256": "6ab585a66544bb6b1d933258990515b5b51bd779402f5bd91d37f9a7602a50ef"
+    },
+    {
+      "path": "tests/qnx_live_ic.py",
+      "bytes": 1926,
+      "sha256": "53e3542597a61fd988a7cfdd4426385e0220ca91db3eeae81a4909ee67f43214"
+    },
+    {
+      "path": "tests/qnx_mcu_cfa.py",
+      "bytes": 3540,
+      "sha256": "517182cfb762dd2c9f7a6f2e290512399d5255c02fa7304c787956086b2f3901"
+    },
+    {
+      "path": "tests/qnx_mcu_transitions.py",
+      "bytes": 3621,
+      "sha256": "2d7fa4eaf2c437fd8d1cf23405e17cf677d412cbbbddf78dd3f330d79dda70b2"
+    },
+    {
+      "path": "tests/qnx_mcu_uart.py",
+      "bytes": 4545,
+      "sha256": "754a7d5efcd46353c5adedb3d5250d7f9287d7f95f55f08adb5d866c4b76d56b"
+    },
+    {
+      "path": "tests/qnx_monitor_ipc.py",
+      "bytes": 1382,
+      "sha256": "586bdd9c404a7f017f1c5c680dd7e22e433bcc14203843fdcc2657de96306bca"
+    },
+    {
+      "path": "tests/qnx_native_slog_stream.py",
+      "bytes": 2872,
+      "sha256": "32c6750140b3168105114e83cdab7de1cbf3e514d47eeadc0b3d1b0110a267ad"
+    },
+    {
+      "path": "tests/qnx_preframe_capture.py",
+      "bytes": 3290,
+      "sha256": "f3accb4f68c90a63648419b127a341f799d1a8d784d3aabdcfcd35f39621f4f3"
+    },
+    {
+      "path": "tests/qnx_raw_preframe.py",
+      "bytes": 7082,
+      "sha256": "6aa84effca021dd70500695c1e316ad38a3faa78a328d19b10286ab23a18eee0"
+    },
+    {
+      "path": "tests/qnx_screen_readback_backend.py",
+      "bytes": 2093,
+      "sha256": "903d6fbbade41f6f58453dcbb2bcd814887eeed6a641c46a570725d6f5aa2ab5"
+    },
+    {
+      "path": "tests/qnx_startup_log.py",
+      "bytes": 3241,
+      "sha256": "e8018b040da18b3e13c559eccba649b4572c472eeada6000b7d9e5b5cb9b7ddf"
+    },
+    {
+      "path": "tests/qnx_uniform_preframe.py",
+      "bytes": 6227,
+      "sha256": "d7e06d793e1231347d343eadc8fb77463b00a2dc6df4d93fa7e1a8e17988fa5b"
+    },
+    {
+      "path": "tests/qnx_vci_startup_grace.py",
+      "bytes": 3190,
+      "sha256": "908ab3af05f2937df88e2a5b1f4d22958d394c0270aec476f752dc58e33d0543"
+    },
+    {
+      "path": "tests/qnx_vertex368.py",
+      "bytes": 6117,
+      "sha256": "71ee9c0fbb31d226a848cec5f22b53f69cc6ebe5064f271263e8bc57d3bb12b0"
+    },
+    {
+      "path": "tests/qnx_vertex_profiles.py",
+      "bytes": 9208,
+      "sha256": "a428cf7835b42c91a694ef3814ded41f5a345ebd0acb0ba7433d16801e8988e9"
+    },
+    {
+      "path": "tests/relay_address_ready.py",
+      "bytes": 2025,
+      "sha256": "cb181e909acad2594a25d3347b20b4bdf45d3c51a154ed8dc122983519084f19"
+    },
+    {
+      "path": "tests/someip_log_bound.py",
+      "bytes": 820,
+      "sha256": "bf3f47022711c026b5fb473ece185f05cd478840175abd5b3c2dd276a07f9c10"
+    },
+    {
+      "path": "tests/stop_completion.py",
+      "bytes": 3339,
+      "sha256": "e84d5487b151349996996ee64124d750b53beb37b459a2d5c3303cd9fce27f50"
+    },
+    {
+      "path": "tests/test_configure_macos.py",
+      "bytes": 4419,
+      "sha256": "f4566819fbcf0940baa5991900159ef47290334d88586d794b195a2bdc813e0e"
+    },
+    {
+      "path": "tests/test_native_source_cache.py",
+      "bytes": 1802,
+      "sha256": "5328349ded52050c61656a4d79a55770933ded41317d7b44b48d1ee533e1192c"
+    },
+    {
       "path": "tests/test_native_window.py",
       "bytes": 167,
       "sha256": "e9bae55226eb0d368754cf3f3fbc8c72793579e383de7a05b69039ac52186faf"
@@ -1893,19 +4088,149 @@
       "sha256": "98fe6b59b4e56392fb3def37ec48c1edf983648944ef73307b267d19dbd3910c"
     },
     {
+      "path": "tests/unified_touch_contract.py",
+      "bytes": 1201,
+      "sha256": "7577bac336126d04e84f943349cc55ad64bae03598ea6cc724e81cc2e978ae8f"
+    },
+    {
+      "path": "tools/bench_power.py",
+      "bytes": 1840,
+      "sha256": "41f7ef670e32418bd3907dc42a587b610e016cc312806652415547be455465b1"
+    },
+    {
+      "path": "tools/build_native_touch.py",
+      "bytes": 3875,
+      "sha256": "7f46aff00ee5d5b4c2d4a836aaa786a0973bf425856013e51775f543b7e67d64"
+    },
+    {
+      "path": "tools/build_qnx_gl.py",
+      "bytes": 5041,
+      "sha256": "2b7d92c354422048c1adbbfb2b891896f2e55c5b03b96f3bbfefc0c85633a6b9"
+    },
+    {
+      "path": "tools/configure_macos.py",
+      "bytes": 4438,
+      "sha256": "45f32c78db9f68deb7dd63a307fde51500c44bedac326f5383335c11a9f75d95"
+    },
+    {
       "path": "tools/dependencies.py",
       "bytes": 2465,
       "sha256": "4b699c18323ca0f2f59a0111406dc93d2ae6baf0516b5c691b31e702556d4428"
     },
     {
       "path": "tools/emu.py",
-      "bytes": 13457,
-      "sha256": "4f39c92d2b58ea8168db074e7b8e68e63cdb7fe37eda4bd268d56f2325fe9f40"
+      "bytes": 13459,
+      "sha256": "89cdec222216d08fe4b5e53bdb202487d9cffd3d2b0f6de7d88eddbd18bfb6ed"
+    },
+    {
+      "path": "tools/emu_macos.py",
+      "bytes": 14109,
+      "sha256": "1a8dfa6b6def4bba76c253f52a759ecd0441adb09d28b23d8b2d7e0d19891d8b"
+    },
+    {
+      "path": "tools/hmi_task_stacks_macos.py",
+      "bytes": 3478,
+      "sha256": "8849811a69d67cf915e11779ccf4ec010731b86f9e053471c0c3e66a14d4d074"
+    },
+    {
+      "path": "tools/hvf_android.py",
+      "bytes": 1496,
+      "sha256": "1c798f80ae0c6bac05d863e57b9054b754db18a2e38177f6cc0091b298be1bc1"
+    },
+    {
+      "path": "tools/hvf_console.py",
+      "bytes": 1299,
+      "sha256": "e0362b953a58a0f95881042eb6e725a1817fa4733abe6d7c0c82888e6dbd9aa7"
+    },
+    {
+      "path": "tools/hvf_dashboard.py",
+      "bytes": 17851,
+      "sha256": "3a19ad24182936d24b7aec1202476c9bca1890cad1a00bef7bd79609671f783a"
+    },
+    {
+      "path": "tools/hvf_guest_command.py",
+      "bytes": 2650,
+      "sha256": "f091791e25c3a6c4bdbd5cf1ef5053f28ea425567e19725049668ed55ba48ffe"
+    },
+    {
+      "path": "tools/hvf_network.py",
+      "bytes": 9352,
+      "sha256": "9a41356dd78dbd8130bea8c80974ea80b7749bba9932e950e4dbf462faaaa842"
+    },
+    {
+      "path": "tools/hvf_qnx.py",
+      "bytes": 7601,
+      "sha256": "46c06eee6edf490a6973b82ddd303021cd66082ac76f45e8d5f0b910ac44c0c2"
+    },
+    {
+      "path": "tools/hvf_qnx_gl_channel.py",
+      "bytes": 5469,
+      "sha256": "22a307a11f44abfa26290d5940336499706cb231fd3afd32bb386cf646884be2"
+    },
+    {
+      "path": "tools/hvf_qnx_gl_forward.py",
+      "bytes": 5387,
+      "sha256": "c5f87bc75a37fe91cf33a263494b8abb03c2e855f8b9ea3e2dd7b3383545c1ce"
+    },
+    {
+      "path": "tools/hvf_qnx_gl_frame.py",
+      "bytes": 6320,
+      "sha256": "fe4ed5b49c50e89d26dacede61d8ae96d9eacd5fa857ddaf37b50981c9fdca41"
+    },
+    {
+      "path": "tools/macos_center.py",
+      "bytes": 8563,
+      "sha256": "6342740011aa9050fc0bc67b5bb71d65f098764c76b32598f1d406d0ff8af43b"
+    },
+    {
+      "path": "tools/macos_hvf.py",
+      "bytes": 5815,
+      "sha256": "42b37a2768e2fbef77701a9373335a03664db007ada55ccef8c0a7d1dc9ad722"
+    },
+    {
+      "path": "tools/macos_runtime.py",
+      "bytes": 9999,
+      "sha256": "eae83ada0ba1e9e9cf562a33a17153b0aa00160eba5a6577c78e2678bf79e5f5"
+    },
+    {
+      "path": "tools/native_android_frame.py",
+      "bytes": 4420,
+      "sha256": "23e9bb4554400fdd03c91abb2d5d5489a12b9fdd1452cc253febe0273aadc484"
+    },
+    {
+      "path": "tools/native_domain_state.py",
+      "bytes": 2487,
+      "sha256": "12e31be81a6f2ca8376ad3ac4b499b9c2793aabdd26aaa11ca19881cdfd6036c"
+    },
+    {
+      "path": "tools/native_guest_command.py",
+      "bytes": 13208,
+      "sha256": "df1d9ff9690e0a9a5ff0be0e33439ddb79c84fe975ef0e8d3b97dc4b7f46b697"
+    },
+    {
+      "path": "tools/native_hmi_frame.py",
+      "bytes": 1013,
+      "sha256": "df10315147ad78282043af84ef3109849e45029dc83d8e44891305312fa3ad69"
     },
     {
       "path": "tools/native_sources.py",
-      "bytes": 1881,
-      "sha256": "341ad5123a0b1d450c801d381fed98e00dd546268960b6642ba481be82d836ea"
+      "bytes": 2933,
+      "sha256": "eb96607ac3d9d19422f17d340fdf5dfda2d24f3516cab168946fcb06eacb5dba"
+    },
+    {
+      "path": "tools/native_touch.py",
+      "bytes": 3148,
+      "sha256": "3c6a8cc52e54da7dc41c8cecccee1d949e79257cb8344efd70eff8e9742a9938"
+    },
+    {
+      "path": "tools/navigation_slirp.py",
+      "bytes": 5288,
+      "sha256": "5f8facfcdf0f82d4917b58737ec3de3c28bc747c26e009222bd0412d26f77ff0"
+    },
+    {
+      "path": "tools/qnx_live_markers_macos.py",
+      "bytes": 2620,
+      "sha256": "6bf74e5265fe6cd2ccb507d4b09902e781a9115505b99cf1fa6f4f118a09e749"
     },
     {
       "path": "tools/rekit/manifest.json",
@@ -1926,16 +4251,6 @@
       "path": "tools/sanitize_pe.py",
       "bytes": 4052,
       "sha256": "d52d56cb98d430558870b14382e6638155d0a386322aacb1ad33844c85a1df3e"
-    },
-    {
-      "path": "发布状态.md",
-      "bytes": 1705,
-      "sha256": "7725cf265236b9108ecf2301e22ec7556ecdb3d15482b1221a0d1e7619329a81"
-    },
-    {
-      "path": "运行边界.md",
-      "bytes": 940,
-      "sha256": "c6fdedae7ea91d4f8054296cadafa3f7781cb454f44671dcccce23f9465a4a50"
     }
   ]
 }

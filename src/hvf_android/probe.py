@@ -21,9 +21,24 @@ def main():
  import hashlib
  assert len(provenance)==4
  for row in provenance:assert hashlib.sha256(Path(row['path']).read_bytes()).hexdigest()==row['sha256']
+ current=json.loads((ROOT/'var/hvf/current.json').read_text());linux=json.loads((Path(current['session'])/'session.json').read_text());domain_port=linux['ports']['domain_port'];os.kill(linux['qemu_pid'],0)
  c=json.loads((ROOT/'config/hvf-8704.json').read_text());out=ROOT/'var/hvf'/time.strftime('android-%Y%m%dT%H%M%SZ',time.gmtime());out.mkdir(exist_ok=False);a=alpine_members(c['initramfs']);members={name:(b'',0o40755)for name in ['bin','sbin','lib','dev','proc','sys','modules']};members.update({'bin/busybox':(a['usr/bin/busybox'],0o100755),'lib/ld-musl-aarch64.so.1':(a['usr/lib/ld-musl-aarch64.so.1'],0o100755),'bin/sh':(b'busybox',0o120777),'init':((HERE/'guest/probe-init.sh').read_bytes(),0o100755)})
  for p in(HERE/'runtime/modules').glob('*.ko'):members['modules/'+p.name]=(p.read_bytes(),0o100644)
  for image in(HERE/'runtime/renderer').glob('*.so'):members['bench-'+image.name]=(image.read_bytes(),0o100755)
+ members['arm32-runtime']=(b'',0o40755)
+ members['arm32-runtime/qemu-libs']=(b'',0o40755)
+ for name in ['qemu-arm','arm32-exec']:
+  members['arm32-runtime/'+name]=((HERE/'runtime/arm32'/name).read_bytes(),0o100755)
+ for library in sorted((HERE/'runtime/arm32/qemu-libs').iterdir()):
+  members['arm32-runtime/qemu-libs/'+library.name]=(library.read_bytes(),0o100755)
+ members['bench-domain-tap']=((HERE/'build/domain-tap').read_bytes(),0o100755)
+ members['framework-network']=((HERE/'guest/network.sh').read_bytes(),0o100755)
+ members['arm32-setup']=((HERE/'guest/arm32-setup.sh').read_bytes(),0o100755)
+ from platform_manifest import software_graphics_manifest
+ members['bench-platform-manifest']=(software_graphics_manifest(ROOT/'var/inputs/support/abox-dsp-native/virtual-lun0-dsp/ufs-lun0.raw'),0o100644)
+ for image in (HERE/'runtime/mapper').iterdir():
+  if image.name.endswith('.so') or image.name.endswith('-service'):
+   members['bench-mapper-'+image.name]=(image.read_bytes(),0o100755)
  members['bench-keystore-software']=((HERE/'build/keystore-software').read_bytes(),0o100755)
  members['bench-gralloc.bench.so']=((HERE/'build/gralloc.bench.so').read_bytes(),0o100755)
  members['bench-hwcomposer.bench.so']=((HERE/'build/hwcomposer.bench.so').read_bytes(),0o100755)
@@ -33,6 +48,7 @@ def main():
   servers=[LogicalNBDServer(ROOT/'var/inputs/support/abox-dsp-native/virtual-lun0-dsp/ufs-lun0.raw',n)for n in ['system_a','vendor_a']]
   for server in servers:stack.callback(server.close)
   argv=[c['qemu'],'-machine','virt,gic-version=3','-cpu','host','-accel','hvf','-smp','4','-m','2048','-display','none','-serial','stdio','-monitor','none','-nic','none','-no-reboot','-kernel',str(HERE/'runtime/kernel/Image'),'-initrd',str(initrd),'-append','console=ttyAMA0 earlycon=pl011,0x9000000 rdinit=/init panic=-1 androidboot.hardware=bench androidboot.selinux=permissive androidboot.console=ttyAMA0 androidboot.slot_suffix=_a','-qmp',f'tcp:127.0.0.1:{qmp},server=on,wait=off','-device','virtio-serial-device','-chardev',f'socket,id=control,host=127.0.0.1,port={port},server=on,wait=off','-device','virtserialport,chardev=control,name=bench.control']
+  argv+=['-chardev',f'socket,id=domain-network,host=127.0.0.1,port={domain_port},reconnect-ms=1000','-device','virtserialport,chardev=domain-network,name=bench.network']
   data=ROOT/'var/hvf/android-data.ext4'
   if not data.exists():
    with data.open('xb')as file:file.truncate(4*1024**3)
@@ -46,7 +62,7 @@ def main():
    process=subprocess.Popen(argv,stdout=stdout,stderr=stderr)
    from frame import FrameSink
    frame_sink=FrameSink(frame_port,out);stack.callback(frame_sink.close)
-   record=dict(state='running',worker_pid=os.getpid(),qemu_pid=process.pid,session=str(out),control_port=port,qmp_port=qmp,argv=argv,firmware='8704 Android11',framework_boot_completed=False,frame_port=frame_port,android_root='/',boot_mode='original-init-second-stage')
+   record=dict(state='running',worker_pid=os.getpid(),qemu_pid=process.pid,session=str(out),control_port=port,qmp_port=qmp,argv=argv,firmware='8704 Android11',framework_boot_completed=False,frame_port=frame_port,android_root='/',boot_mode='original-init-second-stage',domain_network=dict(linux_session=str(Path(current['session'])),port=domain_port,ipv6='fd53:7cb8:383:3::99',peer_ipv6='fd53:7cb8:383:3::108',android_backend='kernel TAP over virtio-serial Ethernet frames'))
    (out/'session.json').write_text(json.dumps(record,indent=2)+'\n');(ROOT/'var/hvf/android-current.json').write_text(json.dumps(record,indent=2)+'\n');print(json.dumps(record,indent=2),flush=True)
    try:rc=process.wait()
    finally:

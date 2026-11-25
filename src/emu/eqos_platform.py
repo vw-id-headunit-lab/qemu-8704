@@ -280,19 +280,21 @@ def policy(mac, enabled, qnx_phy=False):
         raise ValueError('EQoS requires original QNX, the native board and an explicit MAC')
     mac_raw=bytes.fromhex(mac.replace(':',''))
     if mac_raw[0]&3!=2:raise ValueError('EQoS requires a locally administered unicast MAC')
-    return {'profile':'virtual-auto9-eqos-control-v1','default_enabled':False,
+    port=int(os.environ.get('MEB_QNX_NETWORK_PORT','0'))
+    if port and not 1024<=port<=65535:raise ValueError('Private EQOS TCP port must be1024..65535')
+    return {'profile':'virtual-auto9-eqos-packet-v1' if port else 'virtual-auto9-eqos-control-v1','default_enabled':False,
             'mac':mac.lower(),'mac_le':int.from_bytes(mac_raw,'little'),
             'virtual_reset_ns':RESET_NS,'virtual_mdio_ns':MDIO_NS,
             'virtual_fifo_bytes_per_direction':16384,'isolated_channels':8,
-            'network_backend':False,'phy':qnx_phy_contract() if qnx_phy else False,
-            'descriptor_dma':False,'irq':False,**source_contract()}
+            'network_backend':bool(port),'network_port':port,'phy':qnx_phy_contract() if qnx_phy else False,
+            'descriptor_dma':bool(port),'irq':bool(port),**source_contract()}
 
 
 def runtime_state(qmp):
     props={row['name'] for row in qmp.execute('qom-list',{'path':PATH})}
     fsys2=all(key in props for key in FSYS2_PROPERTIES)
     state={k:qmp.execute('qom-get',{'path':PATH,'property':k})
-           for k in PROPERTIES+tuple(k for k in FSYS2_PROPERTIES+CHANNEL_PROPERTIES+PTP_PROPERTIES+PHY_PROPERTIES+HOT_READ_PROPERTIES+MTL_PROPERTIES if k in props)}
+           for k in PROPERTIES+tuple(k for k in FSYS2_PROPERTIES+CHANNEL_PROPERTIES+PTP_PROPERTIES+PHY_PROPERTIES+HOT_READ_PROPERTIES+MTL_PROPERTIES+('tx-packets','rx-packets','tx-bytes','rx-bytes','tx-descriptors','rx-descriptors','dma-errors','tx-errors','rx-dropped','rx-filtered') if k in props)}
     if 'read-histogram' in props:
         raw=qmp.execute('qom-get',{'path':PATH,'property':'read-histogram'})
         histogram={}
@@ -1019,3 +1021,15 @@ def main():
 if __name__=='__main__':
     main()
 
+
+
+def packet_options(conf):
+    if not conf or not conf.get('network_port'):return []
+    args=['-netdev',f'socket,id=bench-qnx,listen=127.0.0.1:{conf["network_port"]}',
+            '-global','driver=exynos-auto9.eqos,property=netdev,value=bench-qnx',
+            '-global','driver=exynos-auto9.eqos,property=descriptor-bytes,value=32']
+    port=int(os.environ.get('MEB_QNX_NETWORK_QMP_PORT','0'))
+    if port:
+        if not 1024<=port<=65535:raise ValueError('Private network observer port must be1024..65535')
+        args+=['-qmp',f'tcp:127.0.0.1:{port},server=on,wait=off']
+    return args

@@ -37,6 +37,8 @@ def profile():
         if k.startswith('OEM_8704_') or k=='EMU_DIAGVAL_SHA256':env.pop(k)
     env.update({
         'OEM_8704_OFFLINE_DEVELOPMENT':'android-private-unencrypted-v1',
+        'OEM_8704_OFFLINE_DIAGVAL':str(ROOT/'var/inputs/support/ric-id3/diagval.bin'),
+        'EMU_DIAGVAL_SHA256':'918cbd3b6bb548068b7e4adcc9de9a928a2087de62e6eb006c61c7a2875b7dbf',
         'OEM_8704_NATIVE_LIFETIME':'until-stop-v1',
         'OEM_8704_ISOLATED_LINUX_UART':'4','OEM_8704_VERIFIED_LINUX_SEED':'1',
         'OEM_8704_VM3_SECOND_BANK':'original-b0-v1',
@@ -46,6 +48,7 @@ def profile():
         'OEM_8704_GL_FORWARD_BOOT':'original-hmi-egl-v1','OEM_8704_OFFLINE_BENCH':'virtual-bench-v1',
         'OEM_8704_OFFLINE_BENCH_PANEL':'bench-1920x1080-v1',
         'OEM_8704_OFFLINE_BENCH_POWER':'factory-rsi-power-v1',
+        'OEM_8704_OFFLINE_BENCH_LANGUAGE':'zh_CN',
         'OEM_8704_OFFLINE_BENCH_INPUT_READY':'factory-input-ready-v1',
         'OEM_8704_OFFLINE_BENCH_RSI_QUEUE':'original-found-dispatch-v1',
         'OEM_8704_OFFLINE_BENCH_IGNITION':'vehicle-ignition-on-v1',
@@ -55,6 +58,14 @@ def profile():
         'OEM_8704_QNX_HUD_STARTUP':'bench-arhud-v1',
         'PYTHONDONTWRITEBYTECODE':'1',
         'DYLD_LIBRARY_PATH':str(ROOT/'.local/angle-sdk/lib')})
+    trace=os.environ.get('OEM_8704_VM_LIFECYCLE_TRACE','')
+    if trace:
+        if trace!='stop-writer-v1':raise ValueError('Unknown original lifecycle trace profile')
+        env['OEM_8704_VM_LIFECYCLE_TRACE']=trace
+    psci=os.environ.get('MEB_PSCI_CPU_ON_WATCH','')
+    if psci:
+        if psci!='cpu-on-once-v1':raise ValueError('Unknown original CPU_ON observer profile')
+        args=[arg for arg in args if arg!='--linux-panic-watch']
     android_seed=ROOT/'var/sessions/android-seed-20261119T035932852'
     if (android_seed/'darwin-relocation.json').is_file():
         env['OEM_8704_OFFLINE_ANDROID_SEED']=str(android_seed)

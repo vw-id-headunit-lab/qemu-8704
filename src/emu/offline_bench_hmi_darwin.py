@@ -40,8 +40,13 @@ def bench_script():
          "[ -f \"$p\" ] && [ ! -L \"$p\" ] || exit 73\n"
          "/bin/mountpoint -q /data || exit 75\n"
          "v='"+line+"'\n"
-         "if [ -s \"$p\" ]; then [ \"$(/bin/cat \"$p\")\" = \"$v\" ] || exit 74; "
-         "else printf '%s\\n' \"$v\" >\"$p\"; fi\n"+
+         "if [ -s \"$p\" ] && [ \"$(/bin/cat \"$p\")\" != \"$v\" ]; then "
+         "[ \"$(/bin/cat \"$p\")\" = '"+RECORD.decode('ascii').rstrip('\n')+"' ] || exit 74; "
+         "b=/run/oem-bench-diagval.pristine; [ ! -e \"$b\" ] || exit 77; "
+         "/bin/cp -p \"$p\" \"$b\"; "
+         "if ! printf '%s\\n' \"$v\" >\"$p\"; then /bin/cat \"$b\" >\"$p\"; exit 78; fi; "
+         "if [ \"$(/bin/cat \"$p\")\" != \"$v\" ]; then /bin/cat \"$b\" >\"$p\"; exit 78; fi; "
+         "else [ -s \"$p\" ] || printf '%s\\n' \"$v\" >\"$p\"; fi\n"+
          native_resolution_script()+
          "printf 'virtual-bench-profile="+PROFILE+"\\n' >/run/oem-bench-input\n"
          "/usr/bin/sha256sum \"$p\" >>/run/oem-bench-input\n")
@@ -115,6 +120,28 @@ def guest_records():
  return result
 
 
+def language_selected(environ=None):
+ env=os.environ if environ is None else environ
+ value=env.get('OEM_8704_OFFLINE_BENCH_LANGUAGE','')
+ if not value:return False
+ if value!='zh_CN' or not selected(env) or env.get('OEM_8704_OFFLINE_BENCH_POWER')!=POWER_PROFILE:raise ValueError('Declared language requires the explicit local power bench profile')
+ return True
+
+
+def language_records():
+ import sys
+ path=str(Path(__file__).resolve().parents[2]/'src/hvf_bench/src')
+ previous=list(sys.path)
+ try:
+  sys.path.insert(0,path)
+  from hmi_bench.fixtures import language_values
+  values=language_values('zh_CN')
+ finally:sys.path[:]=previous
+ expected={'settings','requestedSettings','changeTransactions','strategies','components'}
+ if set(values)!={'language/'+n+'.json'for n in expected}:raise ValueError('Declared language resource set differs')
+ return {n:(json.dumps(values['language/'+n+'.json'],indent=2)+'\n').encode('ascii')for n in sorted(expected)}
+
+
 def power_bench_script():
  root='/run/oem-bench-power'
  lines=['set -eu','test -f /run/oem-bench-input',
@@ -139,6 +166,13 @@ def power_bench_script():
                  "printf '%s  %s\\n' '"+GUEST_ASSETS[filename]+"' "+target+'|/usr/bin/sha256sum -c -'])
   lines.extend(["printf 'vehicledynamics:system\\nusermanagement:auth\\n'>"+root+'/services',
                 "printf 'virtual-bench-guest=anonymousGuestUser-level0\\n'>"+root+'/guest-profile'])
+ if language_selected():
+  lines.append('mkdir -p '+root+'/language')
+  for key,raw in language_records().items():
+   target=root+'/language/'+key+'.json'
+   lines.extend(['/bin/cat /sys/firmware/devicetree/base/chosen/oem-bench-language-'+key+' >'+target,
+                 "printf '%s  %s\\n' '"+hashlib.sha256(raw).hexdigest()+"' "+target+'|/usr/bin/sha256sum -c -'])
+  lines.append("printf 'language:system\\n' >>"+root+'/services')
  lines.extend(['test ! -e '+root+'/vehicledynamics/componentProtections.json',
                "printf 'virtual-bench-power="+POWER_PROFILE+"\\n'>"+root+'/profile'])
  return '\n'.join(lines)+'\n'
@@ -160,6 +194,11 @@ def power_stage(nodes):
   for key,raw in guest_records().items():
    name=GUEST_NODES[key].rsplit('/',1)[1]
    if name in chosen:raise ValueError('Nested anonymous guest fixture')
+   chosen[name]=raw
+ if language_selected():
+  for key,raw in language_records().items():
+   name='oem-bench-language-'+key
+   if name in chosen:raise ValueError('Nested declared language fixture')
    chosen[name]=raw
  unit='[Unit]\nRequires=persistence-app.service\nAfter=persistence-app.service\n[Service]\nExecStart=\nExecStartPre=/bin/sh '+POWER_STAGE+'\nExecStart=/lge/app_ro/bin/rsi-mockup -rsi-mockup.dir=/run/oem-bench-power -rsi-log_console=true\n'
  import shlex
@@ -292,15 +331,26 @@ def panel_stage():
          'printf %s '+shlex.quote(unit)+'>"$p/20-bench-panel.conf";')
 
 
+def native_touch_stage(nodes):
+ if os.environ.get('OEM_8704_GL_FORWARD_BOOT')!='original-hmi-egl-v1':return ''
+ from native_touch_stage import stage
+ return stage(nodes)
+
 def stage(nodes,script):
  if not script.endswith('exec /sbin/init') or script.count('exec /sbin/init')!=1:
   raise ValueError('Require one original init handoff')
  chosen=nodes['/chosen']
  if any(k in chosen for k in ('oem-stage','oem-bench')):raise ValueError('Nested virtual bench stage')
- unit='[Unit]\nRequires=data.mount\nAfter=data.mount\n[Service]\nExecStartPre=/bin/sh '+BENCH+'\n'
- prefix=rsi_queue_stage(nodes)+input_ready_stage()+panel_stage()+power_stage(nodes)+"d=/run/systemd/system/persistence-app.service.d;mkdir -p $d&&printf '"+unit.replace('\n',r'\n')+"'>$d/10-bench.conf; "
+ import shlex
+ prepare='[Unit]\nDescription=Prepare captured original persistence inputs\nDefaultDependencies=no\nRequires=data.mount post-init.service\nAfter=data.mount post-init.service\nBefore=persistence-app.service\n[Service]\nType=oneshot\nExecStart=/bin/sh '+BENCH+'\nTimeoutStartSec=600\nRemainAfterExit=yes\n'
+ unit='[Unit]\nRequires=oem-bench-persistence-input.service\nAfter=oem-bench-persistence-input.service\n[Service]\nExecStartPre=\nTimeoutStartSec=60\nStandardOutput=file:/run/oem-bench-persistence-input/app.stdout\nStandardError=file:/run/oem-bench-persistence-input/app.stderr\n'
+ prefix=(rsi_queue_stage(nodes)+input_ready_stage()+panel_stage()+power_stage(nodes)+native_touch_stage(nodes)+
+         'p=/run/systemd/system;d=$p/persistence-app.service.d;mkdir -p "$d"&&printf %s '+shlex.quote(unit)+' >"$d/10-bench.conf";printf %s '+shlex.quote(prepare)+' >"$p/oem-bench-persistence-input.service"; ')
  chosen['oem-stage']=(prefix+script+'\n').encode('ascii')
- chosen['oem-bench']=bench_script().encode('ascii')
+ log=('set -eu\noem_input_log=/run/oem-bench-persistence-input\n[ ! -e "$oem_input_log" ] || exit 79\nmkdir -m 0755 "$oem_input_log"\n'
+      'exec >"$oem_input_log/stdout" 2>"$oem_input_log/stderr"\nchmod 0644 "$oem_input_log/stdout" "$oem_input_log/stderr"\n'
+      'trap \'oem_input_rc=$?;printf "%s\\n" "$oem_input_rc" >"$oem_input_log/exit";chmod 0644 "$oem_input_log/stdout" "$oem_input_log/stderr" "$oem_input_log/exit"\' 0\n')
+ chosen['oem-bench']=(log+bench_script()+'printf "CAPTURED_PERSISTENCE_INPUT_PREPARED\\n"\n').encode('ascii')
  return '/bin/mount -t sysfs sysfs /sys 2>/dev/null; exec /bin/sh '+STAGE
 
 def adapt_staged_dtb(raw):
@@ -314,14 +364,21 @@ def adapt_staged_dtb(raw):
  return result
 
 def metadata():
- return {'profile':PROFILE,'label':'用户授权的本机虚拟台架配置','coding_bytes':len(CODING),'coding_hex':CODING.hex(),
-         'record_key':1536,'record_sha256':hashlib.sha256(RECORD).hexdigest(),'guest_path':'/data/lge/hmi/persist/diagval',
-         'known_prefix_source':'existing ID.3 known-bit fixture','remaining_bytes_policy':'explicit virtual zero defaults',
-         'application':'original persistence-app ExecStartPre writes existing empty private file before original parser starts',
+ raw=diagval_record()
+ record=next(line+b'\n' for line in raw.splitlines() if line.split()[0]==b'1536')
+ coding=bytes(map(int,record.split()[1:]))
+ captured=bool(os.environ.get('OEM_8704_OFFLINE_DIAGVAL'))
+ return {'profile':PROFILE,'label':'用户授权的本机虚拟台架配置','coding_bytes':len(coding),'coding_hex':coding.hex(),
+         'record_key':1536,'record_sha256':hashlib.sha256(record).hexdigest(),'guest_path':'/data/lge/hmi/persist/diagval',
+         'known_prefix_source':'captured original record 1536' if captured else 'existing ID.3 known-bit fixture',
+         'remaining_bytes_policy':'captured bytes unchanged' if captured else 'explicit virtual zero defaults',
+         'application':'captured-input preparation oneshot imports bytes before original persistence-app parser starts',
+         'preparation_unit':'oem-bench-persistence-input.service','preparation_timeout_seconds':600,
+         'native_notify_start_seconds':60,
          'unit':'persistence-app.service','device_tree_properties':['/chosen/oem-stage','/chosen/oem-bench'],
          'touch_transport':'original-kipc-write-v1','touch_panel':[1560,700],'render_panel':list(panel_geometry())if os.environ.get('OEM_8704_OFFLINE_BENCH_PANEL')else None,
-         'diagnostic_source':'captured-local' if os.environ.get('OEM_8704_OFFLINE_DIAGVAL') else 'virtual-bench',
-         'diagnostic_sha256':hashlib.sha256(diagval_record()).hexdigest(),'diagnostic_records':len(diagval_record().splitlines())}
+         'diagnostic_source':'captured-local' if captured else 'virtual-bench',
+         'diagnostic_sha256':hashlib.sha256(raw).hexdigest(),'diagnostic_records':len(raw.splitlines())}
 
 class KeepAwake:
  def __init__(self):self.handle=None;self.active=[];self.release_results=[]

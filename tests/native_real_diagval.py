@@ -1,0 +1,23 @@
+from pathlib import Path
+import ast,hashlib,json,os,re,runpy,subprocess,sys,tempfile,types
+from unittest.mock import patch
+r=Path(__file__).resolve().parents[1];defaults=[r/'tools/macos_center.py',r/'src/emu/offline_bench_hmi_darwin.py',r/'src/emu/vlm_offline_live_darwin.py'];paths=[Path(x).resolve()for x in sys.argv[1:]]or defaults;report={'sources':list(map(str,paths)),'input':'Same supplied 52-record ID.3 diagval; migrate only exact old all-zero fixture, preserve inode/mode, reject unknown content, trace original lifecycle without changing guest code','scope':'Profile and real host shell file-import fixture; original guest readback is separate'}
+try:
+ sys.path.insert(0,str(r/'src/emu'));from vlm_platform import Elf,original
+ tree=ast.parse(paths[0].read_bytes());node=next(x for x in tree.body if isinstance(x,ast.FunctionDef)and x.name=='profile');env=dict(ROOT=r,os=os,re=re,Path=Path,json=json);exec(compile(ast.Module(body=[node],type_ignores=[]),str(paths[0]),'exec'),env);args,selected=env['profile']();bench=runpy.run_path(str(paths[1]));expected=(r/'var/inputs/support/ric-id3/diagval.bin').read_bytes();selected_raw=bench['diagval_record'](selected);checks={'profile_captured_bytes':selected_raw==expected,'profile_trace':selected.get('OEM_8704_VM_LIFECYCLE_TRACE')=='stop-writer-v1'};report['selected_record_count']=len(selected_raw.splitlines());report['selected_sha256']=hashlib.sha256(selected_raw).hexdigest()
+ fixture_env=dict(selected);fixture_env.pop('OEM_8704_OFFLINE_BENCH_PANEL',None);fixture_env['OEM_8704_OFFLINE_DIAGVAL']=str(r/'var/inputs/support/ric-id3/diagval.bin');fixture_env['EMU_DIAGVAL_SHA256']=hashlib.sha256(expected).hexdigest()
+ with patch.dict(os.environ,fixture_env,clear=True):script=bench['bench_script']();metadata=bench['metadata']()
+ real_coding=bytes(map(int,next(l for l in expected.splitlines()if l.startswith(b'1536 ')).split()[1:]));checks['metadata_coding']=metadata['coding_hex']==real_coding.hex();report['metadata']=metadata
+ with tempfile.TemporaryDirectory(prefix='native-diagval-')as tmp:
+  d=Path(tmp);p=d/'diagval';baseline=bench['RECORD'];p.write_bytes(baseline);p.chmod(0o640);inode=p.stat().st_ino
+  command=script.replace('/data/lge/hmi/persist/diagval',str(p)).replace('/run/oem-bench-diagval.pristine',str(d/'pristine')).replace('/run/oem-bench-input',str(d/'receipt')).replace('/bin/mountpoint -q /data','/usr/bin/true').replace('/usr/bin/sha256sum','/usr/bin/shasum -a 256')
+  a=subprocess.run(['/bin/sh','-c',command],capture_output=True,text=True);report['import']={'exit':a.returncode,'stdout':a.stdout,'stderr':a.stderr};checks['import_exact']=a.returncode==0 and p.read_bytes()==expected and p.stat().st_ino==inode and p.stat().st_mode&0o777==0o640
+  checks['pristine_exact']=(d/'pristine').is_file()and(d/'pristine').read_bytes()==baseline
+  b=subprocess.run(['/bin/sh','-c',command],capture_output=True,text=True);report['idempotent']={'exit':b.returncode,'stdout':b.stdout,'stderr':b.stderr};checks['idempotent']=b.returncode==0 and p.read_bytes()==expected
+  unknown=b'1536 9 8 7\n';p.write_bytes(unknown);c=subprocess.run(['/bin/sh','-c',command],capture_output=True,text=True);report['unknown']={'exit':c.returncode,'stdout':c.stdout,'stderr':c.stderr};checks['reject_unknown']=c.returncode==74 and p.read_bytes()==unknown
+  tree=ast.parse(paths[2].read_bytes());probe=next(x for x in tree.body if isinstance(x,ast.FunctionDef)and x.name=='probe');nodes=[x for x in probe.body if isinstance(x,ast.Assign)and any(isinstance(t,ast.Name)and t.id=='lifecycle_trace'for t in x.targets)or isinstance(x,ast.If)and isinstance(x.test,ast.Name)and x.test.id=='lifecycle_trace'];records=[];command=['qemu','-d','guest_errors,unimp','-D','tcg.log'];trace_env=dict(os=os,lifetime={'profile':'until-stop-v1'},board_adapter=True,native_parallel_tcg=True,elf=Elf(original('hypervisor').read_bytes()),image=original('hv.img'),command=command,output=d,hashlib=hashlib,vm=types.SimpleNamespace(save=lambda path,value:records.append(value),sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()))
+  with patch.dict(os.environ,fixture_env,clear=True):exec(compile(ast.Module(body=nodes,type_ignores=[]),str(paths[2]),'exec'),trace_env)
+  checks['trace_only']=len(records)==1 and records[0]['guest_code_changed']is False and records[0]['register_writes']is False and '-dfilter'in command and command[command.index('-d')+1]=='guest_errors,unimp,exec,cpu';report['trace']=records;report['trace_command']=command
+ report['checks']=checks;report['exit']=0 if all(checks.values())else 2
+except Exception as error:report.update(exit=2,error=repr(error))
+print(json.dumps(report,ensure_ascii=False,indent=2));raise SystemExit(report['exit'])

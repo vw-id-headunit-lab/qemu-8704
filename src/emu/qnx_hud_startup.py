@@ -38,6 +38,12 @@ def ips():
  return b'PATCH'+b''.join(off.to_bytes(3,'big')+len(after).to_bytes(2,'big')+after for off,_,after in changes())+b'EOF'
 
 def stage(command,output,display_profile):
+ if os.environ.get('MEB_QNX_GL_FORWARD'):
+  from qnx_gl_forward import stage_forward
+  return stage_forward(command,output,display_profile)
+ if os.environ.get('MEB_QNX_GL_ABI_PROBE'):
+  from qnx_gl_forward import stage_loader_probe
+  return stage_loader_probe(command,output,display_profile)
  profile=os.environ.get('OEM_8704_QNX_HUD_STARTUP','')
  if not profile:return None
  import offline_bench_hmi

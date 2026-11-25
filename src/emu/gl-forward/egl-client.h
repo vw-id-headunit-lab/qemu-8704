@@ -1,10 +1,18 @@
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include "egl-wire.h"
+#ifdef GL_FORWARD_QNX
+#define me_error (current_record()->egl_error)
+#define me_current_display (current_record()->egl_display)
+#define me_current_context (current_record()->egl_context)
+#define me_current_draw (current_record()->egl_draw)
+#define me_current_read (current_record()->egl_read)
+#else
 static __thread EGLint me_error=EGL_SUCCESS;
 static __thread EGLDisplay me_current_display;
 static __thread EGLContext me_current_context;
 static __thread EGLSurface me_current_draw,me_current_read;
+#endif
 static int me_attributes(const EGLint *p,int64_t *out)
 {
  if(!p)return 0;
@@ -65,9 +73,27 @@ EGLContext eglCreateContext(EGLDisplay d,EGLConfig c,EGLContext share,const EGLi
 EGLBoolean eglDestroyContext(EGLDisplay d,EGLContext c)
 { return ME_SIMPLE(ME_DESTROY_CONTEXT,ME_ID(d),ME_ID(c)).success; }
 EGLSurface eglCreateWindowSurface(EGLDisplay d,EGLConfig c,EGLNativeWindowType w,const EGLint *a)
-{ int64_t attrs[ME_EGL_MAX_ATTRS];int n=me_attributes(a,attrs);struct ME_EGLReply r=me_call(ME_CREATE_WINDOW,ME_ARGS(ME_ID(d),ME_ID(c),ME_ID(w)),attrs,n,NULL,0);return (EGLSurface)(uintptr_t)r.value; }
+{
+ int64_t attrs[ME_EGL_MAX_ATTRS];int n=me_attributes(a,attrs);
+#ifdef GL_FORWARD_QNX
+ int size[2]={0,0},id=0;
+ if(!w||screen_get_window_property_iv((void *)(uintptr_t)w,5,size)||size[0]<1||size[1]<1||size[0]>4096||size[1]>4096){me_error=EGL_BAD_NATIVE_WINDOW;return EGL_NO_SURFACE;}
+ screen_get_window_property_iv((void *)(uintptr_t)w,87,&id);
+ struct ME_EGLReply r=me_call(ME_CREATE_WINDOW,ME_ARGS(ME_ID(d),ME_ID(c),ME_ID(w),size[0],size[1],id),attrs,n,NULL,0);
+#else
+ struct ME_EGLReply r=me_call(ME_CREATE_WINDOW,ME_ARGS(ME_ID(d),ME_ID(c),ME_ID(w)),attrs,n,NULL,0);
+#endif
+ return (EGLSurface)(uintptr_t)r.value;
+}
 EGLSurface eglCreatePlatformWindowSurface(EGLDisplay d,EGLConfig c,void *w,const EGLAttrib *a)
-{ int64_t attrs[ME_EGL_MAX_ATTRS];int n=me_wide_attributes(a,attrs);struct ME_EGLReply r=me_call(ME_CREATE_WINDOW,ME_ARGS(ME_ID(d),ME_ID(c),ME_ID(w)),attrs,n,NULL,0);return (EGLSurface)(uintptr_t)r.value; }
+{ int64_t attrs[ME_EGL_MAX_ATTRS];int n=me_wide_attributes(a,attrs);
+#ifdef GL_FORWARD_QNX
+ int size[2]={0,0},id=0;if(!w||screen_get_window_property_iv(w,5,size)||size[0]<1||size[1]<1||size[0]>4096||size[1]>4096){me_error=EGL_BAD_NATIVE_WINDOW;return EGL_NO_SURFACE;}screen_get_window_property_iv(w,87,&id);
+ struct ME_EGLReply r=me_call(ME_CREATE_WINDOW,ME_ARGS(ME_ID(d),ME_ID(c),ME_ID(w),size[0],size[1],id),attrs,n,NULL,0);
+#else
+ struct ME_EGLReply r=me_call(ME_CREATE_WINDOW,ME_ARGS(ME_ID(d),ME_ID(c),ME_ID(w)),attrs,n,NULL,0);
+#endif
+ return (EGLSurface)(uintptr_t)r.value; }
 EGLSurface eglCreatePbufferSurface(EGLDisplay d,EGLConfig c,const EGLint *a)
 { int64_t attrs[ME_EGL_MAX_ATTRS];int n=me_attributes(a,attrs);struct ME_EGLReply r=me_call(ME_CREATE_PBUFFER,ME_ARGS(ME_ID(d),ME_ID(c)),attrs,n,NULL,0);return (EGLSurface)(uintptr_t)r.value; }
 EGLBoolean eglDestroySurface(EGLDisplay d,EGLSurface s)
@@ -75,7 +101,11 @@ EGLBoolean eglDestroySurface(EGLDisplay d,EGLSurface s)
 EGLBoolean eglMakeCurrent(EGLDisplay d,EGLSurface draw,EGLSurface read,EGLContext c)
 { struct ME_EGLReply r=ME_SIMPLE(ME_MAKE_CURRENT,ME_ID(d),ME_ID(draw),ME_ID(read),ME_ID(c));if(r.success){me_current_context=c;me_current_display=c?d:EGL_NO_DISPLAY;me_current_draw=draw;me_current_read=read;}return r.success; }
 EGLBoolean eglSwapBuffers(EGLDisplay d,EGLSurface s)
-{ return ME_SIMPLE(ME_SWAP,ME_ID(d),ME_ID(s)).success; }
+{ EGLBoolean success=ME_SIMPLE(ME_SWAP,ME_ID(d),ME_ID(s)).success;
+#ifdef GL_FORWARD_QNX
+ if(success)qnx_start_display_liveness();
+#endif
+ return success; }
 EGLBoolean eglSwapInterval(EGLDisplay d,EGLint interval)
 { return ME_SIMPLE(ME_INTERVAL,ME_ID(d),(uint64_t)(int64_t)interval).success; }
 EGLBoolean eglQuerySurface(EGLDisplay d,EGLSurface s,EGLint attribute,EGLint *value)
@@ -104,7 +134,11 @@ static int me_extension_supported(const char *name,size_t length)
 }
 const char *eglQueryString(EGLDisplay d,EGLint name)
 {
+#ifdef GL_FORWARD_QNX
+ char (*values)[16385]=current_record()->egl_strings;unsigned slot;
+#else
  static __thread char values[4][16385];unsigned slot;
+#endif
  switch(name){case EGL_VENDOR:slot=0;break;case EGL_VERSION:slot=1;break;case EGL_EXTENSIONS:slot=2;break;case EGL_CLIENT_APIS:slot=3;break;default:slot=0;break;}
  struct ME_EGLReply r=me_call(ME_QUERY_STRING,ME_ARGS(ME_ID(d),name),NULL,0,values[slot],16384);
  if(!r.success)return NULL;values[slot][r.bytes]=0;
@@ -152,7 +186,13 @@ __eglMustCastToProperFunctionPointerType eglGetProcAddress(const char *name)
  if(!name)return NULL;
 #define ME_PROC(n) if(!strcmp(name,#n))return (__eglMustCastToProperFunctionPointerType)n
 #include "gl-procs.inc"
+#ifdef GL_FORWARD_QNX
+#include "qnx-required-gl-procs.inc"
+#endif
 #include "egl-procs.inc"
 #undef ME_PROC
+#ifdef GL_FORWARD_QNX
+ size_t n=strlen(name);if(n&&n<=128){rec(167,n);PART(name,n);}
+#endif
  return NULL;
 }

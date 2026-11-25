@@ -1,0 +1,8 @@
+from pathlib import Path
+import sys,os,json,hashlib,struct,subprocess,tempfile,time
+r=Path.cwd();binary=Path(sys.argv[1]).resolve();label=sys.argv[2];record=dict(label=label,input='Three real host protocol liveness records from controlled native-client fixture; no render calls, swaps or images may be fabricated',binary=str(binary),sha256=hashlib.sha256(binary.read_bytes()).hexdigest())
+try:
+ with tempfile.TemporaryDirectory()as tmp:
+  d=Path(tmp);env={k:v for k,v in os.environ.items()if not k.startswith(('MHI2_','MEB_QNX_GL_'))};env.update(DYLD_LIBRARY_PATH=str(r/'.local/angle-sdk/lib'),MEB_QNX_GL_STRICT='original-gtf-v1',MEB_QNX_GL_ORIGINAL_PID='77',MEB_QNX_GL_FIXTURE='controlled-test-v1',MHI2_GL_FRAME=str(d/'frame.ppm'));wire=b''.join(struct.pack('<6I',119,8,77,9,170,0)for _ in range(3));p=subprocess.run([str(binary)],input=wire,capture_output=True,env=env,timeout=15);path=d/'frame.ppm.heartbeat.json';meta=json.loads(path.read_text());assert p.returncode==0 and p.stdout==b'';assert meta['source']=='qnx_gl_fixture_test'and(meta['pid'],meta['tid'],meta['sequence'])==(77,9,3);assert not list(d.glob('*.ppm'));record.update(exit=0,metadata=meta,stdout_hex=p.stdout.hex(),stderr=p.stderr.decode(errors='replace'),host_exit=p.returncode,render_calls=0,actual_swaps=0,images_created=0,scope='Controlled host protocol/native caller identity test; actual original QNX process heartbeat separately required')
+except Exception as ex:record.update(exit=1,error=repr(ex))
+(r/'.local/mac-port/transaction'/('qnx-gl-forward-'+label+'.json')).write_text(json.dumps(record,indent=2)+'\n');print(json.dumps(record,indent=2));raise SystemExit(record['exit'])

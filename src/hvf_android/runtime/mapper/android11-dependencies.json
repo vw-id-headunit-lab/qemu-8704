@@ -1,0 +1,23 @@
+[
+  {
+    "file": "/Users/diwen/code/MEB-EMU/src/hvf_android/runtime/mapper/android.hardware.graphics.allocator@2.0-service",
+    "offset": 1143,
+    "before_sha256": "3ba71aff2827ca9eb4c5252236556e4dead6beed28a7044a5752424b47e33f63",
+    "after_sha256": "3cd4865412585a79ae34dcbf6c4c7e77fd303e5a183973650da8bc43425a338b",
+    "dependency": "Android11 moved HIDL transport implementation into original libhidlbase.so"
+  },
+  {
+    "file": "/Users/diwen/code/MEB-EMU/src/hvf_android/runtime/mapper/android.hardware.graphics.mapper@2.0-impl.so",
+    "offset": 2559,
+    "before_sha256": "bb64a448cc1b80f28f5370c5bc29ac322903a9e8e5da2332f34244ddcbe648a8",
+    "after_sha256": "74ed457539df186142af4ad259cfe3975829e49b01ba13ab8c83ea62666bead9",
+    "dependency": "Android11 moved HIDL transport implementation into original libhidlbase.so"
+  },
+  {
+    "file": "/Users/diwen/code/MEB-EMU/src/hvf_android/runtime/mapper/android.hardware.graphics.allocator@2.0-impl.so",
+    "offset": 2050,
+    "before_sha256": "33857ce8616ac259c4669ca44c5ca3a1b5e96198ab8f74a398bdc4c5f2fd36e0",
+    "after_sha256": "e9ddd342b5e86923abe89cfb51786c204a5878e32b1d52a3062fc7e3f7d11bb1",
+    "dependency": "Android11 moved HIDL transport implementation into original libhidlbase.so"
+  }
+]

@@ -13,5 +13,9 @@
   "egl_bridge": "/Users/diwen/code/MEB-EMU/src/hvf_bench/build/libegl-forward-bridge.so",
   "novnc": "/Users/diwen/code/MEB-EMU/src/hvf_bench/runtime/novnc",
   "output": "/Users/diwen/code/MEB-EMU/var/hvf",
-  "firmware_custom": "/Users/diwen/code/MEB-EMU/var/inputs/support/vw-verity-native/overlay-verity/lg-custom.ext4"
+  "firmware_custom": "/Users/diwen/code/MEB-EMU/var/inputs/support/vw-verity-native/overlay-verity/lg-custom.ext4",
+  "firmware_navigation": "/Users/diwen/code/MEB-EMU/var/inputs/seeds/linux/ufs-vh1-data-session.qcow2",
+  "navigation_data": "/Users/diwen/code/MEB-EMU/var/hvf/navigation-data.ext4",
+  "navigation_map": "/Users/diwen/code/MEB-EMU/var/inputs/derived/navigation/nanjing-1911-complete.ext4",
+  "navigation_uplink": "/Users/diwen/code/MEB-EMU/config/navigation-uplink.json"
 }

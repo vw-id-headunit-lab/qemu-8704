@@ -1,5 +1,64 @@
 #define _GNU_SOURCE
 #include "fd-transport.h"
+
+#ifdef GL_FORWARD_QNX
+static u32 reflection_word(const unsigned char *p,unsigned offset)
+{u32 v;memcpy(&v,p+offset,4);return v;}
+static struct ProgramReflection *program_reflection(u32 program)
+{
+ struct Record *r=current_record();u32 epoch=__sync_add_and_fetch(&reflection_epoch,0);
+ if(r->reflection_epoch!=epoch){release_reflections(r);r->reflection_epoch=epoch;}
+ for(struct ProgramReflection *p=r->reflections;p;p=p->next)
+  if(p->program==program&&p->context==r->egl_context)return p;
+ u32 h[8]={0};emit_iv(172,(i32 *)&program,1);recv_bytes(h,sizeof(h),0);
+ if(h[7]>1024*1024)transport_failed();
+ struct ProgramReflection *p=malloc(sizeof(*p)+h[7]);
+ if(!p){unsigned char scratch[256];u32 left=h[7];while(left){u32 n=left>sizeof(scratch)?sizeof(scratch):left;recv_bytes(scratch,n,0);left-=n;}unlock_record();return 0;}
+ if(h[7])recv_all(p->data,h[7]);else unlock_record();
+ if(h[0]!=1||h[1]!=program||h[2]!=1||h[3]>16384||h[4]>16384||h[5]>4096||h[6]>4096||epoch!=__sync_add_and_fetch(&reflection_epoch,0)){free(p);return 0;}
+ unsigned offset=0,seen[2]={0};
+ while(offset<h[7]){
+  if(h[7]-offset<24){free(p);transport_failed();}
+  unsigned char *entry=p->data+offset;u32 kind=reflection_word(entry,0),index=reflection_word(entry,4),n=reflection_word(entry,16);
+  if(kind<1||kind>2||index!=seen[kind-1]++||!n||n>4096||n>h[7]-offset-24||entry[24+n-1]){free(p);transport_failed();}
+  offset+=24+n;
+ }
+ if(seen[0]!=h[3]||seen[1]!=h[4]){free(p);transport_failed();}
+ if(r->reflection_count>=64)release_reflections(r);
+ p->program=program;p->context=r->egl_context;memcpy(p->header,h,sizeof(h));p->next=r->reflections;r->reflections=p;r->reflection_count++;return p;
+}
+static int reflection_parameter(u32 program,u32 pname,i32 *value)
+{
+ unsigned slot;switch(pname){case 0x8b82:slot=2;break;case 0x8b89:slot=3;break;case 0x8b86:slot=4;break;case 0x8b8a:slot=5;break;case 0x8b87:slot=6;break;default:return 0;}
+ struct ProgramReflection *p=program_reflection(program);if(!p)return 0;if(value)*value=(i32)p->header[slot];return 1;
+}
+static int reflection_location(u32 program,u32 kind,const char *name,i32 *value)
+{
+ struct ProgramReflection *p=program_reflection(program);if(!p)return 0;
+ for(unsigned offset=0;offset<p->header[7];){unsigned char *e=p->data+offset;u32 n=reflection_word(e,16);
+  if(reflection_word(e,0)==kind&&!strcmp((char *)e+24,name)){*value=(i32)reflection_word(e,20);return 1;}offset+=24+n;}
+ return 0;
+}
+static int reflection_active(u32 program,u32 kind,u32 index,i32 capacity,i32 *length,i32 *size,u32 *type,char *name)
+{
+ if(capacity<0)return 0;
+ struct ProgramReflection *p=program_reflection(program);if(!p)return 0;
+ for(unsigned offset=0;offset<p->header[7];){unsigned char *e=p->data+offset;u32 n=reflection_word(e,16);
+  if(reflection_word(e,0)==kind&&reflection_word(e,4)==index){
+   u32 count=capacity>4096?4096:(u32)capacity,copied=count?(n-1<count-1?n-1:count-1):0;
+   if(length)*length=(i32)copied;if(size)*size=(i32)reflection_word(e,8);if(type)*type=reflection_word(e,12);
+   if(name&&count){memset(name,0,count);memcpy(name,e+24,copied);}return 1;
+  }offset+=24+n;
+ }return 0;
+}
+#define REFLECTION_INVALIDATE() ((void)__sync_add_and_fetch(&reflection_epoch,1))
+#else
+#define REFLECTION_INVALIDATE() ((void)0)
+#define reflection_parameter(a,b,c) 0
+#define reflection_location(a,b,c,d) 0
+#define reflection_active(a,b,c,d,e,f,g,h) 0
+#endif
+
 void glViewport(i32 x, i32 y, i32 w, i32 h) { i32 p[4] = { x, y, w, h }; emit_iv(2, p, 4); }
 void glClearColor(float r, float g, float b, float a) { float p[4] = { r, g, b, a }; emit_iv(3, (i32 *)p, 4); }
 void glClear(u32 mask) { emit_iv(4, (i32 *)&mask, 1); }
@@ -39,7 +98,7 @@ void glGetProgramBinary(u32 program,i32 capacity,i32 *length,u32 *format,void *b
     if(length)*length=(i32)result[0];if(format)*format=result[1];
 }
 void glAttachShader(u32 pid, u32 sid) { u32 p[2] = { pid, sid }; emit_iv(11, (i32 *)p, 2); }
-void glLinkProgram(u32 pid) { emit_iv(12, (i32 *)&pid, 1); }
+void glLinkProgram(u32 pid) { emit_iv(12, (i32 *)&pid, 1); REFLECTION_INVALIDATE(); }
 void glUseProgram(u32 pid) { emit_iv(13, (i32 *)&pid, 1); }
 void glBindAttribLocation(u32 pid, u32 index, const char *name)
 {
@@ -47,14 +106,25 @@ void glBindAttribLocation(u32 pid, u32 index, const char *name)
     rec(14, 12 + l); PART(h, 12); PART(name, l);
 }
 void glDeleteShader(u32 s) { u32 p[3]={1,s,0};emit_iv(141,(i32 *)p,3); }
-void glDeleteProgram(u32 p) { u32 v[3]={2,p,0};emit_iv(141,(i32 *)v,3); }
+void glDeleteProgram(u32 p) { u32 v[3]={2,p,0};emit_iv(141,(i32 *)v,3); REFLECTION_INVALIDATE(); }
 void glDetachShader(u32 p, u32 s) { u32 v[3]={3,p,s};emit_iv(141,(i32 *)v,3); }
 
 
 void glGetShaderiv(u32 s, u32 pname, i32 *p) { u32 v[2]={s,pname}; emit_iv(102,(i32 *)v,2); i32 out=0; recv_all(&out,4); if(p)*p=out; }
-void glGetProgramiv(u32 pr, u32 pname, i32 *p) { u32 v[2]={pr,pname}; emit_iv(103,(i32 *)v,2); i32 out=0; recv_all(&out,4); if(p)*p=out; }
-void glGetShaderInfoLog(u32 s, i32 buf, i32 *len, char *log) { (void)s;(void)buf; if (len) *len = 0; if (log && buf > 0) log[0] = 0; }
-void glGetProgramInfoLog(u32 p, i32 buf, i32 *len, char *log) { (void)p;(void)buf; if (len) *len = 0; if (log && buf > 0) log[0] = 0; }
+void glGetProgramiv(u32 pr, u32 pname, i32 *p) { if(reflection_parameter(pr,pname,p))return;u32 v[2]={pr,pname}; emit_iv(103,(i32 *)v,2); i32 out=0; recv_all(&out,4); if(p)*p=out; }
+static void native_info_log(u32 kind,u32 object,i32 capacity,i32 *length,char *log)
+{
+ if(capacity>1024*1024)transport_failed();
+ i32 args[3]={(i32)kind,(i32)object,capacity};u32 n=0;emit_iv(148,args,3);recv_bytes(&n,4,0);
+ if(n>(capacity>0?(u32)capacity-1:0))transport_failed();
+ if(log)recv_bytes(log,n,1);
+ else{char scratch[256];u32 left=n;while(left){u32 k=left>sizeof(scratch)?sizeof(scratch):left;recv_bytes(scratch,k,0);left-=k;}unlock_record();}
+ if(length)*length=(i32)n;if(log&&capacity>0)log[n]=0;
+}
+void glGetShaderInfoLog(u32 s,i32 capacity,i32 *length,char *log) {native_info_log(1,s,capacity,length,log);}
+void glGetProgramInfoLog(u32 p,i32 capacity,i32 *length,char *log) {native_info_log(2,p,capacity,length,log);}
+void glVertexAttribDivisor(u32 index,u32 divisor) {u32 p[2]={index,divisor};emit_iv(160,(i32 *)p,2);}
+
 
 /* ---------------- buffers ---------------- */
 void glGenBuffers(i32 n, u32 *b)
@@ -218,19 +288,37 @@ void glGenTextures(i32 n, u32 *t)
     u32 cnt = (u32)n; PART(&cnt, 4);
     for (i32 i = 0; i < n; i++) { t[i] = __sync_add_and_fetch(&g_id,1); PART(&t[i], 4); }
 }
-void glBindTexture(u32 target, u32 id) { u32 p[2] = { target, id }; emit_iv(51, (i32 *)p, 2); }
-static u32 tex_bytes(u32 fmt, u32 type, i32 w, i32 h)
-{
-    u32 ch = 4;
-    if (fmt == 0x1907) ch = 3;        /* GL_RGB */
-    else if (fmt == 0x1909) ch = 1;   /* GL_LUMINANCE / DEPTH */
-    else if (fmt == 0x190A) ch = 2;   /* GL_LUMINANCE_ALPHA */
-    else if (fmt == 0x1906) ch = 1;   /* GL_ALPHA */
-    u32 bp = ch;
-    if (type == 0x8363 || type == 0x8033 || type == 0x8034) bp = 2; /* 565/4444/5551 packed */
-    if (w < 0) w = 0; if (h < 0) h = 0;
-    return (u32)w * (u32)h * bp;
+void glBindTexture(u32 target, u32 id) {
+#ifdef GL_FORWARD_QNX
+ qnx_trace_callers(__builtin_frame_address(0));
+#endif
+ u32 p[2] = { target, id }; emit_iv(51, (i32 *)p, 2);
 }
+static u32 tex_bytes(u32 fmt,u32 type,i32 w,i32 h)
+{
+    if(w<=0||h<=0)return 0;
+    u32 channels,bytes;
+    switch(fmt){
+     case 0x1902:case 0x1903:case 0x1906:case 0x1909:case 0x8d94:channels=1;break;
+     case 0x8227:case 0x8228:case 0x190a:case 0x84f9:channels=2;break;
+     case 0x1907:case 0x8d98:channels=3;break;
+     case 0x1908:case 0x8d99:case 0x80e1:channels=4;break;
+     default:return 0;
+    }
+    switch(type){
+     case 0x1400:case 0x1401:bytes=channels;break;
+     case 0x1402:case 0x1403:case 0x140b:case 0x8d61:bytes=channels*2;break;
+     case 0x1404:case 0x1405:case 0x1406:bytes=channels*4;break;
+     case 0x8363:case 0x8033:case 0x8034:bytes=2;break;
+     case 0x8368:case 0x8c3b:case 0x8c3e:case 0x84fa:bytes=4;break;
+     case 0x8dad:bytes=8;break;
+     default:return 0;
+    }
+    uint64_t size=(uint64_t)(u32)w*(u32)h*bytes;
+    if(size>16*1024*1024-36)transport_failed();
+    return (u32)size;
+}
+
 void glTexImage2D(u32 target, i32 level, i32 ifmt, i32 w, i32 h, i32 border, u32 fmt, u32 type, const void *data)
 {
     u32 sz = data ? tex_bytes(fmt, type, w, h) : 0;
@@ -254,22 +342,28 @@ void glGenerateMipmap(u32 target) { emit_iv(57, (i32 *)&target, 1); }
 /* ---------------- synchronous getters ---------------- */
 i32 glGetAttribLocation(u32 pid, const char *name)
 {
+    i32 cached;if(reflection_location(pid,1,name,&cached))return cached;
     u32 l = (u32)strlen(name); u32 h[2] = { pid, l };
     rec(100, 8 + l); PART(h, 8); PART(name, l);
     i32 loc = -1; recv_all(&loc, 4); return loc;
 }
 i32 glGetUniformLocation(u32 pid, const char *name)
 {
+    i32 cached;if(reflection_location(pid,2,name,&cached))return cached;
     u32 l = (u32)strlen(name); u32 h[2] = { pid, l };
     rec(101, 8 + l); PART(h, 8); PART(name, l);
     i32 loc = -1; recv_all(&loc, 4); return loc;
 }
 
-/* misc still faked locally */
+
 i32 glGetError(void) {rec(105,0);i32 e=0;recv_all(&e,4);return e;}
 const char *glGetString(u32 name)
 {
+#ifdef GL_FORWARD_QNX
+    char (*info)[16385]=current_record()->gl_strings;
+#else
     static __thread char info[5][16385];
+#endif
     unsigned slot;
     switch(name){case 0x1f00:slot=0;break;case 0x1f01:slot=1;break;
         case 0x1f02:slot=2;break;case 0x1f03:slot=3;break;case 0x8b8c:slot=4;break;
@@ -282,24 +376,49 @@ const char *glGetString(u32 name)
 
 void glGenFramebuffers(i32 n,u32 *objects){if(n<0||!objects)return;rec(78,4+4*n);PART(&n,4);for(i32 i=0;i<n;i++){objects[i]=__sync_add_and_fetch(&g_id,1);PART(&objects[i],4);}}
 void glGenRenderbuffers(i32 n,u32 *objects){if(n<0||!objects)return;rec(79,4+4*n);PART(&n,4);for(i32 i=0;i<n;i++){objects[i]=__sync_add_and_fetch(&g_id,1);PART(&objects[i],4);}}
+static void native_state_query(u32 kind,u32 pname,void *values,u32 width)
+{
+ u32 args[2]={kind,pname},count=0;emit_iv(147,(i32 *)args,2);
+ recv_bytes(&count,4,0);if(count>4096)transport_failed();
+ if(values)recv_bytes(values,count*width,1);
+ else{unsigned char scratch[256];u32 left=count*width;while(left){u32 n=left>sizeof(scratch)?sizeof(scratch):left;recv_bytes(scratch,n,0);left-=n;}unlock_record();}
+}
+unsigned char glIsEnabled(u32 cap)
+{unsigned char value=0;native_state_query(4,cap,&value,1);return value;}
 void glGetIntegerv(u32 pname, i32 *p) {
+#ifdef GL_FORWARD_QNX
+ native_state_query(1,pname,p,4);
+#else
     emit_iv(104,(i32 *)&pname,1);i32 v[16];if(recv_all(v,64)<0)return;
     unsigned n=(pname==0xba2 || pname==0xc10 || pname==0xc23)?4:(pname==0xd3a?2:1);
     if(p)for(unsigned i=0;i<n;i++)p[i]=v[i];
+#endif
+}
+void glGetInteger64v(u32 pname,int64_t *values)
+{
+ emit_iv(146,(i32 *)&pname,1);u32 count=0;recv_bytes(&count,4,0);if(count>4096)transport_failed();
+ if(values)recv_bytes(values,count*8,1);
+ else{unsigned char scratch[256];u32 left=count*8;while(left){u32 n=left>sizeof(scratch)?sizeof(scratch):left;recv_bytes(scratch,n,0);left-=n;}unlock_record();}
 }
 void glGetFloatv(u32 pname,float *p) {
+#ifdef GL_FORWARD_QNX
+ native_state_query(3,pname,p,4);
+#else
  emit_iv(107,(i32 *)&pname,1);float v[16];if(recv_all(v,64)<0)return;
  unsigned n=(pname==0xc22 || pname==0x8005)?4:(pname==0xb70 || pname==0x846d || pname==0x846e?2:1);
  if(p)for(unsigned i=0;i<n;i++)p[i]=v[i];
+#endif
 }
 
 
+#ifndef GL_FORWARD_QNX
 int slog2f(void) { return 0; }
 int slog2c(void) { return 0; }
 int slog2_register(void) { return 0; }
+#endif
 
 
-/* ---- noop stubs for the rest of the exported ABI ---- */
+
 void glBindFramebuffer(u32 target,u32 object){u32 p[]={(u32)target,(u32)object};emit_iv(60,(i32 *)p,2);}
 void glBindRenderbuffer(u32 target,u32 object){u32 p[]={(u32)target,(u32)object};emit_iv(61,(i32 *)p,2);}
 void glBlendColor(float r,float g,float b,float a){float v[4]={r,g,b,a};rec(86,16);PART(v,16);}
@@ -318,6 +437,7 @@ void glFramebufferRenderbuffer(u32 target,u32 attachment,u32 rbTarget,u32 object
 void glFramebufferTexture2D(u32 target,u32 attachment,u32 textureTarget,u32 object,i32 level){u32 p[]={(u32)target,(u32)attachment,(u32)textureTarget,(u32)object,(u32)level};emit_iv(62,(i32 *)p,5);}
 static void get_active(u32 op,u32 program,u32 index,i32 capacity,i32 *length,i32 *size,u32 *type,char *name)
 {
+    if(reflection_active(program,op==123?1:2,index,capacity,length,size,type,name))return;
     if(capacity<0)return;
     u32 count=capacity>4096?4096:(u32)capacity;
     u32 args[3]={program,index,count},result[3]={0};
@@ -333,8 +453,12 @@ void glGetActiveAttrib(u32 program,u32 index,i32 capacity,i32 *length,i32 *size,
 void glGetActiveUniform(u32 program,u32 index,i32 capacity,i32 *length,i32 *size,u32 *type,char *name)
 {get_active(124,program,index,capacity,length,size,type,name);}
 void glGetBooleanv(u32 pname,unsigned char *p) {
+#ifdef GL_FORWARD_QNX
+ native_state_query(2,pname,p,1);
+#else
  emit_iv(106,(i32 *)&pname,1);unsigned char v[16];if(recv_all(v,16)<0)return;
  unsigned n=pname==0xc23?4:1;if(p)for(unsigned i=0;i<n;i++)p[i]=v[i];
+#endif
 }
 void glGetShaderPrecisionFormat(u32 shader,u32 precision,i32 *range,i32 *bits) {
  u32 p[2]={shader,precision};emit_iv(108,(i32 *)p,2);i32 v[3]={0,0,0};recv_all(v,12);
@@ -343,11 +467,17 @@ void glGetShaderPrecisionFormat(u32 shader,u32 precision,i32 *range,i32 *bits) {
 void glHint(u32 target,u32 mode){u32 v[2]={target,mode};emit_iv(87,(i32 *)v,2);}
 void glReadPixels(i32 x,i32 y,i32 w,i32 h,u32 format,u32 type,void *pixels)
 {
-    /* RGBA8 is the native CWM handoff format used by this bridge. */
-    if(w<0||h<0||w>2048||h>2048||format!=0x1908||type!=0x1401||!pixels)return;
+    if(w<0||h<0||w>2048||h>2048||format!=0x1908||type!=0x1401)return;
     if(!w||!h)return;
     i32 args[6]={x,y,w,h,(i32)format,(i32)type};
+#ifdef GL_FORWARD_QNX
+    uint64_t offset=(uintptr_t)pixels;u32 bytes=0;rec(173,32);PART(args,24);PART(&offset,8);recv_bytes(&bytes,4,0);
+    if(bytes>(u32)w*(u32)h*4||(!pixels&&bytes))transport_failed();
+    if(bytes)recv_all(pixels,bytes);else unlock_record();
+#else
+    if(!pixels)return;
     emit_iv(120,args,6);recv_all(pixels,(unsigned)w*h*4);
+#endif
 }
 void glRenderbufferStorage(u32 target,u32 format,i32 width,i32 height){u32 p[]={(u32)target,(u32)format,(u32)width,(u32)height};emit_iv(63,(i32 *)p,4);}
 void glScissor(i32 x,i32 y,i32 width,i32 height){u32 p[]={(u32)x,(u32)y,(u32)width,(u32)height};emit_iv(65,(i32 *)p,4);}
@@ -388,6 +518,47 @@ static u32 object_query(u32 kind,u32 object)
 u32 glIsShader(u32 shader) { return object_query(1,shader); }
 u32 glIsProgram(u32 program) { return object_query(2,program); }
 
+void glDrawBuffers(i32 count,const u32 *buffers)
+{u32 n=count>0?(u32)count:0;if(n>4096||(n&&!buffers))transport_failed();rec(158,4+n*4);PART(&count,4);if(n)PART(buffers,n*4);}
+void glReadBuffer(u32 source) {emit_iv(159,(i32 *)&source,1);}
+static void sampler_names(u32 operation,i32 count,u32 *ids)
+{
+ u32 n=count>0?(u32)count:0;if(n>4096||(n&&!ids))transport_failed();
+ u32 header[2]={operation,(u32)count};rec(150,8+n*4);PART(header,8);
+ for(u32 i=0;i<n;i++){if(operation==1)ids[i]=__sync_add_and_fetch(&g_id,1);PART(ids+i,4);}
+ u32 got=0;recv_bytes(&got,4,0);if(got!=(operation==1?n:0))transport_failed();
+ if(got)recv_bytes(ids,got*4,1);else unlock_record();
+}
+void glGenSamplers(i32 count,u32 *ids) {sampler_names(1,count,ids);}
+void glDeleteSamplers(i32 count,const u32 *ids) {sampler_names(2,count,(u32 *)ids);}
+void glBindSampler(u32 unit,u32 sampler) {u32 p[4]={1,unit,sampler,0};emit_iv(151,(i32 *)p,4);}
+void glSamplerParameteri(u32 sampler,u32 pname,i32 value) {u32 p[4]={2,sampler,pname,(u32)value};emit_iv(151,(i32 *)p,4);}
+void glSamplerParameterf(u32 sampler,u32 pname,float value) {u32 p[4]={3,sampler,pname,0};memcpy(p+3,&value,4);emit_iv(151,(i32 *)p,4);}
+static void sampler_vector(u32 op,u32 sampler,u32 pname,const void *values)
+{u32 p[3]={op,sampler,pname},n=pname==0x1004?4:1;if(!values)transport_failed();rec(151,12+n*4);PART(p,12);PART(values,n*4);}
+void glSamplerParameteriv(u32 sampler,u32 pname,const i32 *v) {sampler_vector(4,sampler,pname,v);}
+void glSamplerParameterfv(u32 sampler,u32 pname,const float *v) {sampler_vector(5,sampler,pname,v);}
+static void sampler_query(u32 op,u32 sampler,u32 pname,void *values)
+{u32 p[3]={op,sampler,pname};emit_iv(152,(i32 *)p,3);if(!values)transport_failed();recv_all(values,(op!=1&&pname==0x1004?4:1)*4);}
+u32 glIsSampler(u32 sampler) {u32 result=0;sampler_query(1,sampler,0,&result);return result;}
+void glGetSamplerParameteriv(u32 sampler,u32 pname,i32 *v) {sampler_query(2,sampler,pname,v);}
+void glGetSamplerParameterfv(u32 sampler,u32 pname,float *v) {sampler_query(3,sampler,pname,v);}
+
+
+static u32 texture_parameter_count(u32 pname) {return(pname==0x1004||pname==0x8e46)?4:1;}
+static void texture_parameters(u32 kind,u32 target,u32 pname,const void *values)
+{u32 args[3]={kind,target,pname},n=texture_parameter_count(pname);rec(161,12+4*n);PART(args,12);PART(values,4*n);}
+void glTexParameteriv(u32 target,u32 pname,const i32 *values) {texture_parameters(1,target,pname,values);}
+void glTexParameterfv(u32 target,u32 pname,const float *values) {texture_parameters(2,target,pname,values);}
+static void get_texture_parameters(u32 kind,u32 target,u32 pname,void *values)
+{u32 args[3]={kind,target,pname},out[4];emit_iv(162,(i32 *)args,3);recv_all(out,16);if(values)memcpy(values,out,texture_parameter_count(pname)*4);}
+void glGetTexParameteriv(u32 target,u32 pname,i32 *values) {get_texture_parameters(1,target,pname,values);}
+void glGetTexParameterfv(u32 target,u32 pname,float *values) {get_texture_parameters(2,target,pname,values);}
+
+#ifdef GL_FORWARD_QNX
+#include "qnx-buffer-map.h"
+#include "qnx-required-gl.inc"
+#endif
 #include "egl-client.h"
 #ifdef OEM_GL_NATIVE_BINDINGS
 #include "native-aliases.inc"

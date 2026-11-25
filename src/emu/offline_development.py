@@ -16,6 +16,7 @@ ZYGOTE_PATH='system/etc/init/hw/'+ZYGOTE_RC
 ZYGOTE_IMPORT='import /system/etc/init/hw/init.${ro.zygote}.rc\n'
 ZYGOTE_SHA='de41ac40f00a29107f74b61485bf7807a5454860bbe67fb7b4cf98006c92c3bc'
 VENDOR_PROP_SHA='e0a99739a6d4a1936e250b339b76a6489b567638c79a2bc0d7fbe07bbb83e517'
+VENDOR_INIT_RC='/odm/etc/init/offline-vendor.rc'
 
 def selected():
     value=os.environ.get('OEM_8704_OFFLINE_DEVELOPMENT','')
@@ -90,6 +91,25 @@ def _zygote_restart_config(base, original, properties):
         raise ValueError('Unknown primary zygote restart edge')
     return base.replace(ZYGOTE_IMPORT,'import /offline-dev/'+ZYGOTE_RC+'\n'),original.replace(restart,b'',1)
 
+def _native_cpu_config(vendor,hcb):
+    import struct
+    if hashlib.sha256(hcb).hexdigest()!='cf218e39cb2afc9fd06b009198f53ca41112a12b52a89e1b2a868cf8716a6606':
+        raise ValueError('Original Android CPU allocation differs')
+    at=hcb.index(b'VDTHYP\0\0')+8
+    tree=parse_dtb(hcb[at:at+struct.unpack_from('>I',hcb,at+4)[0]])
+    props=tree['/vlm/vm@4/vcpus']
+    if props.get('affinity')!=b'3,7\0'or props.get('migration')!=b'off\0':
+        raise ValueError('Original two-core Android assignment differs')
+    anchor=b'on init\n'
+    action=b'    write /sys/devices/system/cpu/cpu1/online 1\n'
+    if vendor.count(anchor)!=1 or action in vendor:
+        raise ValueError('Android CPU staging already present or vendor init site differs')
+    return vendor.replace(anchor,anchor+action),dict(
+        logical_cpu=1,original_physical_affinity=[3,7],operation='original init sysfs CPU hotplug',
+        path='/sys/devices/system/cpu/cpu1/online',requested_value=1,
+        init_script=VENDOR_INIT_RC,execution_context='u:r:vendor_init:s0',
+        kernel_online_mask_written=False,watchdog_changed=False,original_HCB_changed=False)
+
 def adapt_ramdisk(original):
     from android_local_shell import _ramdisk_members
     members=_ramdisk_members(original)
@@ -144,6 +164,9 @@ def adapt_ramdisk(original):
     odm_labels.update({'/odm/'+n:original_label('system_a','/odm/'+n)for n in links if n!='etc'})
     odm_labels.update({'/odm/etc/'+n:original_label('vendor_a','/odm/etc/'+n)for n in odm_names})
     odm_labels['/odm/etc/fstab.offline-dev']=original_label('vendor_a','/etc/fstab.exynosauto9')
+    init_context=original_label('vendor_a','/etc/init/init.exynosauto9.rc')
+    odm_labels['/odm/etc/init']=init_context
+    odm_labels[VENDOR_INIT_RC]=init_context
     if software_keystore_selected():
         context=original_label('vendor_a','/etc/vintf/manifest.xml')
         odm_labels['/odm/etc/vintf']=context
@@ -164,8 +187,8 @@ def adapt_ramdisk(original):
     for e in inv['vendor_a']['inventory']:
         p=e['path']
         if p.startswith('/etc/init/')and p.count('/')==3 and p.endswith('.rc')and stat.S_ISREG(e['type']):
-            imports.append('/offline-dev/vendor-init.rc'if p=='/etc/init/init.exynosauto9.rc'else'/vendor'+p)
-    if imports.count('/offline-dev/vendor-init.rc')!=1:raise ValueError('Original vendor rc inventory is incomplete')
+            imports.append(VENDOR_INIT_RC if p=='/etc/init/init.exynosauto9.rc'else'/vendor'+p)
+    if imports.count(VENDOR_INIT_RC)!=1:raise ValueError('Original vendor rc inventory is incomplete')
     if software_keystore_selected():
         service='/vendor/etc/init/android.hardware.keymaster@4.0_tee-service.rc'
         if imports.count(service)!=1:raise ValueError('Require one original TEE keymaster service import')
@@ -173,7 +196,7 @@ def adapt_ramdisk(original):
                                                                                  
                                                                                
     base='import /offline-dev/services.rc\n'+base+'\n'
-    base+='\n'.join('import '+p for p in ['/system/etc/init','/system_ext/etc/init','/product/etc/init','/odm/etc/init']+sorted(imports))+'\n'
+    base+='\n'.join('import '+p for p in ['/system/etc/init','/system_ext/etc/init','/product/etc/init','/odm/etc/init']+sorted(p for p in imports if p!=VENDOR_INIT_RC))+'\n'
     services='''on early-init
     write /dev/kmsg "OFFLINE DEVELOPMENT: unencrypted private data; no factory security claim"
     setprop sys.offline_development 1
@@ -202,8 +225,10 @@ service offline_dev_console /system/bin/sh
         token=b'    setprop sys.offline_development 1\n'
         if services.count(token)!=1:raise ValueError('Require one private development audio marker')
         services=services.replace(token,token+b'    setprop ro.hardware.audio.primary default\n    setprop sys.offline_audio ORIGINAL_DEFAULT_SOFTWARE\n    write /dev/kmsg \"OFFLINE AUDIO: original default software backend\"\n')
+    from vlm_platform import original as platform_original
+    vendor_bytes,cpu_online=_native_cpu_config(vendor.encode(),platform_original('hcb/hcb.img').read_bytes())
     from offline_preinit import build
-    preinit,preinit_meta=build({'init.rc':base.encode(),'vendor-init.rc':vendor.encode(),'services.rc':services,'fstab.exynosauto9':fstab,ZYGOTE_RC:zygote},odm_files=odm_files,odm_links={n:t for n,t in links.items()if n!='etc'},odm_labels=odm_labels)
+    preinit,preinit_meta=build({'init.rc':base.encode(),'vendor-init.rc':vendor_bytes,'services.rc':services,'fstab.exynosauto9':fstab,ZYGOTE_RC:zygote},odm_files=odm_files,odm_links={n:t for n,t in links.items()if n!='etc'},odm_labels=odm_labels)
     preinit_meta['asm_sha256']=hashlib.sha256(preinit_meta.pop('asm').encode()).hexdigest()
     if software_keystore_selected():preinit_meta['software_keystore_routing']=software_meta
     from offline_odm_image import empty_ext4
@@ -221,6 +246,7 @@ service offline_dev_console /system/bin/sh
                         'removed_edge':'zygote -> restart netd','import':'/oem/offline-dev/'+ZYGOTE_RC},
       'security_scope':'Unencrypted empty development userdata, not replacement secure hardware or authenticated factory boot',
       'configuration_lifetime':'Private /oem tmpfs moved by original SwitchRoot; original empty mountpoint verified',
+      'native_cpu_online':cpu_online,
       'preinit':preinit_meta,'preinit_interpreter':'No dynamic interpreter; direct Linux syscalls, then exec original /init',
       'fstab_selector':'androidboot.fstab_suffix=offline-dev; /odm/etc/fstab.offline-dev; no mount on immutable vendor files',
       'odm_original_files_preserved':[n for n in sorted(odm_names)],'odm_original_links_preserved':{n:t for n,t in links.items()if n!='etc'},

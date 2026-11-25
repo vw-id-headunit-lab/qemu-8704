@@ -44,12 +44,38 @@
   "binaries": [
     {
       "path": "/Users/diwen/code/MEB-EMU/runtime/darwin/qemu-system-aarch64",
-      "sha256": "23d65f79bfecad61cc5b1bea8a28ad5a20326375e7c50d926f8293b313f82db7"
+      "sha256": "19f33ea32086ad8aa495705b28855cf6a1ab2e7297ed5ecce38de9d72afe1873"
     },
     {
       "path": "/Users/diwen/code/MEB-EMU/runtime/darwin/qemu-img",
       "sha256": "a6fc8e05eb5b164d74c0f150f886cc04211c679f84bd799821c4d0d06c74fb38"
     }
   ],
-  "firmware_booted": false
+  "firmware_booted": false,
+  "eqos_packet_sources": {
+    "exynos-auto9-eqos.inc.c": "d044138194add15437b3e6f98ec5439d83cbdb023e44a9923bbcfc948cc54bfb",
+    "exynos-auto9-eqos-net.inc.c": "808267ed85cc1257b57f8e0967b0072121990102f8c69e2952321bc343cd9dd5",
+    "exynos-auto9-88q2112.inc.c": "25f2dfdc36b61935778826e8c59165e4bf85885507c980007d0fe82fad98bc7e"
+  },
+  "native_tx_reclaim": {
+    "source": "src/emu/exynos-auto9-eqos-net.inc.c",
+    "native_driver_sha256": "7d2ca75ebc2c4e7548bb8e1dffd73e3acc966439fde0bf291b3db8bfce8bca15",
+    "native_TBU_branch": "0x1db48",
+    "native_reclaim_call": "0x1dbc0",
+    "fixture_BMR": [
+      2,
+      0,
+      2
+    ],
+    "firmware_changed": false,
+    "full_ring_next_descriptor_probe": true
+  },
+  "gic_monitor": {
+    "source": "src/emu/patch_qemu_exynos.py::gic_dist_read",
+    "monitor_without_cpu": "MEMTX_ERROR, no CPU-bank substitution",
+    "eqos_snapshot": "x-auto9-eqos-irq-state",
+    "original_guest_code_unchanged": true,
+    "patched_source_sha256": "321eabe4d7627e821bb9b37b1214962cdaaf53428b07223e4da624e69d395f2a",
+    "observer_sha256": "1acc3618c447a54e2e77ba82054c23b329fe6c11956bbe095629f54bd9ecdbdf"
+  }
 }

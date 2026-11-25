@@ -665,8 +665,10 @@ class NativeUartWire:
 
 class NativeInteractiveConsole(NativeConsoleTap,NativeUartWire):
 
-    def __init__(self, session, byte_delay_ms=3):
+    def __init__(self, session, byte_delay_ms=3, direct_console=True):
         super().__init__(session)
+        if type(direct_console) is not bool:
+            raise ValueError('Dedicated console selection must be boolean')
         if type(byte_delay_ms) is not int or not 1<=byte_delay_ms<=20:
             raise ValueError('Native UART byte delay requires 1..20 ms')
         self.byte_delay=byte_delay_ms/1000
@@ -687,16 +689,20 @@ class NativeInteractiveConsole(NativeConsoleTap,NativeUartWire):
             raise ValueError('No recent live focus from the native QMP owner')
         self.direct_wire=None
         self.open_wire(port,self.session/'vlm-console-rx.bin',self.session/'vlm-console-events.jsonl')
-        if self.direct:
-            from linux_early_uart import DIRECT_CAPTURE
+        if self.direct and direct_console:
             try:
-                wire=NativeUartWire()
-                wire.open_wire(self.direct['port'],self.session/DIRECT_CAPTURE,
-                               self.session/'linux-usi03-console-events.jsonl')
-                self.direct_wire=wire
+                self.open_direct_console()
             except Exception:
                 super().close()
                 raise
+
+    def open_direct_console(self):
+        if self.direct and self.direct_wire is None:
+            from linux_early_uart import DIRECT_CAPTURE
+            wire=NativeUartWire()
+            wire.open_wire(self.direct['port'],self.session/DIRECT_CAPTURE,
+                           self.session/'linux-usi03-console-events.jsonl')
+            self.direct_wire=wire
 
     def close(self):
         if self.direct_wire:

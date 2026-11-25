@@ -3,13 +3,13 @@
   "assets": {
     "host": {
       "path": "runtime/darwin/gl-host",
-      "sha256": "c62c9a357d160033b56d498e46420ea32538e6c6e584e4c7512d14b6d96c5ba9",
-      "bytes": 95832
+      "sha256": "84feb689843f3fc6e9e5eb026aca673e9e0fa7ca5f105a4b6158618b2cbcb3bb",
+      "bytes": 114904
     },
     "carrier": {
       "path": "runtime/darwin/qemu-system-aarch64",
-      "sha256": "23d65f79bfecad61cc5b1bea8a28ad5a20326375e7c50d926f8293b313f82db7",
-      "bytes": 37717856
+      "sha256": "19f33ea32086ad8aa495705b28855cf6a1ab2e7297ed5ecce38de9d72afe1873",
+      "bytes": 37736384
     },
     "agent": {
       "path": "runtime/guest/hmi-agent",

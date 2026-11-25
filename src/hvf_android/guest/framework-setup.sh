@@ -20,7 +20,7 @@ done
 mkdir -p /rw/sysinit/hw /rw/vendorinit
 cp -a /android/system/etc/init/. /rw/sysinit/
 for rc in /android/vendor/etc/init/*.rc; do
- case "$rc" in */init.exynosauto9.rc)continue;; esac
+ case "$rc" in */init.exynosauto9.rc|*/android.hardware.graphics.allocator@4.0-service.rc)continue;; esac
  cp "$rc" /rw/vendorinit/
 done
 cp /android/system/etc/init/hw/init.zygote64_32.rc /rw/sysinit/hw/init.zygote64.rc
@@ -41,6 +41,21 @@ mount -o bind /rw/vendor.default.prop /android/vendor/default.prop
 mount -o bind /rw/system.build.prop /android/system/build.prop
 mount -o bind /rw/vendor.build.prop /android/vendor/build.prop
 for dir in bin lib lib64; do mount -o bind /lower/vendor/$dir /android/vendor/$dir;done
+cp /bench-mapper-android.hardware.graphics.allocator@2.0-service /android/bench/allocator2
+chmod 755 /android/bench/allocator2
+cp /bench-platform-manifest /android/vendor/etc/vintf/manifest.xml
+cat > /rw/vendorinit/allocator.bench.rc <<'RC'
+service vendor.gralloc-2-0 /bench/allocator2
+    seclabel u:r:hal_graphics_allocator_default:s0
+    class hal animation
+    interface android.hardware.graphics.allocator@2.0::IAllocator default
+    user system
+    group graphics drmrpc
+    capabilities SYS_NICE
+    onrestart restart surfaceflinger
+RC
+cp -a /arm32-runtime/. /android/bench/
+/bin/busybox sh /arm32-setup /android
 cp /bench-keystore-software /android/bench/keystore-software
 chmod 755 /android/bench/keystore-software
 mount -o bind /android/bench/keystore-software /android/system/bin/keystore
@@ -53,6 +68,7 @@ mount -o bind /android/bench/fstab.bench /android/vendor/etc/fstab.exynosauto9
 cp /android/bench/fstab.bench /android/vendor/etc/fstab.bench
 cat > /rw/vendorinit/init.bench.rc <<'RC'
 on early-init
+    setprop ro.hardware.audio.primary default
     setprop ro.hardware.gralloc bench
     setprop ro.hardware.hwcomposer bench
     setprop ro.hardware.egl swiftshader
@@ -65,6 +81,14 @@ on late-fs
     mount_all /vendor/etc/fstab.exynosauto9 --late
 on init
     start bench-control
+    start bench-domain-network
+service bench-domain-network /bench/busybox sh /bench/network.sh
+    class core
+    user root
+    group root
+    capabilities NET_ADMIN NET_RAW
+    seclabel u:r:shell:s0
+    disabled
 service bench-control /bench/busybox sh /bench/control.sh
     class core
     user root
@@ -72,12 +96,18 @@ service bench-control /bench/busybox sh /bench/control.sh
     seclabel u:r:shell:s0
     disabled
 RC
+cp /bench-domain-tap /android/bench/domain-tap
+chmod 755 /android/bench/domain-tap
+cp /framework-network /android/bench/network.sh
+chmod 755 /android/bench/network.sh
 cp /framework-control /android/bench/control.sh
 chmod 755 /android/bench/control.sh
 mkdir -p /rw/egl /rw/ework /rw/hw /rw/hwork
 mount -t overlay overlay -o lowerdir=/lower/vendor/lib64/egl,upperdir=/rw/egl,workdir=/rw/ework /android/vendor/lib64/egl
 mount -t overlay overlay -o lowerdir=/lower/vendor/lib64/hw,upperdir=/rw/hw,workdir=/rw/hwork /android/vendor/lib64/hw
 for name in libEGL_swiftshader.so libGLESv1_CM_swiftshader.so libGLESv2_swiftshader.so; do cp /bench-$name /android/vendor/lib64/egl/$name; done
+cp /bench-mapper-*.so /android/bench/
+for library in /android/bench/bench-mapper-*.so; do name=${library##*/bench-mapper-};cp "$library" /android/vendor/lib64/hw/"$name";done
 cp /bench-gralloc.bench.so /android/vendor/lib64/hw/gralloc.bench.so
 cp /bench-hwcomposer.bench.so /android/vendor/lib64/hw/hwcomposer.bench.so
 for node in /sys/class/virtio-ports/*/name; do

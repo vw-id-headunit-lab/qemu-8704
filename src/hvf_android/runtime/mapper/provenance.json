@@ -1,0 +1,26 @@
+{
+  "source_archive": "https://dl.google.com/android/repository/sys-img/android/arm64-v8a-29_r08.zip",
+  "source_entry": "arm64-v8a/vendor.img",
+  "vendor_crc32": 141755776,
+  "vendor_sha256": "d154829c11544a9c6b1ea8e490a9b7ae2babd3e852ed5f1e02aaf5d1e44a1cee",
+  "files": [
+    {
+      "source": "/lib64/hw/android.hardware.graphics.allocator@2.0-impl.so",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/runtime/mapper/android.hardware.graphics.allocator@2.0-impl.so",
+      "bytes": 24912,
+      "sha256": "33857ce8616ac259c4669ca44c5ca3a1b5e96198ab8f74a398bdc4c5f2fd36e0"
+    },
+    {
+      "source": "/lib64/hw/android.hardware.graphics.mapper@2.0-impl.so",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/runtime/mapper/android.hardware.graphics.mapper@2.0-impl.so",
+      "bytes": 34432,
+      "sha256": "bb64a448cc1b80f28f5370c5bc29ac322903a9e8e5da2332f34244ddcbe648a8"
+    },
+    {
+      "source": "/bin/hw/android.hardware.graphics.allocator@2.0-service",
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/runtime/mapper/android.hardware.graphics.allocator@2.0-service",
+      "bytes": 11584,
+      "sha256": "3ba71aff2827ca9eb4c5252236556e4dead6beed28a7044a5752424b47e33f63"
+    }
+  ]
+}

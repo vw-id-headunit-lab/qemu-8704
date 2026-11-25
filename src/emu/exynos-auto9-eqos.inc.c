@@ -1,9 +1,8 @@
 /* SPDX-License-Identifier: GPL-2.0-or-later
  * Auto V9 ETH0 control-plane device. Original devnp-dwceqos and VDTVM2
  * supply the nonstandard 4K queue stride and relocated DMA registers.
- * Channels retain setup while disconnected; no frames, packet timestamps, DMA
- * descriptor ownership changes, or IRQ. MDIO clocks an empty bus unless the
- * optional QNX management-plane endpoint is attached.
+ * Optional packet DMA uses the original VM2 channels and real QEMU netdev.
+ * The no-netdev control-plane profile remains disconnected.
  */
 #include "qemu/int128.h"
 
@@ -58,6 +57,16 @@ struct Auto9Eqos {
     SysBusDevice parent_obj;
     MemoryRegion regs, clk, fsys2;
     QEMUTimer *reset, *mdio;
+    NICConf conf;
+    NICState *nic;
+    uint32_t descriptor_bytes;
+    qemu_irq rx_irq[8], tx_irq[8];
+    unsigned tx_index[8], rx_index[8], tx_length[8];
+    uint32_t tx_vlan[8];
+    uint8_t tx_packet[8][16384];
+    uint64_t tx_packets, rx_packets, tx_bytes, rx_bytes;
+    uint64_t tx_descriptors, rx_descriptors, dma_errors, tx_errors;
+    uint64_t rx_dropped, rx_filtered;
     uint32_t words[0x11008 / 4];
     uint32_t channels[AUTO9_EQOS_CH_COUNT][0x64 / 4];
     uint64_t mac;
@@ -85,6 +94,8 @@ struct Auto9Eqos {
     uint64_t ptp_epoch;
     int64_t ptp_anchor_ns;
 };
+
+#include "exynos-auto9-eqos-net.inc.c"
 
 static bool auto9_eqos_config_word(hwaddr off)
 {
@@ -176,6 +187,7 @@ static void auto9_eqos_mdio_done(void *opaque)
     Auto9Eqos *s = opaque;
     uint32_t *address = &s->words[AUTO9_EQOS_MDIO_ADDR / 4];
     uint32_t *data = &s->words[AUTO9_EQOS_MDIO_DATA / 4];
+    s->phy.partner = auto9_eqos_link(s);
     bool write = (*address & 0xc) == 4;
     uint16_t result = 0xffff;
     if (s->phy_88q2112) {
@@ -209,6 +221,11 @@ static void auto9_eqos_reset_regs(Auto9Eqos *s)
     memset(s->words, 0, sizeof(s->words));
     memset(s->channels, 0, sizeof(s->channels));
     s->armed_tx = s->armed_rx = 0;
+    memset(s->tx_index, 0, sizeof(s->tx_index));
+    memset(s->rx_index, 0, sizeof(s->rx_index));
+    memset(s->tx_length, 0, sizeof(s->tx_length));
+    memset(s->tx_vlan, 0, sizeof(s->tx_vlan));
+    for (unsigned q = 0; q < 8; q++) { auto9_eqos_irq_update(s, q); }
     s->ptp_control = s->ptp_inc = s->ptp_setsec = s->ptp_setsubsec = 0;
     s->ptp_addend = s->ptp_active_addend = s->ptp_mcgr = 0;
     s->ptp_pps0_sec = 0;
@@ -489,16 +506,24 @@ static MemTxResult auto9_eqos_write(void *opaque, hwaddr off, uint64_t value,
     }
     if (channel) {
         hwaddr reg = off & 0xfff;
+        unsigned q = (off - AUTO9_EQOS_CH_START) / AUTO9_EQOS_CH_STRIDE;
         if (reg == 0x60) {
-            *channel &= ~(uint32_t)value; /* W1C; never asserts completion. */
+            *channel &= ~(uint32_t)value;
         } else {
             *channel = reg == AUTO9_EQOS_CH_RIWT ? value & 0xff : value;
             if (reg == 4 || reg == 8) {
                 unsigned index = (off - AUTO9_EQOS_CH_START) / AUTO9_EQOS_CH_STRIDE;
                 uint32_t *armed = reg == 4 ? &s->armed_tx : &s->armed_rx;
                 *armed = (*armed & ~BIT(index)) | ((value & 1) << index);
-                /* Disconnected device: no DMA scheduler can consume a ring. */
+
             }
+        }
+        if (reg == 0x14 || reg == 0x10) { s->tx_index[q] = 0; }
+        if (reg == 0x18 || reg == 0x1c) { s->rx_index[q] = 0; }
+        auto9_eqos_irq_update(s, q);
+        if (reg == 4 || reg == 0x20) { auto9_eqos_tx(s, q); }
+        if (s->nic && (reg == 8 || reg == 0x28)) {
+            qemu_flush_queued_packets(qemu_get_queue(s->nic));
         }
         s->channel_writes++;
         s->channel_write_mask |= BIT((off - AUTO9_EQOS_CH_START) / AUTO9_EQOS_CH_STRIDE);
@@ -553,6 +578,10 @@ static MemTxResult auto9_eqos_write(void *opaque, hwaddr off, uint64_t value,
         }
     }
     s->words[off / 4] = value;
+    if (off == 0 && s->nic) {
+        for (unsigned q = 0; q < 5; q++) { auto9_eqos_tx(s, q); }
+        qemu_flush_queued_packets(qemu_get_queue(s->nic));
+    }
     s->writes++;
     return MEMTX_OK;
 }
@@ -652,6 +681,10 @@ static char *auto9_eqos_read_histogram(Object *obj, Error **errp)
 static void auto9_eqos_init(Object *obj)
 {
     Auto9Eqos *s = AUTO9_EQOS(obj);
+    for (unsigned q = 0; q < 8; q++) {
+        sysbus_init_irq(SYS_BUS_DEVICE(obj), &s->rx_irq[q]);
+        sysbus_init_irq(SYS_BUS_DEVICE(obj), &s->tx_irq[q]);
+    }
     s->reset = timer_new_ns(QEMU_CLOCK_VIRTUAL, auto9_eqos_dma_reset_done, s);
     s->mdio = timer_new_ns(QEMU_CLOCK_VIRTUAL, auto9_eqos_mdio_done, s);
     memory_region_init_io(&s->regs, obj, &auto9_eqos_ops, s,
@@ -663,6 +696,72 @@ static void auto9_eqos_init(Object *obj)
     memory_region_init_io(&s->fsys2, obj, &auto9_eqos_fsys2_ops, s,
                           "auto9-eqos0-fsys2-config", 4);
     sysbus_init_mmio(SYS_BUS_DEVICE(obj), &s->fsys2);
+    object_property_add_uint32_ptr(obj, "ch0-tx-control", &s->channels[0][1], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch0-rx-control", &s->channels[0][2], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch0-tx-base", &s->channels[0][5], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch0-rx-base", &s->channels[0][7], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch0-tx-count", &s->channels[0][11], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch0-rx-count", &s->channels[0][12], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch0-interrupt-enable", &s->channels[0][13], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch0-dma-status", &s->channels[0][24], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch1-tx-control", &s->channels[1][1], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch1-rx-control", &s->channels[1][2], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch1-tx-base", &s->channels[1][5], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch1-rx-base", &s->channels[1][7], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch1-tx-count", &s->channels[1][11], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch1-rx-count", &s->channels[1][12], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch1-interrupt-enable", &s->channels[1][13], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch1-dma-status", &s->channels[1][24], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch2-tx-control", &s->channels[2][1], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch2-rx-control", &s->channels[2][2], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch2-tx-base", &s->channels[2][5], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch2-rx-base", &s->channels[2][7], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch2-tx-count", &s->channels[2][11], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch2-rx-count", &s->channels[2][12], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch2-interrupt-enable", &s->channels[2][13], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch2-dma-status", &s->channels[2][24], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch3-tx-control", &s->channels[3][1], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch3-rx-control", &s->channels[3][2], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch3-tx-base", &s->channels[3][5], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch3-rx-base", &s->channels[3][7], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch3-tx-count", &s->channels[3][11], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch3-rx-count", &s->channels[3][12], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch3-interrupt-enable", &s->channels[3][13], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch3-dma-status", &s->channels[3][24], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch4-tx-control", &s->channels[4][1], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch4-rx-control", &s->channels[4][2], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch4-tx-base", &s->channels[4][5], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch4-rx-base", &s->channels[4][7], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch4-tx-count", &s->channels[4][11], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch4-rx-count", &s->channels[4][12], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch4-interrupt-enable", &s->channels[4][13], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "ch4-dma-status", &s->channels[4][24], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "station0-hi", &s->words[192], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "station0-lo", &s->words[193], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "station1-hi", &s->words[194], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "station1-lo", &s->words[195], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "station2-hi", &s->words[196], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "station2-lo", &s->words[197], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "station3-hi", &s->words[198], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "station3-lo", &s->words[199], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "station4-hi", &s->words[200], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "station4-lo", &s->words[201], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "station5-hi", &s->words[202], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "station5-lo", &s->words[203], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "station6-hi", &s->words[204], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "station6-lo", &s->words[205], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "station7-hi", &s->words[206], OBJ_PROP_FLAG_READ);
+    object_property_add_uint32_ptr(obj, "station7-lo", &s->words[207], OBJ_PROP_FLAG_READ);
+    object_property_add_uint64_ptr(obj, "tx-packets", &s->tx_packets, OBJ_PROP_FLAG_READ);
+    object_property_add_uint64_ptr(obj, "rx-packets", &s->rx_packets, OBJ_PROP_FLAG_READ);
+    object_property_add_uint64_ptr(obj, "tx-bytes", &s->tx_bytes, OBJ_PROP_FLAG_READ);
+    object_property_add_uint64_ptr(obj, "rx-bytes", &s->rx_bytes, OBJ_PROP_FLAG_READ);
+    object_property_add_uint64_ptr(obj, "tx-descriptors", &s->tx_descriptors, OBJ_PROP_FLAG_READ);
+    object_property_add_uint64_ptr(obj, "rx-descriptors", &s->rx_descriptors, OBJ_PROP_FLAG_READ);
+    object_property_add_uint64_ptr(obj, "dma-errors", &s->dma_errors, OBJ_PROP_FLAG_READ);
+    object_property_add_uint64_ptr(obj, "tx-errors", &s->tx_errors, OBJ_PROP_FLAG_READ);
+    object_property_add_uint64_ptr(obj, "rx-dropped", &s->rx_dropped, OBJ_PROP_FLAG_READ);
+    object_property_add_uint64_ptr(obj, "rx-filtered", &s->rx_filtered, OBJ_PROP_FLAG_READ);
     object_property_add_uint32_ptr(obj, "fsys2-config", &s->fsys2_config, OBJ_PROP_FLAG_READ);
     object_property_add_uint32_ptr(obj, "fsys2-reads", &s->fsys2_reads, OBJ_PROP_FLAG_READ);
     object_property_add_uint32_ptr(obj, "fsys2-writes", &s->fsys2_writes, OBJ_PROP_FLAG_READ);
@@ -733,8 +832,11 @@ static void auto9_eqos_class(ObjectClass *klass, const void *data)
 {
     static const Property properties[] = {
         DEFINE_PROP_BOOL("phy-88q2112", Auto9Eqos, phy_88q2112, false),
+        DEFINE_NIC_PROPERTIES(Auto9Eqos, conf),
+        DEFINE_PROP_UINT32("descriptor-bytes", Auto9Eqos, descriptor_bytes, 16),
     };
     DeviceClass *dc = DEVICE_CLASS(klass);
+    dc->realize = auto9_eqos_realize;
     device_class_set_legacy_reset(dc, auto9_eqos_reset);
     device_class_set_props(dc, properties);
 }
@@ -760,5 +862,9 @@ static void auto9_eqos_create(VirtMachineState *vms)
     sysbus_mmio_map(SYS_BUS_DEVICE(dev), 0, AUTO9_EQOS_BASE);
     sysbus_mmio_map(SYS_BUS_DEVICE(dev), 1, AUTO9_EQOS_CLK);
     sysbus_mmio_map(SYS_BUS_DEVICE(dev), 2, AUTO9_EQOS_FSYS2);
+    for (unsigned q = 0; q < 8; q++) {
+        sysbus_connect_irq(SYS_BUS_DEVICE(dev), q * 2, qdev_get_gpio_in(vms->gic, 312 + q));
+        sysbus_connect_irq(SYS_BUS_DEVICE(dev), q * 2 + 1, qdev_get_gpio_in(vms->gic, 320 + q));
+    }
 }
 

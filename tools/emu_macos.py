@@ -14,7 +14,7 @@ import zipfile
 
 ROOT=Path(__file__).resolve().parents[1]
 PUBLIC_DIRS={'src','tools','native','runtime','config','licenses','tests','docs'}
-PUBLIC_ROOT={'README.md','VERSION','LICENSE','NOTICE.md','运行边界.md','发布状态.md','MEB-EMU.ps1','requirements.txt','pyproject.toml','.gitignore','.gitattributes'}
+PUBLIC_ROOT={'README.md','VERSION','LICENSE','NOTICE.md','MEB-EMU.ps1','MEB-EMU.sh','requirements.txt','requirements-macos.txt','pyproject.toml','.gitignore','.gitattributes'}
 VERSION=(ROOT/'VERSION').read_text(encoding='utf8').strip()
 
 

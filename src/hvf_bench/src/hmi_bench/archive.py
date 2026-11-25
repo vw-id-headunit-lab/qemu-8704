@@ -39,6 +39,10 @@ def build_initramfs(config: Config, mode: str, seconds: int, language: str = 'en
     init = {"baseline": "baseline-init.sh", "jvm": "probe-init.sh", "hmi": "hmi-init.sh"}[mode]
     members = {"probe-init": (guest.joinpath(init).read_bytes(), 0o100755)}
     if mode == "hmi":
+        if 'navigation_uplink' in config.paths:
+            from .navigation_fixture import uplink
+            members['navigation-uplink.conf']=(uplink(config['navigation_uplink'])[1],0o100644)
+            members['navigation-network']=((guest/'navigation-network.sh').read_bytes(),0o100755)
         if gpu:
             members['bench-gpu-virgl'] = (b'enabled', 0o100644)
             members['virgl-drm-compat.so'] = ((PROJECT / 'build/libvirgl-drm-compat.so').read_bytes(), 0o100755)
@@ -56,13 +60,30 @@ def build_initramfs(config: Config, mode: str, seconds: int, language: str = 'en
                 members['gateway-sdk-enabled'] = (b'yes', 0o100644)
         for name, source in {
             "display-setup": "display-setup.sh", "platform-setup": "platform-setup.sh",
+            "domain-network": "domain-network.sh",
+            "navigation-setup": "navigation-setup.sh", "navigation-run": "navigation-run.sh",
+            "navigation-memory": "navigation-memory.sh",
+            "native-rsi-setup": "native-rsi-setup.sh",
             "display-map": "display-map-setup.sh", "display-map-apply": "display-map-apply.sh",
             "platform-readiness.py": "platform-readiness.py",
+            "online-service.py": "online-service.py",
+            "permission-service.py": "permission-service.py",
             "vehicle-rsi-setup.py": "vehicle-rsi-setup.py",
-            "update-service": "update-service.sh",
+            "update-service": "update-service.sh", "update-watch.py": "update-watch.py",
             "host-clock-setup": "host-clock-setup.sh", "host-clock.py": "host-clock.py",
         }.items():
             members[name] = ((guest / source).read_bytes(), 0o100755)
+        from .navigation_fixture import gnss_frame
+        members['navigation-gnss-frame']=(gnss_frame(PROJECT.parents[1]/'var/hvf/navigation-location.json'),0o100644)
+        simulation = PROJECT.parents[1]/'var/hvf/navigation-simulation.json'
+        if simulation.is_file():
+            from . import navigation_fixture
+            navigation_fixture.validate_simulation(simulation)
+            members['navigation-motion.py']=((guest/'navigation-motion.py').read_bytes(),0o100644)
+            members['navigation-motion-route.json']=(simulation.read_bytes(),0o100644)
+        members['libunified-touch.so']=((PROJECT/'build/libunified-touch.so').read_bytes(),0o100755)
+        members['libnavigation-gnss.so']=((PROJECT/'build/libnavigation-gnss.so').read_bytes(),0o100755)
+        members['rem-input.so'] = ((PROJECT / 'build/rem-input.so').read_bytes(), 0o100755)
         members["hmi-seconds"] = (str(seconds).encode(), 0o100644)
         from .vehicle_fixture import control_properties
         members['bench-vehicle.properties'] = (control_properties(), 0o100644)
@@ -88,8 +109,17 @@ def build_initramfs(config: Config, mode: str, seconds: int, language: str = 'en
                 if len(coding) != 25 or hashlib.sha256(coding).hexdigest() != profile['coding_sha256']:
                     raise ValueError('Supplied original coding record differs')
                 members['bench-ric-id3-coding.bin'] = (coding, 0o100644)
+                if profile.get('diagnosis_records_path'):
+                    from .car_configuration import diagnosis_records
+                    records, _ = diagnosis_records(profile, PROJECT.parents[1] / profile['diagnosis_records_path'])
+                    members['bench-diagnosis-records.properties'] = (records, 0o100644)
             else:
                 members['bench-encoded-vehicle-type'] = (vehicle_type.encode('ascii'), 0o100644)
+            from .car_configuration import checksums
+            imported_configuration = checksums(profile)
+            if imported_configuration is not None:
+                members['bench-car-configuration.sha256'] = (imported_configuration, 0o100644)
+        members["navigation-log.py"]=((guest/"navigation-log.py").read_bytes(),0o100644)
         fixtures = payloads(language)
         for resource in ("settings", "strategies", "components", "requestedSettings", "changeTransactions"):
             members[f"bench-language-{resource}.json"] = (fixtures[f"language/{resource}.json"], 0o100644)

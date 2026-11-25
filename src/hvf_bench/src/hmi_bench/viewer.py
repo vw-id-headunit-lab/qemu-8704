@@ -30,10 +30,11 @@ header{flex-shrink:0}header strong{font-weight:600}#status{color:#c1cfde}#screen
 #vehicle-toggle:disabled{opacity:.5;cursor:wait}#vehicle-toggle:focus-visible{outline:2px solid white;outline-offset:3px}#vehicle-toggle.running{background:#364557;color:#fff}
 #vehicle-error{color:#ffb4a8;font-size:12px}#vehicle-error:empty{display:none}
 #screen.touch-input,#screen.touch-input *{cursor:default!important}
+#recovery-enter{border:0;border-radius:7px;padding:9px 12px;background:#364557;color:white;cursor:pointer}#recovery-enter:disabled{opacity:.5;cursor:wait}
 #progress{color:#aebed0;font-size:12px}
 #measurement{padding:5px 14px;background:#18212d;font:12px system-ui}#measurement button{margin:4px;padding:4px 8px}#measure-note{color:#c1cfde}
 </style></head><body><header><strong>原应用实时界面</strong><span id="status">正在连接…</span><span id="progress"></span>
-<div id="vehicle-controls" hidden><span id="vehicle-state" role="status">等待车辆信号…</span><button id="vehicle-toggle" type="button" disabled>启动车辆</button><span id="vehicle-error" role="alert"></span></div></header>
+<div id="vehicle-controls" hidden><span id="vehicle-state" role="status">等待车辆信号…</span><button id="vehicle-toggle" type="button" disabled>启动车辆</button><span id="vehicle-error" role="alert"></span></div><button id="recovery-enter" type="button" hidden>原厂更新／恢复</button></header>
 <details id="measurement" hidden><summary>P0 测量（仅确认实际看到的画面）</summary>
 <button data-measure="first_visible">确认首屏可见</button><button data-measure="menu_ready">确认菜单可操作</button>
 <button data-measure="arm_click">计时下一次 Settings 点击</button><button data-measure="confirm_click">目标页面已出现</button><button data-measure="cancel_click">取消点击计时</button>
@@ -75,7 +76,9 @@ function showVehicle(info){vehicleControls.hidden=!info.available;vehicleButton.
 async function refreshVehicle(){if(!pageActive)return;if(!vehicleBusy){try{const response=await fetch('/api/vehicle',{cache:'no-store'});const info=await response.json();if(!response.ok)throw Error(info.error||'车辆信号暂不可用');showVehicle(info)}catch(error){vehicleButton.disabled=true;vehicleState.textContent='车辆信号未连接';}}if(pageActive)setTimeout(refreshVehicle,2000)}
 vehicleButton.addEventListener('click',async()=>{if(vehicleBusy||vehicleButton.disabled)return;vehicleBusy=true;vehicleButton.disabled=true;vehicleButton.textContent=vehicleStarted?'正在熄火…':'正在启动…';vehicleError.textContent='';try{const response=await fetch('/api/vehicle',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({started:!vehicleStarted})});const info=await response.json();if(!response.ok)throw Error(info.error||'车辆操作失败');vehicleBusy=false;showVehicle(info)}catch(error){vehicleBusy=false;vehicleError.textContent=error.message;vehicleButton.textContent=vehicleStarted?'车辆熄火':'启动车辆';}});
 refreshVehicle();
-async function refreshProgress(){if(!pageActive)return;try{const response=await fetch('/api/progress',{cache:'no-store'});if(response.ok){const info=await response.json();document.getElementById('progress').textContent=info.label}}catch(error){}if(pageActive)setTimeout(refreshProgress,2000)}
+const recoveryButton=document.getElementById('recovery-enter');recoveryButton.hidden=!touchEnabled;
+recoveryButton.addEventListener('click',async()=>{recoveryButton.disabled=true;try{const response=await fetch('/api/recovery',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'enter'})});const result=await response.json();if(!response.ok)throw Error(result.error||'原厂更新服务未就绪');recoveryButton.textContent='正在进入 REM…'}catch(error){vehicleError.textContent=error.message;recoveryButton.disabled=false}});
+async function refreshProgress(){if(!pageActive)return;try{const response=await fetch('/api/progress',{cache:'no-store'});if(response.ok){const info=await response.json();document.getElementById('progress').textContent=info.label;recoveryButton.disabled=info.recovery_mode==='rem';recoveryButton.textContent=info.recovery_mode==='rem'?'原厂 REM 模式':'原厂更新／恢复'}}catch(error){}if(pageActive)setTimeout(refreshProgress,2000)}
 refreshProgress();
 const measurePanel=document.getElementById('measurement'),measureNote=document.getElementById('measure-note');
 async function measureAction(action){try{const response=await fetch('/api/measurement',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,label:'Settings'})});const info=await response.json();if(!response.ok)throw Error(info.error||response.status);measureNote.textContent=info.pending_click?'等待一次真实按下/抬起后，目标页面出现时确认。':'已记录；手动确认时间包含观察者反应和传输调度。';}catch(error){measureNote.textContent=error.message}}
@@ -156,6 +159,7 @@ class VNCViewerServer:
         app.router.add_get('/vnc.html', self._index)
         app.router.add_get('/websockify', self._bridge)
         app.router.add_post('/input/pointer', self._pointer)
+        app.router.add_post('/api/recovery', self._recovery_post)
         app.router.add_get('/api/vehicle', self._vehicle_get)
         app.router.add_post('/api/vehicle', self._vehicle_post)
         app.router.add_get('/api/progress', self._progress)
@@ -202,7 +206,11 @@ class VNCViewerServer:
         return web.Response(text=page, content_type='text/html', headers={'Cache-Control': 'no-store'})
 
     async def _progress(self, request: web.Request) -> web.Response:
-        return web.json_response(read_progress(self.progress_path), headers={'Cache-Control': 'no-store'})
+        info = read_progress(self.progress_path)
+        info['recovery_mode'] = 'rem' if self._recovery_active() else 'normal'
+        if self._recovery_active():
+            info['label'] = '原厂 REM 更新／恢复模式'
+        return web.json_response(info, headers={'Cache-Control': 'no-store'})
 
     async def _measurement_get(self, request: web.Request) -> web.Response:
         value = self.measurement.public() if self.measurement else {'enabled': False}
@@ -216,6 +224,70 @@ class VNCViewerServer:
         except (ValueError, TypeError) as error:
             return web.json_response({'error': str(error)}, status=400)
         return web.json_response(result)
+
+    def _recovery_active(self) -> bool:
+        if self.progress_path is None or not self.progress_path.is_file():
+            return False
+        with self.progress_path.open('rb') as stream:
+            stream.seek(max(0, self.progress_path.stat().st_size - 262144))
+            markers = [line.strip() for line in stream.read().splitlines()
+                       if line.startswith(b'BENCH_NATIVE_UPDATE_MODE=')]
+        return bool(markers and markers[-1] == b'BENCH_NATIVE_UPDATE_MODE=rem')
+
+    def _recovery_pointer(self, action: str, x: int, y: int) -> None:
+        if y >= 1024:
+            raise ValueError('Outside original REM input panel')
+        command = ('if [ "$(cat /mnt/agl/tmp/bench-update/boot-mode)" = rem ] '
+                   '&& /bin/busybox pidof swup >/dev/null; then '
+                   f"/bin/busybox timeout 2 /bin/busybox sh -c 'printf \"{action} {x} {y}\\n\" > /mnt/agl/tmp/bench-update/pointer'; "
+                   'echo REM_POINTER_EXIT=$?; else echo REM_POINTER_UNAVAILABLE; fi')
+        output = self._guest_control(command)
+        if 'REM_POINTER_EXIT=0' not in output:
+            raise ConnectionError('Original REM input unavailable: ' + output)
+
+    def _guest_control(self, command: str) -> str:
+        import importlib.util
+        session = json.loads((self.progress_path.parent / 'session.json').read_bytes())
+        script = Path(__file__).resolve().parents[4] / 'tools/hvf_console.py'
+        spec = importlib.util.spec_from_file_location('bench_recovery_control', script)
+        control = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(control)
+        return control.execute(command, timeout=5, port=session['ports']['debug_port'])
+
+    def _request_recovery(self) -> dict:
+        import shlex
+        code = ("import http.client,json;"
+                "c=http.client.HTTPConnection('::1',80,timeout=1);"
+                "c.request('GET','/?name=softwareupdate');"
+                "services=json.loads(c.getresponse().read())['data'];c.close();"
+                "port=next(s['port'] for s in services if s['name']=='softwareupdate');"
+                "c=http.client.HTTPConnection('::1',port,timeout=2);"
+                "c.request('POST','/softwareupdate/softwareTransactions/',"
+                "json.dumps({'action':'start_rem'}),{'Content-Type':'application/json'});"
+                "r=c.getresponse();print(json.dumps({'native_http_status':r.status,"
+                "'location':r.getheader('Location'),'body':r.read().decode()}));c.close()")
+        output = self._guest_control('chroot /mnt/agl /usr/bin/python3 -c ' + shlex.quote(code))
+        rows = [json.loads(line) for line in output.splitlines() if line.startswith('{')]
+        if len(rows) != 1 or rows[0].get('native_http_status') != 201:
+            raise ConnectionError('原厂更新服务尚未接受请求')
+        return rows[0]
+
+    async def _recovery_post(self, request: web.Request) -> web.Response:
+        if not self.touch_input or self.progress_path is None:
+            raise web.HTTPNotFound()
+        try:
+            body = await request.json()
+            if body != {'action': 'enter'}:
+                raise ValueError('Expected action enter')
+        except (ValueError, TypeError):
+            return web.json_response({'error': 'Invalid recovery request'}, status=400)
+        if self._recovery_active():
+            return web.json_response({'error': '当前已在原厂 REM 模式'}, status=409)
+        try:
+            result = await asyncio.to_thread(self._request_recovery)
+        except (OSError, ValueError, KeyError, ConnectionError, TimeoutError):
+            return web.json_response({'error': '原厂更新服务未就绪，请稍后重试'}, status=503)
+        return web.json_response({'accepted': True, **result}, status=202)
 
     async def _connect_input(self) -> None:
         if self._input_writer is None or self._input_writer.is_closing():
@@ -254,6 +326,8 @@ class VNCViewerServer:
                 raise
 
     async def _vehicle_response(self, action: str) -> web.Response:
+        if self._recovery_active():
+            return web.json_response({'available': False, 'ready': False, 'started': None, 'mode': 'rem'})
         try:
             result = await self._vehicle_command(action)
         except (OSError, ValueError, asyncio.TimeoutError):
@@ -289,6 +363,14 @@ class VNCViewerServer:
         async with self._input_lock:
             if action != 'down' and not self._input_active:
                 return False
+            if self._recovery_active():
+                wire_action = 'up' if action == 'cancel' else action
+                await asyncio.to_thread(self._recovery_pointer, wire_action, x, y)
+                self._input_active = action in ('down', 'move')
+                self._last_input_position = (x, y)
+                self.input_events_sent += 1
+                self.last_input_error = None
+                return True
             await self._connect_input()
             wire_action = 'up' if action == 'cancel' else action
             if action == 'down' and self._input_active:

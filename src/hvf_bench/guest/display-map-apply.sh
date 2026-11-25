@@ -1,4 +1,3 @@
-# Before this experiment: no layers, empty screen render order.
 ctl() {
     /bin/busybox chroot /mnt/agl /usr/bin/env XDG_RUNTIME_DIR=/run/platform/weston WAYLAND_DISPLAY=wayland-0 /usr/bin/LayerManagerControl "$@"
 }

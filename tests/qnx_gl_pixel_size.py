@@ -1,0 +1,11 @@
+from pathlib import Path
+import json,sys,subprocess,tempfile,hashlib
+r=Path.cwd();binary=Path(sys.argv[1]).resolve();label=sys.argv[2];source=binary.parents[2]/'src/emu/gl-forward/gles-client.c';text=source.read_text();a=text.index('static u32 tex_bytes(');z=text.index('\nvoid glTexImage2D(',a);function=text[a:z];cases=[(0x1903,0x1401,1024,1024,1048576),(0x8227,0x1401,32,16,1024),(0x1907,0x1401,4,4,48),(0x1908,0x1401,64,32,8192),(0x1903,0x1406,16,4,256),(0x8227,0x140b,8,4,128),(0x1902,0x1403,16,16,512),(0x1907,0x8363,16,16,512),(0x1908,0x8033,16,16,512),(0x1908,0x8368,16,16,1024),(0x84f9,0x84fa,16,16,1024),(0x84f9,0x8dad,16,16,2048),(0x1906,0x1401,8,8,64),(0x190a,0x1401,8,8,128),(0x1903,0x1401,-1,5,0),(0x1903,0xffffffff,4,4,0),(0xffffffff,0x1401,4,4,0)];record={'source':str(source),'source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'label':label,'input':cases,'scope':'Compile and execute exact product pixel-size helper; real observed original1024x1024R8/RED/U8 upload plus typed matrices; actual QNX render separately required'}
+with tempfile.TemporaryDirectory(prefix='qnx-pixel-size-')as directory:
+ p=Path(directory);code='#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\ntypedef uint32_t u32;typedef int32_t i32;static void transport_failed(void){exit(94); }\n'+function+'\nint main(void){unsigned wrong=0;\n'
+ for fmt,typ,w,h,want in cases:code+=f'{{u32 got=tex_bytes({fmt}u,{typ}u,{w},{h});printf("fmt=%x type=%x w=%d h=%d actual=%u expected=%u\\n",{fmt}u,{typ}u,{w},{h},got,{want}u);if(got!={want}u)wrong++;}}\n'
+ code+='return wrong?1:0;}\n';(p/'check.c').write_text(code);build=subprocess.run(['/usr/bin/clang','-O2',str(p/'check.c'),'-o',str(p/'check')],capture_output=True,text=True);record['build']={'argv':build.args,'exit':build.returncode,'stdout':build.stdout,'stderr':build.stderr}
+ if build.returncode:record.update(exit=1,error='native helper build failed')
+ else:
+  proc=subprocess.run([str(p/'check')],capture_output=True,text=True);record.update(exit=proc.returncode,stdout=proc.stdout,stderr=proc.stderr)
+(r/'.local/mac-port/transaction'/('qnx-gl-forward-'+label+'.json')).write_text(json.dumps(record,indent=2)+'\n');print(json.dumps(record,indent=2));raise SystemExit(record['exit'])

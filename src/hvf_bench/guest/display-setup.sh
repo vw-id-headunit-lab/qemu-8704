@@ -12,8 +12,14 @@ $BB chmod 0700 /mnt/agl/run/platform/weston
 if [ -x /mnt/agl/lib/systemd/systemd-udevd ]; then
     $BB mkdir -p /mnt/agl/run/udev
     $BB chroot /mnt/agl /lib/systemd/systemd-udevd --daemon
-    $BB chroot /mnt/agl /bin/udevadm trigger --subsystem-match=input
-    $BB chroot /mnt/agl /bin/udevadm settle --timeout=3
+    $BB mkdir -p /mnt/agl/run/udev/rules.d
+    $BB cat >/mnt/agl/run/udev/rules.d/99-bench-input.rules <<'INPUT_RULES'
+SUBSYSTEM=="input", KERNEL=="event*", ATTRS{name}=="QEMU Virtio Tablet", ENV{ID_INPUT}="1", ENV{ID_INPUT_MOUSE}="1", TAG+="seat"
+SUBSYSTEM=="input", KERNEL=="event*", ATTRS{name}=="QEMU Virtio Keyboard", ENV{ID_INPUT}="1", ENV{ID_INPUT_KEYBOARD}="1", TAG+="seat"
+INPUT_RULES
+    $BB chroot /mnt/agl /usr/bin/env SYSTEMD_IGNORE_CHROOT=1 /bin/udevadm control --reload-rules
+    $BB chroot /mnt/agl /usr/bin/env SYSTEMD_IGNORE_CHROOT=1 /bin/udevadm trigger --subsystem-match=input
+    $BB chroot /mnt/agl /usr/bin/env SYSTEMD_IGNORE_CHROOT=1 /bin/udevadm settle --timeout=3
 fi
 $BB sed 's/mode=1560x700/mode=1920x1080/' /mnt/agl/usr/lib/weston.ini > /mnt/agl/tmp/weston-bench.ini
 if [ -f /bench-gpu-virgl ]; then

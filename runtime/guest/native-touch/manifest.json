@@ -1,0 +1,184 @@
+{
+  "profile": "original-unified-touch-v1",
+  "assets": {
+    "touch-app": {
+      "path": "runtime/guest/native-touch/touch-app",
+      "bytes": 1930656,
+      "sha256": "1c1b813949e572d08356832e06b47be1b0a8777ab5c5110e59ae494b3e4f4302"
+    },
+    "provider.so": {
+      "path": "runtime/guest/native-touch/provider.so",
+      "bytes": 8320,
+      "sha256": "4a5048e02968d1abdf118faa96d087f3e3d0d90d8ba2114f9ad401716f523157"
+    },
+    "relay": {
+      "path": "runtime/guest/native-touch/relay",
+      "bytes": 11960,
+      "sha256": "ff9c561150c1bc126ae4ab3dc39336565a670ec4064d41bea57b669e7e72717c"
+    }
+  },
+  "binding": {
+    "original_sha256": "e1bb4059e85b0ffc1108f66b0a9e23f5a1ebec590804602ebf00ab67c47256c9",
+    "DT_NEEDED": [
+      "/vw/oem-touch/provider.so",
+      "libprotobuf.so.29",
+      "libpthread.so.0",
+      "librsic.so.0.1",
+      "librsi.so.0.1",
+      "libPocoNet.so.60",
+      "libPocoJSON.so.60",
+      "libPocoFoundation.so.60",
+      "librt.so.1",
+      "libtraceif.so.0.1",
+      "libkipc.so",
+      "libsystemd.so.0",
+      "libstdc++.so.6",
+      "libgcc_s.so.1",
+      "libc.so.6",
+      "ld-linux-aarch64.so.1"
+    ],
+    "original_allocated_sections_unchanged": [
+      {
+        "name": ".interp",
+        "address": "0x238",
+        "sha256": "be23adc91ec8582e52305c0a524ca336d671113934722eb2d35eecfcda22ec8f"
+      },
+      {
+        "name": ".note.ABI-tag",
+        "address": "0x254",
+        "sha256": "cfcc90a427eacfe314214f9d738b3ac15eb528772d68647d90108ba395d8f831"
+      },
+      {
+        "name": ".note.gnu.build-id",
+        "address": "0x274",
+        "sha256": "89493025f3fc7fc8fbccf056b2ff53902dd2b0bd06184f89680ee5a3e54818cd"
+      },
+      {
+        "name": ".rela.dyn",
+        "address": "0x4dc98",
+        "sha256": "57e9162a2729490903762864282527aea30a6d934c6db9b075fa6eeaabbc05c6"
+      },
+      {
+        "name": ".rela.plt",
+        "address": "0x619f0",
+        "sha256": "6b008e3516832f109d8add2776593c381dbc592348f0e35e5778a5edac3e41c4"
+      },
+      {
+        "name": ".init",
+        "address": "0x63fa0",
+        "sha256": "1055c62d287aad05d1941d55ec7f9131c4754dd81d77e705df1c1a7774d755e0"
+      },
+      {
+        "name": ".plt",
+        "address": "0x63fc0",
+        "sha256": "47ee0a105fb3d375b7a6a283e33e3d313024fe5aceb7cf6b02cf4813ddcabf33"
+      },
+      {
+        "name": ".text",
+        "address": "0x65900",
+        "sha256": "2dac5b89282a484d801f503e7af5ebca5d4101396c7d31b2b2d6c6c440d13458"
+      },
+      {
+        "name": ".fini",
+        "address": "0x13fca4",
+        "sha256": "3f68ec1e2dbb09c3b3aa5206833296c2bd4c8fb4b0351de04797e44783ba3035"
+      },
+      {
+        "name": ".rodata",
+        "address": "0x13fcb8",
+        "sha256": "3c76a769d3aa1f5aa8e24cbb49e7a60e64e56bd16761681c290200ed5676bf31"
+      },
+      {
+        "name": ".eh_frame_hdr",
+        "address": "0x14e8d0",
+        "sha256": "cb876b9a921a9e52ebc13ba3948c413a9908f9207f3c9dc9d97fba8139d39949"
+      },
+      {
+        "name": ".eh_frame",
+        "address": "0x153b38",
+        "sha256": "7126e704b9bacf5ffff1072361ad2532a6f7019d3fdc6d063e64b889f512faac"
+      },
+      {
+        "name": ".gcc_except_table",
+        "address": "0x174814",
+        "sha256": "857e296df33a91e49ca41b0b55b62ef7248a188e393fe858be8690e38834991f"
+      },
+      {
+        "name": ".init_array",
+        "address": "0x1921a8",
+        "sha256": "7f3f2a2c98a51c08d186a879df49deb5d71ee0e3cdb48fda122155cec5650d22"
+      },
+      {
+        "name": ".fini_array",
+        "address": "0x1923f0",
+        "sha256": "72166e216f295d49932fa1e910bcad1b9fb5d6a8de64d7dfd2a394ee190da354"
+      },
+      {
+        "name": ".data.rel.ro",
+        "address": "0x1923f8",
+        "sha256": "b0f3c27b0675c0dd4304827d417a3b4aca3ae512265ee537bfc257b027848358"
+      },
+      {
+        "name": ".got",
+        "address": "0x1990f8",
+        "sha256": "8d741d9f2017765694eb7432bf6257f57bedb178c87380a9fa7caa59d8734090"
+      },
+      {
+        "name": ".data",
+        "address": "0x19a000",
+        "sha256": "6487d8b7dfe17fc4f94ba3b6517f2d584165773ebe812098e00bda452192ee39"
+      },
+      {
+        "name": ".bss",
+        "address": "0x19a620",
+        "sha256": "e9fc75c0894d011272fe51c435d5b21d20345f9e7f5d95d73d7454b1c395c7ab"
+      }
+    ],
+    "original_exports": 2815,
+    "original_entry": "0x74e00"
+  },
+  "commands": [
+    {
+      "argv": [
+        "/Users/diwen/code/MEB-EMU/.local/deps/zig-aarch64-macos-0.15.2/zig",
+        "cc",
+        "-target",
+        "aarch64-linux-gnu.2.27",
+        "-O2",
+        "-g0",
+        "-mno-outline-atomics",
+        "-fPIC",
+        "-shared",
+        "-pthread",
+        "-ldl",
+        "/Users/diwen/code/MEB-EMU/src/hvf_bench/native/unified-touch.c",
+        "-o",
+        "/Users/diwen/code/MEB-EMU/runtime/guest/native-touch/provider.so"
+      ],
+      "stdout": "",
+      "stderr": "",
+      "exit": 0
+    },
+    {
+      "argv": [
+        "/Users/diwen/code/MEB-EMU/.local/deps/zig-aarch64-macos-0.15.2/zig",
+        "cc",
+        "-target",
+        "aarch64-linux-gnu.2.27",
+        "-O2",
+        "-g0",
+        "-mno-outline-atomics",
+        "/Users/diwen/code/MEB-EMU/src/emu/native-touch-relay.c",
+        "-o",
+        "/Users/diwen/code/MEB-EMU/runtime/guest/native-touch/relay"
+      ],
+      "stdout": "",
+      "stderr": "",
+      "exit": 0
+    }
+  ],
+  "source_sha256": {
+    "src/hvf_bench/native/unified-touch.c": "e02eb2801c5191b858dd5cd0d61f2138dfa9a67aa4f0778704d4087a5a126387",
+    "src/emu/native-touch-relay.c": "93d9d27a9642f64cc15696cd0e43570e330bbeece8fe7424cb52aad656c5deda"
+  }
+}

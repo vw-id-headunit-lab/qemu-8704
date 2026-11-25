@@ -21,3 +21,22 @@ __pycache__/
 /native/upstream/*.tar.xz
 /src/hvf_bench/runtime/mesa/rootfs/
 /src/hvf_bench/runtime/cache/
+
+# Private OEM update package; never commit the local extraction
+/8704/
+
+# Generated inspection caches and loose local capture/export files
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+/20??????T??????Z-*.png
+/surface-*.png
+/实车导出*.zip
+/实车导出结果.md
+
+# Active local investigation journals; public guides live in docs/
+/Mac运行.md
+/运行边界.md
+
+# OEM-derived native touch executable; distribute with private resources only
+/runtime/guest/native-touch/touch-app

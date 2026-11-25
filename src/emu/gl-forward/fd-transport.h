@@ -1,3 +1,6 @@
+#ifdef GL_FORWARD_QNX
+#include "qnx-transport.h"
+#else
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -131,7 +134,7 @@ static void rec(u32 op,u32 total)
     unsigned size=24+total;
     if(size>r->capacity){r->data=realloc(r->data,size);if(!r->data)abort();r->capacity=size;}
     u32 *h=(u32 *)r->data;h[0]=119;h[1]=8;h[2]=getpid();h[3]=record_thread();h[4]=op;h[5]=total;
-    r->size=size;r->used=24;r->reply=(op>=100&&op<=109)||op==120||op==121||op==123||op==124||op==126||op==127||op==131||op==132||op==138||op==140||op==142||op==145||op==200||(op>=134&&op<=137);
+    r->size=size;r->used=24;r->reply=(op>=100&&op<=109)||op==120||op==121||op==123||op==124||op==126||op==127||op==131||op==132||op==138||op==140||op==142||op==145||op==146||op==147||op==148||op==162||op==150||op==152||op==200||(op>=134&&op<=137);
     if(!total)commit_record(r);
 }
 static void record_part(const void *p,unsigned n)
@@ -157,3 +160,5 @@ static _Noreturn void report_unsupported_native(const char *name)
     }
     abort();
 }
+
+#endif

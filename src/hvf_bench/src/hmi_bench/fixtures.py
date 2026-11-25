@@ -15,27 +15,30 @@ def element(service: str, resource: str, name: str, **fields) -> dict:
     return {"id": identity, "name": name, "uri": f"/{service}/{resource}/{identity}", **fields}
 
 
-def payloads(language: str = "en_US") -> dict[str, bytes]:
-    """Build local data using a supported HMI locale and its RSI language tag."""
+def language_values(language: str = "en_US") -> dict:
     if not isinstance(language, str) or language not in LANGUAGE_TAGS:
         raise ValueError("Unsupported startup language; choose en_US or zh_CN")
     settings = [element("language", "settings", tag, language=tag, isSDS=False,
                         isVisible=True, voiceType="female") for tag in LANGUAGE_TAGS.values()]
     selected = next(setting for setting in settings if setting["language"] == LANGUAGE_TAGS[language])
-    user = element("useraccount", "users", "Local guest", authenticationLevel="level0",
-                   idpUserId="local-guest", userId="local-guest", userRole="anonymousGuestUser",
-                   isLocked=False, isSpinReset=False, securityMode=False, sortOrder=0,
-                   tokenStatus="ok", lastSync="2000-01-01T00:00:00.000+00:00")
-    values = {
+    return {
         "language/settings.json": settings,
-        # Original 8704 uses requestedSettings for a user-initiated switch.
-        # The generic mock must start with a valid empty collection, not an absent file.
         "language/requestedSettings.json": [],
         "language/changeTransactions.json": [],
         "language/strategies.json": [element("language", "strategies", "Local language",
                                              main=selected, default=selected, fallback=selected)],
         "language/components.json": [element("language", "components", "onboardUserInterface",
                                              type="graphicalUserInterface", state="idle", currentSetting=selected)],
+    }
+
+
+def payloads(language: str = "en_US") -> dict[str, bytes]:
+    user = element("useraccount", "users", "Local guest", authenticationLevel="level0",
+                   idpUserId="local-guest", userId="local-guest", userRole="anonymousGuestUser",
+                   isLocked=False, isSpinReset=False, securityMode=False, sortOrder=0,
+                   tokenStatus="ok", lastSync="2000-01-01T00:00:00.000+00:00")
+    values = {
+        **language_values(language),
         "useraccount/users.json": [user],
         "useraccount/userContexts.json": [element("useraccount", "userContexts", "vehicle",
             activeUser=user, identifiedUser=user, atneMove=False, cancelAtneMoving=False,
@@ -51,6 +54,8 @@ def payloads(language: str = "en_US") -> dict[str, bytes]:
         "PermissionManagement/popups.json": [],
         # The original HMI creates its client and entry points through the original
         # mockup POST handlers. Never predeclare the HMI available or invent intents.
+        "displaymanagement/displays.json": [element("displaymanagement", "displays", "mainunit",
+            controlClient="HMI", width=1920, height=1080)],
         "displayintentcenter/clients.json": [],
         "displayintentcenter/entryPoints.json": [],
         "displayintentcenter/displayIntents.json": [],

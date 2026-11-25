@@ -76,6 +76,7 @@ class GLCenterReader:
  def word(self,pa):return int.from_bytes(self.base.physical(pa,8),'little')
  def read(self,va):return self.word(self.address(va))
  def check_live(self):
+  self.base.check_current_owner()
   state=json.loads((self.session/'native-runtime-state.json').read_bytes())
   if not state['running'] or state['qemu_pid']!=self.base.pid or (self.session/'integrity.json').exists():
    raise ValueError('Original session ended')

@@ -50,6 +50,19 @@ if [ -n "$ROOT_DISK" ] && [ -n "$HMI_DISK" ]; then
         $BB mount -t tmpfs tmpfs "/mnt/agl/$directory"
     done
     $BB mkdir -p /mnt/agl/run/platform/weston /mnt/agl/var/lib/hmi /mnt/agl/data/lge/hmi
+    prepare_shared_memory() {
+        for directory in "$1/dev/shm" "$1/data/sharedmemory"; do
+            [ ! -L "$directory" ] || return 1
+            $BB mkdir -p "$directory" || return 1
+            [ -d "$directory" ] || return 1
+            $BB chmod 0777 "$directory" || return 1
+        done
+    }
+    if ! prepare_shared_memory /mnt/agl; then
+        echo 'ORIGINAL_SHARED_MEMORY_SETUP_FAILED'
+        while :; do $BB sleep 60; done
+    fi
+    echo 'ORIGINAL_SHARED_MEMORY_READY'
     $BB modprobe virtio_console
     $BB mdev -s
     for port_name in /sys/class/virtio-ports/*/name; do
@@ -79,7 +92,6 @@ if [ -n "$ROOT_DISK" ] && [ -n "$HMI_DISK" ]; then
         $BB cp /virgl-drm-compat.so /mnt/agl/tmp/virgl-drm-compat.so
         $BB cp /native-pointer.py /mnt/agl/tmp/native-pointer.py
         $BB mkfifo /mnt/agl/tmp/bench-native-input
-        # Keep the existing Java transport path contract; this alias is a FIFO.
         $BB ln -s /tmp/bench-native-input /mnt/agl/dev/vport99p0
         echo /dev/vport99p0 > /mnt/agl/tmp/bench-input.device
         echo 'VIRGL_RUNTIME_STAGED'
@@ -98,7 +110,6 @@ if [ -n "$ROOT_DISK" ] && [ -n "$HMI_DISK" ]; then
         echo "NATIVE_POINTER_PID=$!"
     fi
     if [ -f /update-service ]; then $BB sh /update-service; fi
-    # Registry starts before the JVM; both may spin on the absent KIPC reader.
     if [ -f /egl-forward-trace.so ]; then
         $BB cp /egl-forward-trace.so /mnt/agl/tmp/libegl-forward-trace.so
     fi
@@ -114,6 +125,25 @@ if [ -n "$ROOT_DISK" ] && [ -n "$HMI_DISK" ]; then
             while :; do $BB sleep 60; done
             while :; do $BB sleep 1; done
         fi
+    fi
+    if [ -f /native-rsi-setup ]; then $BB sh /native-rsi-setup; fi
+    if [ -f /mesa-runtime.tar.gz ] && [ ! -d /mnt/agl/tmp/mesa ]; then
+        $BB mkdir -p /mnt/agl/tmp/mesa
+        $BB tar -xzf /mesa-runtime.tar.gz -C /mnt/agl/tmp/mesa
+        echo 'SOFTWARE_MESA_UNPACKED_IN_RAM'
+    fi
+    if [ -f /navigation-uplink.conf ]; then
+        if ! $BB sh /navigation-network; then
+            echo NAVIGATION_UPLINK_SETUP_FAILED
+            while :; do $BB sleep 60; done
+        fi
+    fi
+    if [ -f /navigation-setup ]; then
+        if ! $BB sh /navigation-memory; then
+            echo NAVIGATION_MEMORY_SETUP_FAILED
+            while :; do $BB sleep 60; done
+        fi
+        $BB sh /navigation-setup
     fi
     if [ -f /host-clock-setup ]; then
         . /host-clock-setup
@@ -143,11 +173,6 @@ if [ -n "$ROOT_DISK" ] && [ -n "$HMI_DISK" ]; then
     if [ -f /bench-encoded-vehicle-type ]; then
         $BB cp /bench-encoded-vehicle-type /mnt/agl/tmp/bench-encoded-vehicle-type || exit 1
     fi
-    if [ -f /mesa-runtime.tar.gz ] && [ ! -d /mnt/agl/tmp/mesa ]; then
-        $BB mkdir -p /mnt/agl/tmp/mesa
-        $BB tar -xzf /mesa-runtime.tar.gz -C /mnt/agl/tmp/mesa
-        echo 'SOFTWARE_MESA_UNPACKED_IN_RAM'
-    fi
     if [ -f /display-map ]; then
         $BB sh /display-map >/mnt/agl/tmp/display-map.log 2>&1 &
     fi
@@ -169,7 +194,18 @@ if [ -n "$ROOT_DISK" ] && [ -n "$HMI_DISK" ]; then
         $BB cp /bench-diagApi.properties /mnt/agl/tmp/bench-diagApi.properties || exit 1
         $BB mount -o bind /mnt/agl/tmp/bench-diagApi.properties /mnt/agl/vw/hmi/config/diagApi.properties || exit 1
         $BB cp /bench-ric-id3-coding.bin /mnt/agl/tmp/bench-ric-id3-coding.bin || exit 1
+        if [ -f /bench-diagnosis-records.properties ]; then
+            $BB cp /bench-diagnosis-records.properties /mnt/agl/tmp/bench-diagnosis-records.properties || exit 1
+        fi
         echo BENCH_RIC_ID3_CODING_INPUT_READY
+    fi
+    if [ -f /bench-car-configuration.sha256 ]; then
+        (cd /mnt/agl && $BB sha256sum -c /bench-car-configuration.sha256) >/mnt/agl/tmp/car-configuration-check.txt 2>&1 || {
+            $BB cat /mnt/agl/tmp/car-configuration-check.txt
+            echo IMPORTED_CAR_CONFIGURATION_MISMATCH
+            exit 1
+        }
+        echo "IMPORTED_CAR_CONFIGURATION_VERIFIED files=$($BB wc -l < /bench-car-configuration.sha256)"
     fi
     echo 'ORIGINAL_MIBMAIN_BEGIN'
     $BB chroot /mnt/agl /bin/sh -c '
@@ -189,7 +225,7 @@ if [ -n "$ROOT_DISK" ] && [ -n "$HMI_DISK" ]; then
         if [ -f /tmp/hmi-http-gateway.options ]; then gateway_options=$(cat /tmp/hmi-http-gateway.options); fi
         input_options=
         if [ -f /tmp/bench-input.device ]; then
-            input_options="-Dbench.input.8704=true -Dbench.input.device=$(cat /tmp/bench-input.device) -Dde.vw.mib.asl.system.input.rsi.disable=true -Dbench.vehicle.rsi=/tmp/bench-vehicle.properties"
+            input_options="-Dbench.input.8704=true -Dbench.input.device=$(cat /tmp/bench-input.device) -Dbench.vehicle.rsi=/tmp/bench-vehicle.properties"
             if [ ! -f /tmp/bench-gpu-virgl ]; then
                 input_options="$input_options -Dbench.vehicle.control=true -Dde.vw.mib.powermanagement.usersi=1"
             fi
@@ -206,7 +242,6 @@ if [ -n "$ROOT_DISK" ] && [ -n "$HMI_DISK" ]; then
                 export LIBGL_ALWAYS_SOFTWARE=1
                 export GALLIUM_DRIVER=llvmpipe
             fi
-            # Bound LLVM worker fan-out inside a four-vCPU software-emulated guest.
             export LP_NUM_THREADS=2
             export EGL_PLATFORM=wayland
             export MESA_DEBUG=1
@@ -225,6 +260,9 @@ if [ -n "$ROOT_DISK" ] && [ -n "$HMI_DISK" ]; then
         car_model_options=-Dde.vw.mib.configuration.encodedVehicleType=0203010603000000
         if [ -f /tmp/bench-diagApi.properties ]; then
             car_model_options=-Dbench.diagnosis.coding=/tmp/bench-ric-id3-coding.bin
+            if [ -f /tmp/bench-diagnosis-records.properties ]; then
+                car_model_options="$car_model_options -Dbench.diagnosis.records=/tmp/bench-diagnosis-records.properties"
+            fi
             echo BENCH_NATIVE_DIAGNOSIS_VEHICLE_TYPE
         fi
         if [ -f /tmp/bench-encoded-vehicle-type ]; then

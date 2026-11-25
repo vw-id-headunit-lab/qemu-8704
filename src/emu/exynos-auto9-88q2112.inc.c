@@ -15,6 +15,7 @@ typedef struct Auto9Q2112Latch {
 } Auto9Q2112Latch;
 
 typedef struct Auto9Q2112 {
+    bool partner;
     uint16_t selector, pointer[32];
     uint16_t pma_control, pma_t1, pma_t1_control, pcs_control, pcs_t1;
     uint16_t autoneg, port_control;
@@ -63,7 +64,7 @@ static uint16_t auto9_q2112_mmd_read(Auto9Q2112 *p, unsigned dev,
     case 0x10001: case 0x10901: case 0x30001: case 0x30901:
     case 0x30902: case 0x70201:
         p->link_reads++;
-        return 0; /* No partner: do not turn an open bus value into link-up. */
+        return p->partner ? BIT(2) : 0;
     case 0x70200: return p->autoneg;
     case 0x1f8001: return p->port_control;
     }

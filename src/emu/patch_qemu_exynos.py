@@ -298,6 +298,8 @@ AUTO9_VCLK_CASES
                    '    uint64_t auto9_ppi27[GIC_NCPU][8];\n\n'+anchor)
     if relative=='hw/intc/arm_gic.c':
         model=Path(__file__).with_name('exynos-auto9-gic-ufs-observer.inc.c').read_text(encoding='utf8')
+        anchor='static MemTxResult gic_dist_read(void *opaque, hwaddr offset, uint64_t *data,\n                                 unsigned size, MemTxAttrs attrs)\n{\n'
+        text=one(text,anchor,anchor+'    GICState *s = opaque;\n    if (!qtest_enabled() && s->num_cpu > 1 && !current_cpu) {\n        return MEMTX_ERROR;\n    }\n')
         anchor='/* Process a change in an external IRQ input.  */\n'
         text=one(text,anchor,model+'\n'+anchor)
         anchor='    trace_gic_set_irq(irq, level, cm, target);'
@@ -321,6 +323,7 @@ AUTO9_VCLK_CASES
                    '    device_class_set_parent_realize(dc, arm_gic_realize, &agc->parent_realize);\n'
                    '    object_class_property_add_str(klass, "x-auto9-spi228-state", auto9_gic_vh1_snapshot, NULL);\n'
                    '    object_class_property_add_str(klass, "x-auto9-decon-irq-state", auto9_gic_decon_snapshot, NULL);\n'
+                   '    object_class_property_add_str(klass, "x-auto9-eqos-irq-state", auto9_gic_eqos_snapshot, NULL);\n'
                    '    object_class_property_add_str(klass, "x-auto9-ppi27-state", auto9_gic_ppi27_snapshot, NULL);')
     if relative=='target/arm/tcg/tlb_helper.c':
         text=one(text,'#include "qemu/osdep.h"','#include "qemu/osdep.h"\n#include "qemu/log.h"')

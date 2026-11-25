@@ -1,0 +1,59 @@
+{
+  "parent_version": "11.1.0",
+  "archive_sha256": "ed1055fee2670d93b0f11b9a0d875c5871f2c5006e7434fb5f4c871e7a754ec2",
+  "files": [
+    {
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/runtime/arm32/COPYING.LIB",
+      "bytes": 26415,
+      "sha256": "31c90ce76b6f5aab90a205851e71d5c27e31c0aa3d7017a4383b98a6fe3f1faa"
+    },
+    {
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/runtime/arm32/COPYING",
+      "bytes": 17880,
+      "sha256": "dd3ce02338c3a48abb6ba59b48809f7108a8bd242cb0cc8be90daafa30707c28"
+    },
+    {
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/runtime/arm32/qemu-libs/libglib-2.0.so.0",
+      "bytes": 1445168,
+      "sha256": "5708c608ecf9ecad77c467cd9b8316bf385e7186cb0358f14f2d4e601e92799a"
+    },
+    {
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/runtime/arm32/qemu-libs/libpcre2-8.so.0",
+      "bytes": 788464,
+      "sha256": "070987f1cfe8cd02a5f188913e4562906dffc9dae12461c996ef2d422901c3b3"
+    },
+    {
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/runtime/arm32/qemu-libs/ld-musl-aarch64.so.1",
+      "bytes": 723480,
+      "sha256": "652a04bcb0326733f762eca799887bbc9e070df0a0d6668238769f6dfcdc77c2"
+    },
+    {
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/runtime/arm32/qemu-libs/libz.so.1",
+      "bytes": 133008,
+      "sha256": "5f05cb927503c68316a56a1588611cb72b7d05c160b780d92bfa6b8cfccda762"
+    },
+    {
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/runtime/arm32/qemu-libs/libintl.so.8",
+      "bytes": 198408,
+      "sha256": "8c2588462fad390737fb2bf4bb474642e60e728e6f94c3eff9ce55c21eff1831"
+    },
+    {
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/runtime/arm32/dependencies.txt",
+      "bytes": 346,
+      "sha256": "addd10dbf76ba890736302b0736355ea7cc87a3fbe84a71d2a42bd217a65bf33"
+    },
+    {
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/runtime/arm32/arm32-exec",
+      "bytes": 67504,
+      "sha256": "d5aa1d75118cfb71c2b5d7057bc56e3d826b9e10fd451f8ddfd3e4f972db856a"
+    },
+    {
+      "path": "/Users/diwen/code/MEB-EMU/src/hvf_android/runtime/arm32/qemu-arm",
+      "bytes": 3283008,
+      "sha256": "8854397ef2fe43065169baade1ecb6a98215c9789708613b47443c710d713d23"
+    }
+  ],
+  "patch": "/Users/diwen/code/MEB-EMU/src/hvf_android/runtime/arm32/qemu-android-abi.patch",
+  "wrapper_source": "/Users/diwen/code/MEB-EMU/src/hvf_android/native/arm32-exec.c",
+  "mode": "NativeAArch64 user-mode ARM32 translation; genuine host kernel Binder ioctls with identity-mapped guest addresses; virtual per-thread Linux32 personality, no firmware executable patch"
+}

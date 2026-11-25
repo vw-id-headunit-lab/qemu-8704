@@ -14,6 +14,7 @@ from pathlib import Path
 import shutil
 import struct
 import subprocess
+import sys
 import uuid
 import zlib
 
@@ -361,6 +362,24 @@ def qnx_completed_var_source(source, digest):
     return True
 
 
+def verified_base_identity(origin, verified):
+    prior, current = origin.get('stat'), verified.get('stat')
+    if (not isinstance(prior, list) or not isinstance(current, list)
+            or len(prior) != 4 or len(current) != 4
+            or any(type(n) is not int or n <= 0 for n in prior + current)):
+        return False
+    if prior == current:
+        return True
+    return (sys.platform == 'darwin' and isinstance(prior, list) and isinstance(current, list)
+            and len(prior) == len(current) == 4 and prior[1:] == current[1:]
+            and all(type(n) is int and n > 0 for n in (prior[0], current[0]))
+            and prior[0] != current[0] and origin.get('base') == verified.get('base')
+            and origin.get('gpt_regions_verified') == verified.get('gpt_regions_verified') == 5
+            and bool(verified.get('archive_payloads_verified'))
+            and origin.get('archive_payloads_verified') == verified.get('archive_payloads_verified')
+            and origin.get('profile') == verified.get('profile'))
+
+
 def clone_qnx_firstboot(manifest, verified, output, qnx_parent):
 
     source = _safe_dir(qnx_parent)
@@ -376,7 +395,7 @@ def clone_qnx_firstboot(manifest, verified, output, qnx_parent):
                                                 'ufs-lun0-base-integrity.json'))
     if (original.get('original_unchanged') is not True or original.get('exit_code') != 0
             or disk.get('unchanged_stat') is not True or Path(disk['base']).resolve()!=base
-            or origin.get('host') != 0 or origin.get('lun') != 0 or origin['stat']!=verified['stat']
+            or origin.get('host') != 0 or origin.get('lun') != 0 or not verified_base_identity(origin,verified)
             or origin.get('read_only_backing') is not True or origin.get('guest_writes_to_overlay_only') is not True
             or Path(origin['base']).resolve()!=base or Path(origin['overlay']).resolve()!=prior
             or Path(origin['manifest']).resolve()!=manifest.resolve()):

@@ -1753,6 +1753,24 @@ def probe(output, seconds, steps, map_pram=False, hcb=False, exynos_uart=False, 
              '-qmp',f'tcp:127.0.0.1:{qmp_port},server=on,wait=off','-gdb',f'tcp:127.0.0.1:{gdb_port}',
              '-d',('in_asm,guest_errors,unimp' if trace_mode=='blocks' else 'guest_errors,unimp'),'-D',str(output/'tcg.log'),'-no-reboot',
              '-name','8704-original-vlm-el2']
+    lifecycle_trace=os.environ.get('OEM_8704_VM_LIFECYCLE_TRACE','')
+    if lifecycle_trace:
+        if lifecycle_trace!='stop-writer-v1' or lifetime is None or not board_adapter or not native_parallel_tcg:
+            raise ValueError('Original VM lifecycle trace requires the persistent native three-domain board')
+        targets=[]
+        for name in ('vm_stop','vm_restart','vm_halt','_vm_state_event_set_running'):
+            row=next(x for x in elf.symbols if x['name']==name)
+            address,size=row['address'],row['size']
+            body=elf.at(address,size)
+            if not size or image.read_bytes()[address-0x80080000:address-0x80080000+size]!=body:
+                raise ValueError('Original vLM lifecycle producer differs: '+name)
+            targets.append(dict(symbol=name,address=hex(address),bytes=size,sha256=hashlib.sha256(body).hexdigest()))
+        command[command.index('-d')+1]+=',exec,cpu'
+        command+=['-dfilter',','.join(x['address']+'+'+hex(x['bytes'])for x in targets)]
+        vm.save(output/'native-vm-lifecycle-trace.json',dict(profile=lifecycle_trace,targets=targets,
+            original_hypervisor_sha256=vm.sha(image),register_writes=False,guest_code_changed=False,
+            purpose='Observe original stop/halt/restart callers and arguments; no forced running state'))
+    command+=eqos_platform.packet_options(eqos)
     if base_file_ram:
         command+=['-object',memory_backend('mach-virt.ram',base_bytes)]
     if om_input:
@@ -1993,7 +2011,8 @@ def probe(output, seconds, steps, map_pram=False, hcb=False, exynos_uart=False, 
             vm.save(output/'linux-native-console.json',detail)
         else:
             command+=['-serial','file:'+str(output/'exynos-uart.bin')]
-        command+=['-serial','file:'+str(output/'exynos-secondary-uart.bin')]
+        from qnx_mcu_uart import serial_arguments
+        command+=serial_arguments(output,load_qnx)
     if linux_uart:
         from linux_early_uart import DIRECT_INDEX, DIRECT_TTY
         for row in linux_uart['ports']:
@@ -2329,7 +2348,10 @@ def probe(output, seconds, steps, map_pram=False, hcb=False, exynos_uart=False, 
                 linux_image=next((item for item in loaded if item['guest']=='linux'),None)
                 abox_watch=abox_observer.arm(rsp,Path(a['kernel']).read_bytes(),
                     Path(linux_image['kernel']).read_bytes() if linux_initcall_trace and linux_image else None,qnx_audio_clock_watch)
-            if not watch and panic_watch is None and abox_watch is None:rsp.close();rsp=None
+            import native_psci_watch as psci_observer
+            psci_watch=psci_observer.arm_if_selected(rsp,native=bool(board_adapter and hcb and load_qnx and load_linux and load_android),exclusive=bool(watch or panic_watch or abox_watch))
+            if psci_watch is not None:vm.save(output/'native-psci-watch.json',psci_watch)
+            if not watch and panic_watch is None and abox_watch is None and psci_watch is None:rsp.close();rsp=None
                                                                        
                                                                              
             ppi27 = None
@@ -2377,6 +2399,10 @@ def probe(output, seconds, steps, map_pram=False, hcb=False, exynos_uart=False, 
                             'qemu_pid':process.pid,'scope':'Owner QMP state only; NOT boot or GUI interaction acceptance'})
                     except PermissionError:pass
                     next_runtime_state=now+2
+                if psci_watch and psci_watch['armed'] and now>=psci_watch['deadline_monotonic'] and status_before_stop.get('running'):
+                    qmp.execute('stop');psci_observer.withdraw(rsp,psci_watch)
+                    psci_watch.update(complete=True,phase='expired',error='No complete VM4 CPU_ON pair within the original observation window')
+                    vm.save(output/'native-psci-watch.json',psci_watch);rsp.close();rsp=None;qmp.execute('cont');continue
                 if ppi27 is not None and now >= next_ppi27 and status_before_stop.get('running'):
                     rows = json.loads(qmp.execute('qom-get', {'path': ppi27_path, 'property': 'x-auto9-ppi27-state'}))
                     print(json.dumps(dict(elapsed_s=round(now-run_started, 3), cpus=rows)), file=ppi27)
@@ -2390,6 +2416,14 @@ def probe(output, seconds, steps, map_pram=False, hcb=False, exynos_uart=False, 
                         pass
                     next_focus=now+0.75
                 if not status_before_stop.get('running',False):
+                    if psci_watch and psci_watch['armed'] and status_before_stop.get('status')=='debug':
+                        try:handled=psci_observer.observe(rsp,qmp,psci_watch,output)
+                        except (OSError,RuntimeError,ValueError,KeyError,struct.error) as error:
+                            psci_watch['error']=repr(error);psci_observer.withdraw(rsp,psci_watch)
+                            psci_watch.update(complete=True,phase='observation-error');vm.save(output/'native-psci-watch.json',psci_watch);handled=True
+                        if handled:
+                            if not psci_watch['armed']:rsp.close();rsp=None
+                            qmp.execute('cont');continue
                     if watch is not None and not watch.get('completed',False) and status_before_stop.get('status')=='debug':
                         if not watch.get('hit',False):
                             item=next(i for i in loaded if i['guest']=='linux')
@@ -2425,6 +2459,7 @@ def probe(output, seconds, steps, map_pram=False, hcb=False, exynos_uart=False, 
                             if not abox_observer.pending(abox_watch) and not (panic_watch and panic_watch['armed']):
                                 rsp.close();rsp=None
                             qmp.execute('cont');continue
+                    if lifetime is not None and status_before_stop.get('status') in ('paused','io-error'):continue
                     stop_reason='observed-vm-stop';break
                 if (output/'tcg.log').stat().st_size>16*1024*1024:
                     try:
@@ -2476,6 +2511,9 @@ def probe(output, seconds, steps, map_pram=False, hcb=False, exynos_uart=False, 
                 abox_watch['not_hit']=list(abox_watch['armed'])
                 abox_watch['armed']=[]
                 vm.save(output/'android-abox-watch.json',abox_watch)
+            if psci_watch is not None:
+                if rsp is not None:psci_observer.withdraw(rsp,psci_watch)
+                vm.save(output/'native-psci-watch.json',psci_watch)
             if rsp is not None:
                 rsp.close();rsp=None
             if load_qnx and (ect_handoff or cal_init_config_profile):

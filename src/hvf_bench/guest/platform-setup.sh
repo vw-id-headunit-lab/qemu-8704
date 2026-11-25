@@ -29,9 +29,21 @@ wait_prerequisite() {
     return 1
 }
 $BB modprobe ipv6
-$BB modprobe dummy
-$BB ip link add eth0.3 type dummy
+$BB modprobe virtio_net
+DOMAIN_LINK=
+for net in /sys/class/net/*; do
+ if [ "$($BB cat "$net/address")" = '52:54:00:87:04:01' ]; then DOMAIN_LINK=${net##*/};fi
+done
+if [ -n "$DOMAIN_LINK" ]; then
+ [ "$DOMAIN_LINK" = eth0.3 ] || $BB ip link set "$DOMAIN_LINK" name eth0.3
+ $BB sh /domain-network </dev/null >/mnt/agl/tmp/domain-network.log 2>&1 3>&- &
+ echo "DOMAIN_NETWORK_SUPERVISOR=$!"
+else
+ $BB modprobe dummy
+ $BB ip link add eth0.3 type dummy
+fi
 $BB ip link set eth0.3 up
+$BB ip addr add 10.87.4.1/24 dev eth0.3
 $BB ip -6 addr add fd53:7cb8:383:3::108/64 dev eth0.3
 wait_prerequisite network || return 1
 echo 'REGISTRY_BENCH_IPV6'
@@ -58,7 +70,6 @@ if [ -f /welcome-fixtures.tar ]; then
     $BB cat >> /mnt/agl/tmp/bench-full-mockup/services <<'WELCOME_SERVICES'
 useraccount:auth
 onlineservicedisclaimer:system
-PermissionManagement:system
 displayintentcenter:system
 hvac:car
 Time:system
@@ -94,6 +105,11 @@ $BB chroot /mnt/agl /bin/sh -c '
 ' >/mnt/agl/tmp/rsi-mockup.log 2>&1 &
 RSI_MOCKUP_PID=$!
 ready services --pid "$REGISTRY_PID" --pid "$RSI_MOCKUP_PID" || return 1
+$BB cp /navigation-log.py /mnt/agl/tmp/navigation-log.py || return 1
+$BB cp /online-service.py /mnt/agl/tmp/online-service.py || return 1
+$BB chroot /mnt/agl /usr/bin/python3 /tmp/online-service.py || return 1
+$BB cp /permission-service.py /mnt/agl/tmp/permission-service.py || return 1
+$BB chroot /mnt/agl /usr/bin/python3 /tmp/permission-service.py || return 1
 for pid in "$REGISTRY_PID" "$RSI_MOCKUP_PID"; do
     echo "ORIGINAL_RSI_PID=$pid"
     if [ -f "/proc/$pid/status" ]; then

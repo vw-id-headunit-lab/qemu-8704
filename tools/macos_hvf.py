@@ -5,19 +5,52 @@ BENCH=ROOT/'src/hvf_bench'
 sys.path.insert(0,str(BENCH/'src'))
 from hmi_bench.config import Config
 CONFIG=ROOT/'config/hvf-8704.json'
+def process_identity(pid):
+ result=subprocess.run(['ps','-p',str(pid),'-o','lstart=,command='],capture_output=True,text=True)
+ return result.stdout.strip()if result.returncode==0 else ''
+def stop_owners(previous,state):
+ records=[previous or {},state]
+ for name in ('android-current.json','qnx-current.json','network-current.json','qnx-gl-forward.json','dashboard.json'):
+  p=ROOT/'var/hvf'/name
+  if p.exists():
+   item=json.loads(p.read_bytes());records.append(item)
+   if name=='qnx-current.json':
+    native=Path(item['session'])/'native-runtime-state.json'
+    if native.exists():records.append(json.loads(native.read_bytes()))
+ result={}
+ for item in records:
+  for key in ('worker_pid','qemu_pid','runner_pid','pid'):
+   pid=item.get(key)
+   if isinstance(pid,int)and pid>1:
+    identity=process_identity(pid)
+    if str(ROOT)in identity:result[pid]=identity
+ return result
+def wait_stopped(owners,timeout=60):
+ deadline=time.monotonic()+timeout
+ while owners:
+  owners={pid:identity for pid,identity in owners.items()if process_identity(pid)==identity}
+  if not owners:return
+  if time.monotonic()>=deadline:raise TimeoutError('Original stop is still completing; retained owners: '+str(sorted(owners)))
+  time.sleep(.05)
 def main():
  p=argparse.ArgumentParser();p.add_argument('action',choices=['start','serve','status','stop']);p.add_argument('--worker',action='store_true');p.add_argument('--session',type=Path);p.add_argument('--language',choices=['zh_CN','en_US'],default='zh_CN');a=p.parse_args();c=Config.load(CONFIG);root=c['output'];current=root/'current.json'
  if a.worker:
   paths=dict(c.paths);paths['output']=a.session;os.environ['MEB_HVF_UNTIL_STOP']='1'
   from hmi_bench.launcher import run
-  return run(Config(c.source,paths),'hmi',3600,open_viewer=False,debug_shell=True,language=a.language)
+  return run(Config(c.source,paths),'hmi',3600,open_viewer=False,debug_shell=True,language=a.language,disable_animations=True)
  previous=json.loads(current.read_bytes())if current.exists()else None
  record=Path(previous['session'])/'session.json'if previous else root/'session.json'
  state=json.loads(record.read_bytes())if record.exists()else {'state':'not_started'}
  if a.action=='status':
   keys=['state','language','qemu_pid','qemu_exit_status','hmi_exit_status','viewer_url','error','milestone_wall_seconds']
-  info={k:state[k]for k in keys if k in state};info.update(route='8704-original-HMI-generic-kernel-HVF',firmware='8704',session=str(record.parent),missing=[k for k in c.required('hmi')if not c[k].exists()]);print(json.dumps(info,indent=2));return 0
+  from hvf_qnx import status as qnx_status
+  info={k:state[k]for k in keys if k in state};info.update(route='8704-original-HMI-generic-kernel-HVF',firmware='8704',session=str(record.parent),missing=[k for k in c.required('hmi')if not c[k].exists()],qnx=qnx_status());print(json.dumps(info,indent=2));return 0
  if a.action=='stop':
+  stopping=stop_owners(previous,state)
+  from hvf_network import stop as network_stop
+  network_stop()
+  from hvf_qnx import stop as qnx_stop
+  qnx_stop()
   ac=ROOT/'var/hvf/android-current.json'
   if ac.exists():
    aj=json.loads(ac.read_bytes())
@@ -37,18 +70,23 @@ def main():
   if state.get('state')in('running','starting')and state.get('ports',{}).get('qmp_port'):
    from hmi_bench.launcher import qmp
    qmp(state['ports']['qmp_port'],'quit')
+  wait_stopped(stopping)
   return 0
  if a.action=='serve':
-  from hvf_android import ensure as android
   from hvf_dashboard import ensure as dashboard
-  android();print(dashboard());return 0
+  from hvf_qnx import ensure as qnx
+  from hvf_network import ensure as network
+  qnx();network();print(dashboard());return 0
  if previous:
-  try:os.kill(previous['worker_pid'],0)
-  except ProcessLookupError:pass
+  try:
+   from hvf_guest_command import session as guest_session
+   guest_session('linux')
+  except (ProcessLookupError,FileNotFoundError,ValueError,KeyError,subprocess.CalledProcessError):pass
   else:
-   from hvf_android import ensure as android
    from hvf_dashboard import ensure as dashboard
-   android();print(json.dumps({'route':'HVF','firmware':'8704','session':previous['session'],'dashboard_url':dashboard()},indent=2));return 0
+   from hvf_qnx import ensure as qnx
+   from hvf_network import ensure as network
+   qnx();network();print(json.dumps({'route':'HVF','firmware':'8704','session':previous['session'],'dashboard_url':dashboard()},indent=2));return 0
  c.validate('hmi');out=root/time.strftime('hmi-%Y%m%dT%H%M%SZ',time.gmtime());out.mkdir(parents=True,exist_ok=False)
  with(out/'worker.stdout').open('xb')as stdout,(out/'worker.stderr').open('xb')as stderr:
   child=subprocess.Popen([sys.executable,'-B',str(Path(__file__).resolve()),'start','--worker','--session',str(out),'--language',a.language],cwd=ROOT,stdout=stdout,stderr=stderr,start_new_session=True)
@@ -58,9 +96,10 @@ def main():
   if f.exists():
    j=json.loads(f.read_bytes())
    if j.get('state')=='running':
-    from hvf_android import ensure as android
     from hvf_dashboard import ensure as dashboard
-    android();print(json.dumps({'route':'HVF','firmware':'8704','worker_pid':child.pid,'qemu_pid':j['qemu_pid'],'viewer_url':j.get('viewer_url'),'dashboard_url':dashboard(),'session':str(out)},indent=2));return 0
+    from hvf_qnx import ensure as qnx
+    from hvf_network import ensure as network
+    qnx();network();print(json.dumps({'route':'HVF','firmware':'8704','worker_pid':child.pid,'qemu_pid':j['qemu_pid'],'viewer_url':j.get('viewer_url'),'dashboard_url':dashboard(),'session':str(out)},indent=2));return 0
    if j.get('state')in('error','ended'):raise RuntimeError(json.dumps(j))
   if child.poll()is not None:raise RuntimeError((out/'worker.stderr').read_text())
   time.sleep(.1)

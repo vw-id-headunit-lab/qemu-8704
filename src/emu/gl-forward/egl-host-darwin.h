@@ -2,10 +2,10 @@
 
 enum ME_Kind { ME_DISPLAY=1,ME_CONFIG,ME_CONTEXT,ME_SURFACE,ME_SYNC,ME_IMAGE };
 struct ME_Handle { uint32_t owner,kind;void *native;EGLDisplay display;
- EGLConfig config;EGLContext capture;int window,initialized,pending; };
+ EGLConfig config;EGLContext capture;int window,initialized,pending;unsigned native_w,native_h,swap_count;uint64_t native_window,window_id;uint32_t share_group; };
 struct ME_Thread { uint32_t owner,tid;EGLenum api;EGLDisplay display;
  EGLContext context;EGLSurface draw,read; };
-struct ME_Owner { uint32_t pid;GLuint *objects;struct BlendMetadata *blend; };
+struct ME_Owner { uint32_t pid;GLuint *objects,*samplers;unsigned sampler_limit;struct ME_ObjectName *object_names;unsigned name_count;uint32_t map_counter;struct ME_BufferMap *maps;struct BlendMetadata *blend; };
 static struct ME_Handle me_handles[4096];
 static struct ME_Thread me_threads[128];
 static struct ME_Owner me_owners[32];
@@ -22,9 +22,13 @@ static struct ME_Owner *me_owner(uint32_t pid,int create)
  for(unsigned i=0;i<me_owner_count;i++)if(me_owners[i].pid==pid)return &me_owners[i];
  if(!create||!pid||me_owner_count==32)return NULL;
  struct ME_Owner *o=&me_owners[me_owner_count];
- o->objects=calloc(MAXOBJ,sizeof(GLuint));o->blend=calloc(1,sizeof(*o->blend));
- if(!o->objects||!o->blend)return NULL;o->pid=pid;me_owner_count++;return o;
+ o->objects=calloc(MAXOBJ,sizeof(GLuint));o->samplers=calloc(MAXOBJ,sizeof(GLuint));o->blend=calloc(1,sizeof(*o->blend));
+ if(!o->objects||!o->samplers||!o->blend)return NULL;o->pid=pid;me_owner_count++;return o;
 }
+static GLuint me_sampler(uint32_t pid,uint32_t id)
+{struct ME_Owner *o=me_owner(pid,0);return o&&id<MAXOBJ?o->samplers[id]:0;}
+static uint32_t me_sampler_name(uint32_t pid,GLuint native)
+{struct ME_Owner *o=me_owner(pid,0);if(!o||!native)return 0;for(unsigned i=1;i<=o->sampler_limit;i++)if(o->samplers[i]==native)return i;return 0;}
 static struct ME_Thread *me_thread(uint32_t pid,uint32_t tid,int create)
 {
  for(unsigned i=0;i<me_thread_count;i++)if(me_threads[i].owner==pid&&me_threads[i].tid==tid)return &me_threads[i];
@@ -92,6 +96,23 @@ static int me_select(uint32_t pid,uint32_t tid)
  EGLint w=0,h=0;
  win=t->draw&&eglQuerySurface(display,surface,EGL_WIDTH,&w)&&eglQuerySurface(display,surface,EGL_HEIGHT,&h);
  win_w=w;win_h=h;return 1;
+}
+static int me_qnx_capture(uint32_t pid,uint32_t tid,struct ME_Handle *h)
+{
+ struct ME_Thread *t=me_thread(pid,tid,0);if(!t||t->draw!=h->native||!h->window||!me_select(pid,tid))return 0;
+ EGLint width=0,height=0,major=2;
+ if(!eglQuerySurface(h->display,h->native,EGL_WIDTH,&width)||!eglQuerySurface(h->display,h->native,EGL_HEIGHT,&height)||width!=h->native_w||height!=h->native_h)return 0;
+ if(!eglQueryContext(t->display,t->context,EGL_CONTEXT_CLIENT_VERSION,&major))return 0;
+ GLint fb=0,pack=4,pbo=0,row=0,skiprows=0,skippixels=0;
+ glGetIntegerv(GL_FRAMEBUFFER_BINDING,&fb);glGetIntegerv(GL_PACK_ALIGNMENT,&pack);glPixelStorei(GL_PACK_ALIGNMENT,4);
+ if(major>=3){glGetIntegerv(GL_PIXEL_PACK_BUFFER_BINDING,&pbo);glBindBuffer(GL_PIXEL_PACK_BUFFER,0);glGetIntegerv(GL_PACK_ROW_LENGTH,&row);glGetIntegerv(GL_PACK_SKIP_ROWS,&skiprows);glGetIntegerv(GL_PACK_SKIP_PIXELS,&skippixels);glPixelStorei(GL_PACK_ROW_LENGTH,0);glPixelStorei(GL_PACK_SKIP_ROWS,0);glPixelStorei(GL_PACK_SKIP_PIXELS,0);}
+ GLint readfb=0;if(major>=3){glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING,&readfb);glBindFramebuffer(GL_READ_FRAMEBUFFER,0);}else glBindFramebuffer(GL_FRAMEBUFFER,0);
+ char path[4096];snprintf(path,sizeof(path),"%s.%u.%llu.%dx%d.ppm",frame_path(),pid,(unsigned long long)h->native_window,width,height);dump_frame(path);
+ if(major>=3){glBindFramebuffer(GL_READ_FRAMEBUFFER,readfb);glBindBuffer(GL_PIXEL_PACK_BUFFER,pbo);glPixelStorei(GL_PACK_ROW_LENGTH,row);glPixelStorei(GL_PACK_SKIP_ROWS,skiprows);glPixelStorei(GL_PACK_SKIP_PIXELS,skippixels);}else glBindFramebuffer(GL_FRAMEBUFFER,fb);glPixelStorei(GL_PACK_ALIGNMENT,pack);
+ struct timespec now;clock_gettime(CLOCK_MONOTONIC,&now);char meta[4096],tmp[4096];snprintf(meta,sizeof(meta),"%s.json",path);snprintf(tmp,sizeof(tmp),"%s.tmp",meta);FILE *f=fopen(tmp,"w");
+ if(!f)return 0;
+ fprintf(f,"{\"source\":\"%s\",\"pid\":%u,\"tid\":%u,\"native_window\":%llu,\"window_id\":%llu,\"width\":%d,\"height\":%d,\"swap_count\":%u,\"monotonic\":%.9f}\n",meb_qnx_fixture?"qnx_gl_fixture_test":"original_qnx_gles_forward",pid,tid,(unsigned long long)h->native_window,(unsigned long long)h->window_id,width,height,++h->swap_count,now.tv_sec+now.tv_nsec/1e9);
+ if(fclose(f)||rename(tmp,meta))return 0;return 1;
 }
 static int me_capture(uint32_t pid,uint32_t tid,struct ME_Handle *h)
 {
@@ -173,17 +194,17 @@ static int me_egl_dispatch(uint32_t pid,uint32_t tid,const uint8_t *p,uint32_t l
   struct ME_Handle *cfg=me_get(pid,a[1],ME_CONFIG),*share=me_get(pid,a[2],ME_CONTEXT);
   if(a[1]&&!cfg){reply.error=EGL_BAD_CONFIG;goto send;}if(a[2]&&!share){reply.error=EGL_BAD_CONTEXT;goto send;}
   EGLContext ctx=eglCreateContext(dpy,cfg?cfg->native:EGL_NO_CONFIG_KHR,share?share->native:EGL_NO_CONTEXT,ap);
-  reply.value=me_put(pid,ME_CONTEXT,ctx,dpy,cfg?cfg->native:NULL,0);reply.success=reply.value!=0;if(ctx&&!reply.value)reply.error=EGL_BAD_ALLOC;goto result;
+  reply.value=me_put(pid,ME_CONTEXT,ctx,dpy,cfg?cfg->native:NULL,0);reply.success=reply.value!=0;if(reply.value)me_get(pid,reply.value,ME_CONTEXT)->share_group=share?share->share_group:(uint32_t)reply.value;if(ctx&&!reply.value)reply.error=EGL_BAD_ALLOC;goto result;
  }
  if(q.operation==ME_DESTROY_CONTEXT){struct ME_Handle *h=me_get(pid,a[1],ME_CONTEXT);if(!h){reply.error=EGL_BAD_CONTEXT;goto send;}h->pending=1;me_collect(pid);reply.success=1;goto result;}
  if(q.operation==ME_CREATE_WINDOW||q.operation==ME_CREATE_PBUFFER){
   struct ME_Handle *cfg=me_get(pid,a[1],ME_CONFIG);if(!cfg){reply.error=EGL_BAD_CONFIG;goto send;}
   if(q.operation==ME_CREATE_WINDOW){
-   if(!a[2]){reply.error=EGL_BAD_NATIVE_WINDOW;goto send;}
-   unsigned n=q.attribute_count?q.attribute_count-1:0;attrs[n++]=EGL_WIDTH;attrs[n++]=panel_w;attrs[n++]=EGL_HEIGHT;attrs[n++]=panel_h;attrs[n]=EGL_NONE;ap=attrs;
+   if(!a[2]||(meb_qnx_strict&&(!a[3]||!a[4]||a[3]>4096||a[4]>4096||a[3]*a[4]>8388608))){reply.error=EGL_BAD_NATIVE_WINDOW;goto send;}
+   unsigned n=q.attribute_count?q.attribute_count-1:0;attrs[n++]=EGL_WIDTH;attrs[n++]=meb_qnx_strict?a[3]:panel_w;attrs[n++]=EGL_HEIGHT;attrs[n++]=meb_qnx_strict?a[4]:panel_h;attrs[n]=EGL_NONE;ap=attrs;
   }
   EGLSurface surf=eglCreatePbufferSurface(dpy,cfg->native,ap);
-  reply.value=me_put(pid,ME_SURFACE,surf,dpy,cfg->native,q.operation==ME_CREATE_WINDOW);reply.success=reply.value!=0;if(surf&&!reply.value)reply.error=EGL_BAD_ALLOC;goto result;
+  reply.value=me_put(pid,ME_SURFACE,surf,dpy,cfg->native,q.operation==ME_CREATE_WINDOW);reply.success=reply.value!=0;if(reply.value&&meb_qnx_strict&&q.operation==ME_CREATE_WINDOW){struct ME_Handle *h=me_get(pid,reply.value,ME_SURFACE);h->native_w=a[3];h->native_h=a[4];h->native_window=a[2];h->window_id=a[5];fprintf(stderr,"QNX native window: pid=%u ptr=%llu id=%llu size=%ux%u\n",pid,(unsigned long long)a[2],(unsigned long long)a[5],h->native_w,h->native_h);}if(surf&&!reply.value)reply.error=EGL_BAD_ALLOC;goto result;
  }
  if(q.operation==ME_DESTROY_SURFACE){struct ME_Handle *h=me_get(pid,a[1],ME_SURFACE);if(!h){reply.error=EGL_BAD_SURFACE;goto send;}h->pending=1;me_collect(pid);reply.success=1;goto result;}
  if(q.operation==ME_MAKE_CURRENT){
@@ -200,7 +221,7 @@ static int me_egl_dispatch(uint32_t pid,uint32_t tid,const uint8_t *p,uint32_t l
  if(q.operation==ME_SWAP||q.operation==ME_QUERY_SURFACE||q.operation==ME_SURFACE_ATTRIB||q.operation==ME_BIND_TEX||q.operation==ME_RELEASE_TEX){
   struct ME_Handle *h=me_get(pid,a[1],ME_SURFACE);EGLint value=0;if(!h){reply.error=EGL_BAD_SURFACE;goto send;}
   if(thread->context&&!me_bind(thread)){reply.error=eglGetError();goto send;}
-  if(q.operation==ME_SWAP){reply.success=eglSwapBuffers(dpy,h->native);reply.error=eglGetError();if(reply.success&&!me_capture(pid,tid,h))fprintf(stderr,"EGL: capture unavailable for owner %u\n",pid);goto send;}
+  if(q.operation==ME_SWAP){if(meb_qnx_strict&&!me_qnx_capture(pid,tid,h))fprintf(stderr,"QNX original swap capture pending pid=%u\n",pid);reply.success=eglSwapBuffers(dpy,h->native);reply.error=eglGetError();if(reply.success&&!meb_qnx_strict&&!me_capture(pid,tid,h))fprintf(stderr,"EGL: capture unavailable for owner %u\n",pid);goto send;}
   if(q.operation==ME_QUERY_SURFACE){reply.success=eglQuerySurface(dpy,h->native,(EGLint)a[2],&value);reply.value=(uint64_t)(int64_t)value;}
   if(q.operation==ME_SURFACE_ATTRIB)reply.success=eglSurfaceAttrib(dpy,h->native,(EGLint)a[2],(EGLint)a[3]);
   if(q.operation==ME_BIND_TEX)reply.success=eglBindTexImage(dpy,h->native,(EGLint)a[2]);

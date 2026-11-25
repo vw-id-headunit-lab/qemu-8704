@@ -2192,929 +2192,8 @@ static void exynos_auto9_cal_init_create(VirtMachineState *vms, bool enabled)
     }
 }
 
-/* SPDX-License-Identifier: GPL-2.0-or-later */
-/* 88Q211x management-plane endpoint. No MDI partner or packet transport.
- * Infineon MV-S110850-00 Rev. K, tables 46-55, 91-93 and 181.
- * The original QNX driver uses Clause 22 registers 13/14 as an MMD window.
- */
-#define AUTO9_Q2112_ADDRESS 7
-#define AUTO9_Q2112_RESET_NS 100000
-#define AUTO9_Q2112_ID1 0x002b
-#define AUTO9_Q2112_ID2 0x0981 /* Virtual family revision 1, not silicon identification. */
-#define AUTO9_Q2112_LATCHES 192
-
-typedef struct Auto9Q2112Latch {
-    uint32_t key;
-    uint16_t data;
-} Auto9Q2112Latch;
-
-typedef struct Auto9Q2112 {
-    uint16_t selector, pointer[32];
-    uint16_t pma_control, pma_t1, pma_t1_control, pcs_control, pcs_t1;
-    uint16_t autoneg, port_control;
-    int64_t pma_reset_until, pcs_reset_until;
-    uint32_t reads, writes, unknown, link_reads, id_reads, reset_requests;
-    unsigned used;
-    Auto9Q2112Latch latches[AUTO9_Q2112_LATCHES];
-} Auto9Q2112;
-
-static void auto9_q2112_reset(Auto9Q2112 *p)
-{
-    memset(p, 0, sizeof(*p));
-    /* Virtual 100 Mb/s slave strap; the OEM configures its own mode. */
-    p->pma_t1 = 0x8000;
-}
-
-static bool auto9_q2112_vendor(unsigned dev, uint16_t reg)
-{
-    /* Retain the original driver's opaque tuning writes, without analog
-     * effects. Reserved/unknown reads without a preceding write stay open. */
-    return (dev == 3 || dev == 7 || dev == 31) && reg >= 0x8000;
-}
-
-static uint16_t auto9_q2112_mmd_read(Auto9Q2112 *p, unsigned dev,
-                                    uint16_t reg, int64_t now)
-{
-    if (dev == 1 || dev == 3 || dev == 7) {
-        switch (reg) {
-        case 2: case 14: p->id_reads++; return AUTO9_Q2112_ID1;
-        case 3: case 15: p->id_reads++; return AUTO9_Q2112_ID2;
-        case 5: return 0x008a; /* PMA, PCS and AN; not a Clause 22 register bank. */
-        case 6: return 0;
-        }
-    }
-    switch ((dev << 16) | reg) {
-    case 0x10000:
-        return p->pma_control | ((p->pma_t1 & 0xf) == 1 ? 0x0040 : 0x2000) |
-               (now < p->pma_reset_until ? 0x8000 : 0);
-    case 0x10004: return 0x0010;
-    case 0x10012: return 3;
-    case 0x10834: return p->pma_t1;
-    case 0x10900: return p->pma_t1_control | (now < p->pma_reset_until ? 0x8000 : 0);
-    case 0x30000: return p->pcs_control | (now < p->pcs_reset_until ? 0x8000 : 0);
-    case 0x30900: return p->pcs_t1 | (now < p->pcs_reset_until ? 0x8000 : 0);
-    case 0x38000: return now < p->pcs_reset_until ? 0x8000 : 0;
-    case 0x10001: case 0x10901: case 0x30001: case 0x30901:
-    case 0x30902: case 0x70201:
-        p->link_reads++;
-        return 0; /* No partner: do not turn an open bus value into link-up. */
-    case 0x70200: return p->autoneg;
-    case 0x1f8001: return p->port_control;
-    }
-    if (auto9_q2112_vendor(dev, reg)) {
-        for (unsigned i = 0; i < p->used; i++) {
-            if (p->latches[i].key == ((dev << 16) | reg)) {
-                return p->latches[i].data;
-            }
-        }
-    }
-    p->unknown++;
-    return 0xffff;
-}
-
-static void auto9_q2112_mmd_write(Auto9Q2112 *p, unsigned dev, uint16_t reg,
-                                  uint16_t value, int64_t now)
-{
-    int64_t *reset = NULL;
-    switch ((dev << 16) | reg) {
-    case 0x10000: p->pma_control = value & 0x0801; reset = &p->pma_reset_until; break;
-    case 0x10834:
-        if ((value & 0xf) <= 1) {
-            p->pma_t1 = 0x8000 | (value & 0x4001);
-        } else {
-            p->unknown++;
-        }
-        return;
-    case 0x10900: p->pma_t1_control = value & 0x4800; reset = &p->pma_reset_until; break;
-    case 0x30000: p->pcs_control = value & 0x4800; reset = &p->pcs_reset_until; break;
-    case 0x30900: p->pcs_t1 = value & 0x4000; reset = &p->pcs_reset_until; break;
-    case 0x38000: reset = &p->pcs_reset_until; break;
-    case 0x70200: p->autoneg = value & 0x1000; return;
-    case 0x1f8001: p->port_control = value & 0xc000; return;
-    }
-    if (reset) {
-        if (value & 0x8000) {
-            *reset = now + AUTO9_Q2112_RESET_NS;
-            p->reset_requests++;
-        }
-        return;
-    }
-    if (auto9_q2112_vendor(dev, reg)) {
-        uint32_t key = (dev << 16) | reg;
-        for (unsigned i = 0; i < p->used; i++) {
-            if (p->latches[i].key == key) {
-                p->latches[i].data = value;
-                return;
-            }
-        }
-        if (p->used < AUTO9_Q2112_LATCHES) {
-            p->latches[p->used++] = (Auto9Q2112Latch){ key, value };
-            return;
-        }
-    }
-    p->unknown++;
-}
-
-static uint16_t auto9_q2112_access(Auto9Q2112 *p, unsigned phy, unsigned reg,
-                                   bool write, uint16_t data, int64_t now)
-{
-    if (phy != AUTO9_Q2112_ADDRESS) {
-        return 0xffff;
-    }
-    if (write) {
-        p->writes++;
-    } else {
-        p->reads++;
-    }
-    if (reg == 13) {
-        if (write) {
-            p->selector = data & 0xc01f;
-        }
-        return p->selector;
-    }
-    if (reg == 14) {
-        unsigned dev = p->selector & 31;
-        switch (p->selector >> 14) {
-        case 0:
-            if (write) {
-                p->pointer[dev] = data;
-            }
-            return p->pointer[dev];
-        case 1:
-            if (write) {
-                auto9_q2112_mmd_write(p, dev, p->pointer[dev], data, now);
-                return 0;
-            }
-            return auto9_q2112_mmd_read(p, dev, p->pointer[dev], now);
-        }
-    }
-    p->unknown++;
-    return 0xffff;
-}
-
-/* SPDX-License-Identifier: GPL-2.0-or-later
- * Auto V9 ETH0 control-plane device. Original devnp-dwceqos and VDTVM2
- * supply the nonstandard 4K queue stride and relocated DMA registers.
- * Channels retain setup while disconnected; no frames, packet timestamps, DMA
- * descriptor ownership changes, or IRQ. MDIO clocks an empty bus unless the
- * optional QNX management-plane endpoint is attached.
- */
-#include "qemu/int128.h"
-
-#define AUTO9_PTP_BASE 0x1000
-#define AUTO9_PTP_REF_HZ 26000000u
-#define AUTO9_PTP_TCR 0x00
-#define AUTO9_PTP_SSINC 0x04
-#define AUTO9_PTP_SEC 0x08
-#define AUTO9_PTP_SUBSEC 0x0c
-#define AUTO9_PTP_SETSEC 0x10
-#define AUTO9_PTP_SETSUBSEC 0x14
-#define AUTO9_PTP_ADDEND 0x18
-#define AUTO9_PTP_PPS_CONTROL 0x70
-#define AUTO9_PTP_PPS0_SEC 0x80
-#define AUTO9_PTP_PRESENTATION 0x240
-#define AUTO9_PTP_PRESENTATION_UPDATE 0x244
-#define AUTO9_PTP_ENABLE BIT(0)
-#define AUTO9_PTP_FINE BIT(1)
-#define AUTO9_PTP_INIT BIT(2)
-#define AUTO9_PTP_ADJUST BIT(3)
-#define AUTO9_PTP_LOAD_ADDEND BIT(5)
-#define AUTO9_PTP_DIGITAL BIT(9)
-#define AUTO9_PTP_SUBTRACT BIT(31)
-#define AUTO9_PTP_COMMANDS (AUTO9_PTP_INIT | AUTO9_PTP_ADJUST | AUTO9_PTP_LOAD_ADDEND)
-#define TYPE_AUTO9_EQOS "exynos-auto9.eqos"
-#define AUTO9_EQOS_BASE 0x17d80000
-#define AUTO9_EQOS_CLK 0x17d60200
-#define AUTO9_EQOS_FSYS2 0x17c20008
-#define AUTO9_EQOS_FSYS2_MASK (BIT(0) | BIT(4))
-#define AUTO9_EQOS_DMA_MODE 0x11000
-#define AUTO9_EQOS_DMA_SYSBUS 0x11004
-#define AUTO9_EQOS_RESET_NS 50000
-#define AUTO9_EQOS_MDIO_NS 30000
-#define AUTO9_EQOS_MDIO_ADDR 0x200
-#define AUTO9_EQOS_MDIO_DATA 0x204
-#define AUTO9_EQOS_MMC_RX_FIFO_OVERFLOW 0x7d4
-#define AUTO9_EQOS_MTL_TXQ_START 0x8000
-#define AUTO9_EQOS_MTL_TXQ_END 0x10000
-#define AUTO9_EQOS_MTL_FTQ BIT(0)
-#define AUTO9_EQOS_CH_START 0x18000
-#define AUTO9_EQOS_CH_STRIDE 0x1000
-/* OEM dwmac510_rx_watchdog writes the receive IRQ watchdog at +0x38.
- * The disconnected model keeps its interval; no RX arrival can arm it. */
-#define AUTO9_EQOS_CH_RIWT 0x38
-#define AUTO9_EQOS_CH_RX_DROP 0x64
-#define AUTO9_EQOS_CH_COUNT 8 /* VM2 ch0..4, VM3 ch5..7; original vLM owns grants. */
-#define AUTO9_EQOS_READ_WORDS ((AUTO9_EQOS_CH_START + AUTO9_EQOS_CH_COUNT * AUTO9_EQOS_CH_STRIDE) / 4)
-#define AUTO9_EQOS_FEATURE1 ((7u << 6) | 7u) /* Declared 16 KiB TX/RX FIFOs. */
-OBJECT_DECLARE_SIMPLE_TYPE(Auto9Eqos, AUTO9_EQOS)
-
-struct Auto9Eqos {
-    SysBusDevice parent_obj;
-    MemoryRegion regs, clk, fsys2;
-    QEMUTimer *reset, *mdio;
-    uint32_t words[0x11008 / 4];
-    uint32_t channels[AUTO9_EQOS_CH_COUNT][0x64 / 4];
-    uint64_t mac;
-    uint32_t clock, reads, writes, mac_reads, clock_reads, clock_writes;
-    uint32_t fsys2_config, fsys2_reads, fsys2_writes;
-    uint32_t reset_requests, reset_completions, rejected, last_rejected;
-    uint64_t mmc_overflow_reads, ptp_control_reads, ptp_time_reads, dma_debug_reads;
-    uint64_t mtl_txq_flushes;
-    uint32_t mtl_txq_flush_mask;
-    uint64_t read_by_word[AUTO9_EQOS_READ_WORDS];
-    uint32_t channel_reads, channel_writes, channel_read_mask, channel_write_mask;
-    uint32_t armed_tx, armed_rx;
-    uint32_t rx_drop_reads, rx_drop_read_mask;
-    uint32_t mdio_reads, mdio_writes, mdio_completions;
-    uint32_t mdio_busy_writes, mdio_due_on_access;
-    bool phy_88q2112;
-    Auto9Q2112 phy;
-    uint32_t ptp_control, ptp_inc, ptp_setsec, ptp_setsubsec;
-    uint32_t ptp_addend, ptp_active_addend, ptp_commands, ptp_writes;
-    uint32_t ptp_mcgr, ptp_mcgr_writes, ptp_pps0_sec, ptp_pps0_writes;
-    uint32_t ptp_presentation_reads;
-    uint32_t ptp_presentation_latch, ptp_presentation_bias;
-    uint32_t ptp_presentation_writes, ptp_presentation_commits;
-    bool ptp_presentation_pending;
-    uint64_t ptp_epoch;
-    int64_t ptp_anchor_ns;
-};
-
-static bool auto9_eqos_config_word(hwaddr off)
-{
-    if (off >= 0x10 && off < 0x30) {
-        return true; /* Original hash filter loop at 0x11f20 writes eight words. */
-    }
-    if (off >= 0x300 && off < 0x400) {
-        return true; /* 32 station address pairs, original MAC init loop. */
-    }
-    if (off >= 0x70 && off <= 0x8c) {
-        return true; /* Per-queue TX flow control. */
-    }
-    if (off >= AUTO9_EQOS_MTL_TXQ_START && off < AUTO9_EQOS_MTL_TXQ_END) {
-        switch (off & 0xfff) {
-        case 0: case 0x10: case 0x18: case 0x1c: case 0x20: case 0x24:
-        case 0x2c: case 0x30:
-            return true;
-        }
-    }
-    switch (off) {
-    case 0: /* Original Marvell speed/duplex RMW (0x133d8). */
-    case 4: case 8: case 0xa4: case 0xa8: case 0xac:
-        /* Original filter/RX queue steering at 0x11ba0..0x11bf0. */
-    case 0x90: case 0x98: case 0x9c: case 0xa0: case 0xb4:
-    case 0x700: case 0x70c: case 0x710: case 0x800:
-    case 0x2000: case 0x2030: case 0x2034:
-    case AUTO9_EQOS_DMA_MODE: case AUTO9_EQOS_DMA_SYSBUS:
-        return true;
-    }
-    return false;
-}
-
-static uint32_t *auto9_eqos_channel_word(Auto9Eqos *s, hwaddr off)
-{
-    if (off < AUTO9_EQOS_CH_START) {
-        return NULL;
-    }
-    unsigned index = (off - AUTO9_EQOS_CH_START) / AUTO9_EQOS_CH_STRIDE;
-    if (index >= AUTO9_EQOS_CH_COUNT) {
-        return NULL;
-    }
-    switch (off & 0xfff) {
-    case 0: case 4: case 8:
-    case 0x10: case 0x14: case 0x18: case 0x1c: case 0x20:
-    case 0x28: case 0x2c: case 0x30: case 0x34: case AUTO9_EQOS_CH_RIWT: case 0x60:
-        return &s->channels[index][(off & 0xfff) / 4];
-    }
-    return NULL;
-}
-
-static bool auto9_eqos_mmc_counter(hwaddr off)
-{
-    /* Original VM2 uses 16-byte LDP groups from 0x808 through 0x887.
-     * All mapped packet/octet counters are zero with no RX backend. */
-    if (!(off & 3) &&
-        ((off >= 0x810 && off <= 0x844) ||
-         (off >= 0x850 && off <= 0x884))) {
-        return true;
-    }
-    switch (off) {
-    case 0x71c: case 0x720: case 0x748: case 0x74c: case 0x750:
-    case 0x754: case 0x758: case 0x75c: case 0x760: case 0x764:
-    case 0x768: case 0x76c: case 0x788: case 0x78c: case 0x790:
-    case 0x794: case 0x798: case 0x79c: /* RX runt error. */
-    case 0x7dc: /* MMC RX watchdog errors; no received frames on this link. */
-    case 0x7e0: /* MMC RX receive errors, same disconnected counter bank. */
-    case 0x7a0: case 0x7a4: case 0x7a8:
-    case 0x7c8: case 0x7cc: case AUTO9_EQOS_MMC_RX_FIFO_OVERFLOW:
-        return true;
-    default:
-        return false;
-    }
-}
-
-static bool auto9_eqos_mmc_snapshot_extra(hwaddr off)
-{
-    switch (off) {
-    case 0x808: /* IPC interrupt status: no incoming packets or pending IRQ. */
-    case 0x80c: case 0x848: case 0x84c:
-        /* Read-only padding touched by the original 0x808/0x848 LDP. */
-        return true;
-    default:
-        return false;
-    }
-}
-
-static void auto9_eqos_mdio_done(void *opaque)
-{
-    Auto9Eqos *s = opaque;
-    uint32_t *address = &s->words[AUTO9_EQOS_MDIO_ADDR / 4];
-    uint32_t *data = &s->words[AUTO9_EQOS_MDIO_DATA / 4];
-    bool write = (*address & 0xc) == 4;
-    uint16_t result = 0xffff;
-    if (s->phy_88q2112) {
-        result = auto9_q2112_access(&s->phy, (*address >> 21) & 31,
-                                    (*address >> 16) & 31, write, *data,
-                                    qemu_clock_get_ns(QEMU_CLOCK_VIRTUAL));
-    }
-    if (!write) {
-        *data = result;
-    }
-    *address &= ~1u;
-    s->mdio_completions++;
-}
-
-/* MMIO and timer callbacks are BQL-serialized. The management transfer is
- * complete at its virtual deadline even if the timer callback was deferred. */
-static bool auto9_eqos_mdio_busy(Auto9Eqos *s)
-{
-    if (timer_pending(s->mdio) &&
-        timer_expired(s->mdio, qemu_clock_get_ns(QEMU_CLOCK_VIRTUAL))) {
-        timer_del(s->mdio);
-        s->mdio_due_on_access++;
-        auto9_eqos_mdio_done(s);
-    }
-    return s->words[AUTO9_EQOS_MDIO_ADDR / 4] & 1;
-}
-
-static void auto9_eqos_reset_regs(Auto9Eqos *s)
-{
-    timer_del(s->mdio);
-    memset(s->words, 0, sizeof(s->words));
-    memset(s->channels, 0, sizeof(s->channels));
-    s->armed_tx = s->armed_rx = 0;
-    s->ptp_control = s->ptp_inc = s->ptp_setsec = s->ptp_setsubsec = 0;
-    s->ptp_addend = s->ptp_active_addend = s->ptp_mcgr = 0;
-    s->ptp_pps0_sec = 0;
-    s->ptp_presentation_latch = s->ptp_presentation_bias = 0;
-    s->ptp_presentation_pending = false;
-    s->ptp_epoch = 0;
-    s->ptp_anchor_ns = qemu_clock_get_ns(QEMU_CLOCK_VIRTUAL);
-    s->words[0x300 / 4] = BIT(31) | ((s->mac >> 32) & 0xffff);
-    s->words[0x304 / 4] = s->mac;
-}
-
-static void auto9_eqos_dma_reset_done(void *opaque)
-{
-    Auto9Eqos *s = opaque;
-    auto9_eqos_reset_regs(s);
-    s->reset_completions++;
-}
-
-static MemTxResult auto9_eqos_reject(Auto9Eqos *s, hwaddr off, bool write,
-                                      uint64_t value)
-{
-    s->rejected++;
-    s->last_rejected = off;
-    qemu_log_mask(LOG_UNIMP,
-                  "Auto9 EQoS unsupported %s at 0x%" HWADDR_PRIx " value=0x%" PRIx64 "\n",
-                  write ? "write" : "read", AUTO9_EQOS_BASE + off, value);
-    return MEMTX_DECODE_ERROR;
-}
-
-static uint32_t auto9_eqos_ptp_roll(uint32_t control)
-{
-    return control & AUTO9_PTP_DIGITAL ? NANOSECONDS_PER_SECOND : BIT(31);
-}
-
-static uint64_t auto9_eqos_ptp_now(Auto9Eqos *s, int64_t now)
-{
-    uint64_t ticks, lo, hi;
-    uint64_t modulus = (uint64_t)auto9_eqos_ptp_roll(s->ptp_control) << 32;
-    uint32_t inc256 = (s->ptp_inc >> 8) & 0xffff;
-    if (!(s->ptp_control & AUTO9_PTP_ENABLE) || now <= s->ptp_anchor_ns) {
-        return s->ptp_epoch;
-    }
-    ticks = muldiv64(now - s->ptp_anchor_ns, AUTO9_PTP_REF_HZ,
-                     NANOSECONDS_PER_SECOND);
-    if (s->ptp_control & AUTO9_PTP_FINE) {
-        /* Fine update emits one increment per 32-bit accumulator overflow. */
-        mulu64(&lo, &hi, ticks, s->ptp_active_addend);
-        ticks = (hi << 32) | (lo >> 32);
-    }
-    mulu64(&lo, &hi, ticks, inc256);
-    Int128 elapsed = int128_urshift(int128_make128(lo, hi), 8);
-    return int128_getlo(int128_remu(int128_add(elapsed, int128_make64(s->ptp_epoch)),
-                                   int128_make64(modulus)));
-}
-
-/* MAC presentation time wraps in 32-bit nanoseconds regardless of PTP mode. */
-static uint32_t auto9_eqos_presentation_ns(uint64_t epoch, uint32_t roll)
-{
-    return (uint32_t)muldiv64(epoch, NANOSECONDS_PER_SECOND, roll);
-}
-
-static void auto9_eqos_record_read(Auto9Eqos *s, hwaddr off)
-{
-    /* Accepted 32-bit MMIO is BQL-serialized. No per-access allocation,
-     * QMP, timing, or logging on the vCPU path. */
-    s->reads++;
-    if (off / 4 < G_N_ELEMENTS(s->read_by_word)) {
-        s->read_by_word[off / 4]++;
-    }
-}
-
-static MemTxResult auto9_eqos_ptp_read(Auto9Eqos *s, hwaddr off, uint64_t *v)
-{
-    uint64_t t;
-    uint32_t roll = auto9_eqos_ptp_roll(s->ptp_control);
-    switch (off - AUTO9_PTP_BASE) {
-    case AUTO9_PTP_TCR:
-        s->ptp_control_reads++;
-        *v = s->ptp_control;
-        break;
-    case AUTO9_PTP_SSINC: *v = s->ptp_inc; break;
-    case AUTO9_PTP_SEC:
-    case AUTO9_PTP_SUBSEC:
-        s->ptp_time_reads++;
-        t = auto9_eqos_ptp_now(s, qemu_clock_get_ns(QEMU_CLOCK_VIRTUAL));
-        *v = off == AUTO9_PTP_BASE + AUTO9_PTP_SEC ? t / roll : t % roll;
-        break;
-    case AUTO9_PTP_SETSEC: *v = s->ptp_setsec; break;
-    case AUTO9_PTP_SETSUBSEC: *v = s->ptp_setsubsec; break;
-    case AUTO9_PTP_ADDEND: *v = s->ptp_addend; break;
-    case AUTO9_PTP_PPS_CONTROL: *v = s->ptp_mcgr; break;
-    case AUTO9_PTP_PPS0_SEC: *v = s->ptp_pps0_sec; break;
-    default: return auto9_eqos_reject(s, off, false, 0);
-    }
-    auto9_eqos_record_read(s, off);
-    return MEMTX_OK;
-}
-
-static MemTxResult auto9_eqos_ptp_write(Auto9Eqos *s, hwaddr off, uint32_t v)
-{
-    int64_t now = qemu_clock_get_ns(QEMU_CLOCK_VIRTUAL);
-    uint64_t epoch = auto9_eqos_ptp_now(s, now);
-    uint32_t oldroll = auto9_eqos_ptp_roll(s->ptp_control);
-    switch (off - AUTO9_PTP_BASE) {
-    case AUTO9_PTP_TCR: {
-        uint32_t cmd = v & AUTO9_PTP_COMMANDS;
-        uint32_t roll = auto9_eqos_ptp_roll(v);
-        uint32_t frac = s->ptp_setsubsec & ~AUTO9_PTP_SUBTRACT;
-        bool subtract = s->ptp_setsubsec & AUTO9_PTP_SUBTRACT;
-        uint64_t modulus = (uint64_t)roll << 32;
-        uint32_t presentation = auto9_eqos_presentation_ns(epoch, oldroll) +
-                                s->ptp_presentation_bias;
-        if ((cmd & (cmd - 1)) ||
-            (cmd == AUTO9_PTP_INIT && (subtract || frac >= roll)) ||
-            (cmd == AUTO9_PTP_ADJUST && (frac > roll || (!subtract && frac == roll)))) {
-            return auto9_eqos_reject(s, off, true, v);
-        }
-        if (oldroll != roll) {
-            epoch = muldiv64(epoch, roll, oldroll);
-        }
-        if (cmd == AUTO9_PTP_LOAD_ADDEND) {
-            s->ptp_active_addend = s->ptp_addend;
-        } else if (cmd == AUTO9_PTP_INIT) {
-            epoch = (uint64_t)s->ptp_setsec * roll + frac;
-        } else if (cmd == AUTO9_PTP_ADJUST) {
-            uint64_t delta;
-            if (subtract) {
-                delta = ((uint64_t)(0u - s->ptp_setsec) * roll + (roll - frac) % roll) % modulus;
-                epoch = (epoch + modulus - delta) % modulus;
-            } else {
-                delta = (uint64_t)s->ptp_setsec * roll + frac;
-                epoch = (epoch + delta) % modulus;
-            }
-        }
-        /*
-         * Original seqos_config_mcgr_dma stages an unsigned correction at
-         * MAC+0x244, then uses TSUPDT and the PTP ADDSUB direction. Consume
-         * the staged correction once; a later ordinary PTP update does not
-         * replay the old media correction. No MCGR pulses or DMA are emitted.
-         */
-        if ((cmd == AUTO9_PTP_INIT || cmd == AUTO9_PTP_ADJUST) &&
-            s->ptp_presentation_pending) {
-            uint32_t staged = s->ptp_presentation_latch;
-            if (cmd == AUTO9_PTP_INIT) {
-                presentation = staged;
-            } else if (subtract) {
-                presentation -= staged;
-            } else {
-                presentation += staged;
-            }
-            s->ptp_presentation_bias = presentation -
-                                        auto9_eqos_presentation_ns(epoch, roll);
-            s->ptp_presentation_pending = false;
-            s->ptp_presentation_commits++;
-        } else if (cmd == AUTO9_PTP_INIT) {
-            s->ptp_presentation_bias = 0;
-        }
-        /* Clock state is committed in this MMIO transaction; commands do
-         * not complete on a later read, and cannot fabricate packet events. */
-        s->ptp_control = v & ~AUTO9_PTP_COMMANDS;
-        s->ptp_commands += !!cmd;
-        s->ptp_epoch = epoch;
-        s->ptp_anchor_ns = now;
-        break;
-    }
-    case AUTO9_PTP_SSINC:
-        s->ptp_inc = v & 0xffff00;
-        s->ptp_epoch = epoch;
-        s->ptp_anchor_ns = now;
-        break;
-    case AUTO9_PTP_SETSEC: s->ptp_setsec = v; break;
-    case AUTO9_PTP_SETSUBSEC: s->ptp_setsubsec = v; break;
-    case AUTO9_PTP_ADDEND: s->ptp_addend = v; break;
-    case AUTO9_PTP_PPS0_SEC:
-        s->ptp_pps0_sec = v;
-        s->ptp_pps0_writes++;
-        break;
-    case AUTO9_PTP_PPS_CONTROL:
-        /* Original seqos_config_mcgr programs output zero only. Retain
-         * its mode/config; no PPS pins or DMA request pulses are connected. */
-        if (v & ~0xffu) {
-            return auto9_eqos_reject(s, off, true, v);
-        }
-        s->ptp_mcgr = v;
-        s->ptp_mcgr_writes++;
-        break;
-    default: return auto9_eqos_reject(s, off, true, v);
-    }
-    s->ptp_writes++;
-    s->writes++;
-    return MEMTX_OK;
-}
-
-static MemTxResult auto9_eqos_read(void *opaque, hwaddr off, uint64_t *value,
-                                    unsigned size, MemTxAttrs attrs)
-{
-    Auto9Eqos *s = opaque;
-    uint32_t *channel = auto9_eqos_channel_word(s, off);
-    if (off == AUTO9_PTP_PRESENTATION) {
-        /* Presentation time wraps at 2^32 ns, independent of the PTP
-         * subsecond register's digital versus binary representation. */
-        uint64_t t = auto9_eqos_ptp_now(s, qemu_clock_get_ns(QEMU_CLOCK_VIRTUAL));
-        uint32_t roll = auto9_eqos_ptp_roll(s->ptp_control);
-        *value = auto9_eqos_presentation_ns(t, roll) +
-                 s->ptp_presentation_bias;
-        s->ptp_presentation_reads++;
-        auto9_eqos_record_read(s, off);
-        return MEMTX_OK;
-    }
-    /* Both OEM drivers read this per-channel counter. The native vLM still
-     * owns the VM2/VM3 aperture grants. No ingress means no missed frames. */
-    if (off >= AUTO9_EQOS_CH_START &&
-        off < AUTO9_EQOS_CH_START + AUTO9_EQOS_CH_COUNT * AUTO9_EQOS_CH_STRIDE &&
-        (off & 0xfff) == AUTO9_EQOS_CH_RX_DROP) {
-        unsigned index = (off - AUTO9_EQOS_CH_START) / AUTO9_EQOS_CH_STRIDE;
-        s->rx_drop_reads++;
-        s->rx_drop_read_mask |= BIT(index);
-        s->channel_reads++;
-        s->channel_read_mask |= BIT(index);
-        auto9_eqos_record_read(s, off);
-        *value = 0;
-        return MEMTX_OK;
-    }
-    if (off == AUTO9_PTP_PRESENTATION_UPDATE) {
-        *value = s->ptp_presentation_latch;
-        auto9_eqos_record_read(s, off);
-        return MEMTX_OK;
-    }
-    if (off >= AUTO9_PTP_BASE && off < AUTO9_PTP_BASE + 0x100) {
-        return auto9_eqos_ptp_read(s, off, value);
-    }
-    if (channel) {
-        *value = *channel;
-        s->channel_reads++;
-        s->channel_read_mask |= BIT((off - AUTO9_EQOS_CH_START) / AUTO9_EQOS_CH_STRIDE);
-    } else if (off == AUTO9_EQOS_MDIO_ADDR || off == AUTO9_EQOS_MDIO_DATA) {
-        auto9_eqos_mdio_busy(s);
-        *value = s->words[off / 4];
-        s->mdio_reads++;
-    } else if (off == 0x1100c || off == 0x11010 || off == 0x11014) {
-        /* DMA debug states are STOPPED without a connected packet engine. */
-        s->dma_debug_reads++;
-        *value = 0;
-    } else if (auto9_eqos_mmc_counter(off) ||
-               auto9_eqos_mmc_snapshot_extra(off)) {
-        if (off == AUTO9_EQOS_MMC_RX_FIFO_OVERFLOW) {
-            s->mmc_overflow_reads++;
-        }
-        *value = 0;
-    } else if (off == 0x11c || off == 0x120) {
-        *value = off == 0x120 ? AUTO9_EQOS_FEATURE1 : 0;
-    } else if (auto9_eqos_config_word(off)) {
-        *value = s->words[off / 4];
-    } else {
-        return auto9_eqos_reject(s, off, false, 0);
-    }
-    auto9_eqos_record_read(s, off);
-    if (off == 0x300 || off == 0x304) {
-        s->mac_reads++;
-    }
-    return MEMTX_OK;
-}
-
-static MemTxResult auto9_eqos_write(void *opaque, hwaddr off, uint64_t value,
-                                     unsigned size, MemTxAttrs attrs)
-{
-    Auto9Eqos *s = opaque;
-    uint32_t *channel = auto9_eqos_channel_word(s, off);
-    if (off == AUTO9_PTP_PRESENTATION_UPDATE) {
-        s->ptp_presentation_latch = value;
-        s->ptp_presentation_pending = true;
-        s->ptp_presentation_writes++;
-        s->writes++;
-        return MEMTX_OK;
-    }
-    if (off >= AUTO9_PTP_BASE && off < AUTO9_PTP_BASE + 0x100) {
-        return auto9_eqos_ptp_write(s, off, value);
-    }
-    if (channel) {
-        hwaddr reg = off & 0xfff;
-        if (reg == 0x60) {
-            *channel &= ~(uint32_t)value; /* W1C; never asserts completion. */
-        } else {
-            *channel = reg == AUTO9_EQOS_CH_RIWT ? value & 0xff : value;
-            if (reg == 4 || reg == 8) {
-                unsigned index = (off - AUTO9_EQOS_CH_START) / AUTO9_EQOS_CH_STRIDE;
-                uint32_t *armed = reg == 4 ? &s->armed_tx : &s->armed_rx;
-                *armed = (*armed & ~BIT(index)) | ((value & 1) << index);
-                /* Disconnected device: no DMA scheduler can consume a ring. */
-            }
-        }
-        s->channel_writes++;
-        s->channel_write_mask |= BIT((off - AUTO9_EQOS_CH_START) / AUTO9_EQOS_CH_STRIDE);
-        s->writes++;
-        return MEMTX_OK;
-    }
-    if (off == AUTO9_EQOS_MDIO_ADDR || off == AUTO9_EQOS_MDIO_DATA) {
-        if (auto9_eqos_mdio_busy(s)) {
-            /* The register exists. Preserve the in-flight command/data and
-             * deadline on an out-of-contract write, rather than aborting
-             * the CPU's interconnect access or queuing a second transfer. */
-            s->mdio_busy_writes++;
-            return MEMTX_OK;
-        }
-        if (off == AUTO9_EQOS_MDIO_ADDR && (value & 1)) {
-            if ((value & 2) || ((value & 0xc) != 0xc && (value & 0xc) != 4)) {
-                return auto9_eqos_reject(s, off, true, value);
-            }
-            timer_mod(s->mdio, qemu_clock_get_ns(QEMU_CLOCK_VIRTUAL) +
-                                AUTO9_EQOS_MDIO_NS);
-        }
-        s->words[off / 4] = off == AUTO9_EQOS_MDIO_DATA ? value & 0xffff : value;
-        s->mdio_writes++;
-        s->writes++;
-        return MEMTX_OK;
-    }
-    if (!auto9_eqos_config_word(off)) {
-        return auto9_eqos_reject(s, off, true, value);
-    }
-    if (off >= AUTO9_EQOS_MTL_TXQ_START && off < AUTO9_EQOS_MTL_TXQ_END &&
-        !(off & 0xfff) && (value & AUTO9_EQOS_MTL_FTQ)) {
-        /* No TX FIFO or pending TX status exists on this model. The empty
-         * queue's flush completes in this transaction; FTQ never latches. */
-        s->mtl_txq_flushes++;
-        s->mtl_txq_flush_mask |= BIT((off - AUTO9_EQOS_MTL_TXQ_START) / 0x1000);
-        value &= ~AUTO9_EQOS_MTL_FTQ;
-    }
-    if (off == AUTO9_EQOS_DMA_MODE) {
-        if (value & ~0x10001ull) {
-            return auto9_eqos_reject(s, off, true, value);
-        }
-        if (value & 1) {
-            if (timer_pending(s->reset)) {
-                return auto9_eqos_reject(s, off, true, value);
-            }
-            timer_mod(s->reset, qemu_clock_get_ns(QEMU_CLOCK_VIRTUAL) +
-                                AUTO9_EQOS_RESET_NS);
-            s->reset_requests++;
-        } else if (timer_pending(s->reset)) {
-            /* The guest cannot clear a reset that is still in progress. */
-            value |= 1;
-        }
-    }
-    s->words[off / 4] = value;
-    s->writes++;
-    return MEMTX_OK;
-}
-
-static uint64_t auto9_eqos_clock_read(void *opaque, hwaddr off, unsigned size)
-{
-    Auto9Eqos *s = opaque;
-    s->clock_reads++;
-    return s->clock;
-}
-
-static void auto9_eqos_clock_write(void *opaque, hwaddr off, uint64_t value,
-                                  unsigned size)
-{
-    Auto9Eqos *s = opaque;
-    s->clock_writes++;
-    s->clock = value & BIT(1);
-}
-
-/*
- * Original Linux EQoS ETH0 resource (final 4-byte DT reg), seqos_platform_probe
- * + exact read/OR 0x11/write sequence at 0xffffffc0105f11d4..11f8.
- * Virtual reset is zero; only the two original configuration bits latch.
- * This SYSREG is separate from MAC DMA reset and does not imply link, DMA,
- * interrupt, or timestamp readiness.
- */
-static uint64_t auto9_eqos_fsys2_read(void *opaque, hwaddr off, unsigned size)
-{
-    Auto9Eqos *s = opaque;
-    s->fsys2_reads++;
-    return s->fsys2_config;
-}
-
-static void auto9_eqos_fsys2_write(void *opaque, hwaddr off, uint64_t value,
-                                  unsigned size)
-{
-    Auto9Eqos *s = opaque;
-    s->fsys2_writes++;
-    s->fsys2_config = value & AUTO9_EQOS_FSYS2_MASK;
-}
-
-static const MemoryRegionOps auto9_eqos_fsys2_ops = {
-    .read = auto9_eqos_fsys2_read,
-    .write = auto9_eqos_fsys2_write,
-    .endianness = DEVICE_LITTLE_ENDIAN,
-    .valid = { .min_access_size = 4, .max_access_size = 4 },
-    .impl = { .min_access_size = 4, .max_access_size = 4 },
-};
-
-static const MemoryRegionOps auto9_eqos_ops = {
-    .read_with_attrs = auto9_eqos_read, .write_with_attrs = auto9_eqos_write,
-    .endianness = DEVICE_LITTLE_ENDIAN,
-    .valid = { .min_access_size = 4, .max_access_size = 4 },
-    .impl = { .min_access_size = 4, .max_access_size = 4 },
-};
-
-static const MemoryRegionOps auto9_eqos_clock_ops = {
-    .read = auto9_eqos_clock_read, .write = auto9_eqos_clock_write,
-    .endianness = DEVICE_LITTLE_ENDIAN,
-    .valid = { .min_access_size = 4, .max_access_size = 4 },
-    .impl = { .min_access_size = 4, .max_access_size = 4 },
-};
-
-static void auto9_eqos_reset(DeviceState *dev)
-{
-    Auto9Eqos *s = AUTO9_EQOS(dev);
-    timer_del(s->reset);
-    auto9_eqos_reset_regs(s);
-    auto9_q2112_reset(&s->phy);
-    s->clock = s->reads = s->writes = s->mac_reads = 0;
-    s->clock_reads = s->clock_writes = 0;
-    s->fsys2_config = s->fsys2_reads = s->fsys2_writes = 0;
-    s->channel_reads = s->channel_writes = 0;
-    s->channel_read_mask = s->channel_write_mask = 0;
-    s->ptp_commands = s->ptp_writes = s->ptp_mcgr_writes = 0;
-    s->ptp_pps0_writes = s->ptp_presentation_reads = 0;
-    s->mdio_reads = s->mdio_writes = s->mdio_completions = 0;
-    s->mdio_busy_writes = s->mdio_due_on_access = 0;
-    s->reset_requests = s->reset_completions = s->rejected = s->last_rejected = 0;
-    s->mmc_overflow_reads = s->ptp_control_reads = s->ptp_time_reads = s->dma_debug_reads = 0;
-    s->mtl_txq_flushes = s->mtl_txq_flush_mask = 0;
-    memset(s->read_by_word, 0, sizeof(s->read_by_word));
-}
-
-static char *auto9_eqos_read_histogram(Object *obj, Error **errp)
-{
-    const Auto9Eqos *s = AUTO9_EQOS(obj);
-    GString *out = g_string_new(NULL);
-    for (unsigned i = 0; i < G_N_ELEMENTS(s->read_by_word); i++) {
-        if (s->read_by_word[i]) {
-            g_string_append_printf(out, "%x:%" PRIu64 "\n", i * 4, s->read_by_word[i]);
-        }
-    }
-    return g_string_free(out, false);
-}
-
-static void auto9_eqos_init(Object *obj)
-{
-    Auto9Eqos *s = AUTO9_EQOS(obj);
-    s->reset = timer_new_ns(QEMU_CLOCK_VIRTUAL, auto9_eqos_dma_reset_done, s);
-    s->mdio = timer_new_ns(QEMU_CLOCK_VIRTUAL, auto9_eqos_mdio_done, s);
-    memory_region_init_io(&s->regs, obj, &auto9_eqos_ops, s,
-                          "auto9-eqos0-control", 0x20000);
-    memory_region_init_io(&s->clk, obj, &auto9_eqos_clock_ops, s,
-                          "auto9-eqos0-clock-config", 4);
-    sysbus_init_mmio(SYS_BUS_DEVICE(obj), &s->regs);
-    sysbus_init_mmio(SYS_BUS_DEVICE(obj), &s->clk);
-    memory_region_init_io(&s->fsys2, obj, &auto9_eqos_fsys2_ops, s,
-                          "auto9-eqos0-fsys2-config", 4);
-    sysbus_init_mmio(SYS_BUS_DEVICE(obj), &s->fsys2);
-    object_property_add_uint32_ptr(obj, "fsys2-config", &s->fsys2_config, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "fsys2-reads", &s->fsys2_reads, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "fsys2-writes", &s->fsys2_writes, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "reads", &s->reads, OBJ_PROP_FLAG_READ);
-    object_property_add_str(obj, "read-histogram", auto9_eqos_read_histogram, NULL);
-    object_property_add_uint64_ptr(obj, "mtl-txq-flushes", &s->mtl_txq_flushes, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "mtl-txq-flush-mask", &s->mtl_txq_flush_mask, OBJ_PROP_FLAG_READ);
-    /* Host-only counters: terminal QMP attribution without a log per read. */
-    object_property_add_uint64_ptr(obj, "mmc-overflow-reads", &s->mmc_overflow_reads, OBJ_PROP_FLAG_READ);
-    object_property_add_uint64_ptr(obj, "ptp-control-reads", &s->ptp_control_reads, OBJ_PROP_FLAG_READ);
-    object_property_add_uint64_ptr(obj, "ptp-time-reads", &s->ptp_time_reads, OBJ_PROP_FLAG_READ);
-    object_property_add_uint64_ptr(obj, "dma-debug-reads", &s->dma_debug_reads, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "channel-reads", &s->channel_reads, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "ptp-control", &s->ptp_control, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "ptp-writes", &s->ptp_writes, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "ptp-commands", &s->ptp_commands, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "ptp-mcgr", &s->ptp_mcgr, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "ptp-mcgr-writes", &s->ptp_mcgr_writes, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "ptp-pps0-writes", &s->ptp_pps0_writes, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "ptp-presentation-reads", &s->ptp_presentation_reads, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "ptp-presentation-update", &s->ptp_presentation_latch, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "ptp-presentation-writes", &s->ptp_presentation_writes, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "ptp-presentation-commits", &s->ptp_presentation_commits, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "ptp-increment", &s->ptp_inc, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "ptp-active-addend", &s->ptp_active_addend, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "channel-writes", &s->channel_writes, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "channel-read-mask", &s->channel_read_mask, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "channel-write-mask", &s->channel_write_mask, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "rx-drop-reads", &s->rx_drop_reads, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "rx-drop-read-mask", &s->rx_drop_read_mask, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "armed-tx", &s->armed_tx, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "armed-rx", &s->armed_rx, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "mdio-reads", &s->mdio_reads, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "mdio-writes", &s->mdio_writes, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "mdio-completions", &s->mdio_completions, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "mdio-busy-writes", &s->mdio_busy_writes, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "mdio-due-on-access", &s->mdio_due_on_access, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "q2112-reads", &s->phy.reads, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "q2112-writes", &s->phy.writes, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "q2112-id-reads", &s->phy.id_reads, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "q2112-link-reads", &s->phy.link_reads, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "q2112-reset-requests", &s->phy.reset_requests, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "q2112-unsupported", &s->phy.unknown, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "writes", &s->writes, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "mac-reads", &s->mac_reads, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "hash-lo", &s->words[0x10 / 4], OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "hash-2", &s->words[0x18 / 4], OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "hash-7", &s->words[0x2c / 4], OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "hash-hi", &s->words[0x14 / 4], OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "mac-config", &s->words[0], OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "clock-config", &s->clock, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "clock-reads", &s->clock_reads, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "clock-writes", &s->clock_writes, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "reset-requests", &s->reset_requests, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "reset-completions", &s->reset_completions, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "rejected", &s->rejected, OBJ_PROP_FLAG_READ);
-    object_property_add_uint32_ptr(obj, "last-rejected", &s->last_rejected, OBJ_PROP_FLAG_READ);
-}
-
-static void auto9_eqos_finalize(Object *obj)
-{
-    Auto9Eqos *s = AUTO9_EQOS(obj);
-    timer_free(s->reset);
-    timer_free(s->mdio);
-}
-
-static void auto9_eqos_class(ObjectClass *klass, const void *data)
-{
-    static const Property properties[] = {
-        DEFINE_PROP_BOOL("phy-88q2112", Auto9Eqos, phy_88q2112, false),
-    };
-    DeviceClass *dc = DEVICE_CLASS(klass);
-    device_class_set_legacy_reset(dc, auto9_eqos_reset);
-    device_class_set_props(dc, properties);
-}
-
-static const TypeInfo auto9_eqos_type = {
-    .name = TYPE_AUTO9_EQOS, .parent = TYPE_SYS_BUS_DEVICE,
-    .instance_size = sizeof(Auto9Eqos), .instance_init = auto9_eqos_init,
-    .instance_finalize = auto9_eqos_finalize, .class_init = auto9_eqos_class,
-};
-
-static void auto9_eqos_register(void) { type_register_static(&auto9_eqos_type); }
-type_init(auto9_eqos_register)
-
-static void auto9_eqos_create(VirtMachineState *vms)
-{
-    if (!vms->exynos_eqos_mac) {
-        return;
-    }
-    DeviceState *dev = qdev_new(TYPE_AUTO9_EQOS);
-    AUTO9_EQOS(dev)->mac = vms->exynos_eqos_mac;
-    object_property_add_child(OBJECT(vms), "exynos-eqos0", OBJECT(dev));
-    sysbus_realize_and_unref(SYS_BUS_DEVICE(dev), &error_fatal);
-    sysbus_mmio_map(SYS_BUS_DEVICE(dev), 0, AUTO9_EQOS_BASE);
-    sysbus_mmio_map(SYS_BUS_DEVICE(dev), 1, AUTO9_EQOS_CLK);
-    sysbus_mmio_map(SYS_BUS_DEVICE(dev), 2, AUTO9_EQOS_FSYS2);
-}
+#include "exynos-auto9-88q2112.inc.c"
+#include "exynos-auto9-eqos.inc.c"
 
 
 #include "exynos-auto9-sysmmu-native.inc.c"
@@ -8757,7 +7836,7 @@ enum { FRAG_INPUT, FRAG_PROFILE, FRAG_TARGET, FRAG_STORAGE, FRAG_TRANSLATE,
 static void auto9_g3d00_fragment_fault_sample(Auto9MaliG3d1 *s, uint64_t head,
                                               unsigned stage, uint64_t renderer)
 {
-    uint8_t job[64], fb[128], ext[64], rt[64], rsd[80], code[128];
+    uint8_t job[64], fb[128], ext[64], rt[64], rsd[80], code[256];
     if (!qemu_loglevel_mask(LOG_GUEST_ERROR) || s->fragment_fault_samples >= 4 ||
         !auto9_g3d00_fragment_inputs(s, head, job, fb, ext, rt, false)) {
         return;
@@ -8778,6 +7857,39 @@ static void auto9_g3d00_fragment_fault_sample(Auto9MaliG3d1 *s, uint64_t head,
     auto9_g3d00_sample_bytes("fragment-fault", n, "render-target", 0, rt, sizeof(rt));
     if (job[40] & 2) {
         auto9_g3d00_sample_bytes("fragment-fault", n, "zs-crc", 0, ext, sizeof(ext));
+    }
+    if (s->g3d00 && !s->vm3_control && ldq_le_p(fb + 24)) {
+        uint8_t draw[128], data[128];
+        unsigned modes = ldl_le_p(fb) & 511;
+        qemu_log_mask(LOG_GUEST_ERROR, "Auto9 QNX preframe context: sample=%u ttbr=0x%" PRIx64
+                      " transcfg=0x%" PRIx64 " modes=0x%x\n", n,
+                      s->as0_active_ttbr, s->as0_active_transcfg, modes);
+        for (unsigned i = 0; i < 3; i++) {
+            if (!((modes >> (3 * i)) & 7) ||
+                !auto9_g3d00_dma_read(s, ldq_le_p(fb + 24) + 128 * i, draw, sizeof(draw))) {
+                continue;
+            }
+            auto9_g3d00_sample_bytes("fragment-fault", n, "preframe-draw", i, draw, sizeof(draw));
+            if (!renderer) { renderer = ldq_le_p(draw + 56); }
+            const unsigned offsets[] = {24, 32, 40, 48, 96, 112};
+            const char *names[] = {"preframe-ubos", "preframe-textures", "preframe-samplers",
+                                   "preframe-fau", "preframe-viewport", "preframe-tls"};
+            for (unsigned k = 0; k < G_N_ELEMENTS(offsets); k++) {
+                uint64_t pointer = ldq_le_p(draw + offsets[k]);
+                if (pointer && auto9_g3d00_dma_read(s, pointer, data, sizeof(data))) {
+                    auto9_g3d00_sample_bytes("fragment-fault", n, names[k], i, data, sizeof(data));
+                    if (k == 1) {
+                        uint8_t surface[16], pixels[64];
+                        if (auto9_g3d00_dma_read(s, ldq_le_p(data + 16), surface, sizeof(surface))) {
+                            auto9_g3d00_sample_bytes("fragment-fault", n, "preframe-surface", i, surface, sizeof(surface));
+                            if (auto9_g3d00_dma_read(s, ldq_le_p(surface), pixels, sizeof(pixels))) {
+                                auto9_g3d00_sample_bytes("fragment-fault", n, "preframe-pixels", i, pixels, sizeof(pixels));
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     if (renderer && auto9_g3d00_dma_read(s, renderer, rsd, sizeof(rsd))) {
         auto9_g3d00_sample_bytes("fragment-fault", n, "renderer-and-blend", 0, rsd, sizeof(rsd));
@@ -16924,6 +16036,200 @@ static uint32_t auto9_qnx_tiled_clear(Auto9MaliG3d1 *s, uint64_t head,
     return G3D00_JOB_DONE;
 }
 
+static uint32_t auto9_qnx_uniform_preframe(Auto9MaliG3d1 *s, uint64_t head,
+                                            uint64_t status_pa, const uint8_t job[64],
+                                            const uint8_t fb[128], const uint8_t rt[64],
+                                            unsigned *stage)
+{
+    static const uint8_t program[64] = {0x29,0x00,0x00,0xb0,0x43,0x80,0x66,0x80,0x03,0x33,0x07,0xc0,0x1c,0x08,0xc6,0x48,0x21,0x00,0x05,0x01,0x7c,0x58,0xcb,0x80,0x93,0x65,0x67,0x02,0x00,0x52,0xc4,0x58,0x44,0x00,0x86,0x41,0x0f,0x00,0x00,0x00,0x00,0x00,0x30,0xe0,0x01,0x73,0x01,0xc0,0x4e,0x08,0x30,0xcc,0x6b,0x18,0xcb,0x80,0x83,0xa5,0x02,0x00,0x04,0x00,0x48,0x02};
+    static const uint8_t renderer_tail[72] = {0x01,0x00,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x22,0x18,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xff,0xff,0x00,0x07,0x00,0x00,0x00,0x00,0xff,0xff,0x04,0x00,0xff,0xff,0x04,0x00,0x80,0x08,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x0a,0x00,0x00,0x22,0x21,0x12,0xf0,0x19,0x00,0x00,0x00,0x00,0xd0,0x0e,0x01};
+    uint8_t draw[128], rsd[80], code[64], texture[32], sampler[32], surface[16], viewport[32];
+    g_autofree Auto9Vm3ClearSpan *spans = NULL, *sorted = NULL;
+    unsigned n = 0, width = (ldl_le_p(fb + 32) & 65535) + 1;
+    unsigned height = (ldl_le_p(fb + 32) >> 16) + 1, wh = ldl_le_p(fb + 32);
+    unsigned rt_word = ldl_le_p(rt + 4), block = (rt_word >> 8) & 15;
+    unsigned format = (rt_word >> 3) & 31, bpp = format == 16 ? 1 : format == 19 ? 4 : 0;
+    uint64_t dcd = ldq_le_p(fb + 24), target = ldq_le_p(rt + 16), body = ldq_le_p(rt + 32), pa;
+    *stage = FRAG_PROFILE;
+    if (!s->g3d00 || s->vm3_control || !bpp || width > 4096 || height > 4096 ||
+        (uint64_t)width * height > 1920 * 1080 || (block != 12 && block != 13) ||
+        (ldq_le_p(job + 40) & 63) != 1 || ldl_le_p(job + 32) ||
+        (uint32_t)ldl_le_p(job + 36) != (((height - 1) / 16) << 16 | ((width - 1) / 16)) ||
+        ldq_le_p(job + 48) || ldq_le_p(job + 56) || ldq_le_p(fb) != 8 ||
+        ldl_le_p(fb + 36) || (uint32_t)ldl_le_p(fb + 40) != wh ||
+        ldl_le_p(fb + 44) != 0x01001000 || ldl_le_p(fb + 48) != 0x10000 ||
+        ldl_le_p(fb + 52) || ldq_le_p(fb + 56) || ldl_le_p(rt) != 0x04000000 ||
+        (rt_word & ~0xf00U) != (bpp == 1 ? 0x88888081U : 0x86888099U) ||
+        (ldl_le_p(rt + 28) & ~0x120000U) || ldq_le_p(rt + 40) ||
+        ldq_le_p(rt + 48) || ldq_le_p(rt + 56) || !dcd || (dcd & 63)) {
+        return G3D00_JOB_CONFIG_FAULT;
+    }
+    *stage = FRAG_TEXTURE_STATE;
+    if (!auto9_g3d00_dma_read(s, dcd + 128, draw, sizeof(draw))) { return G3D00_JOB_READ_FAULT; }
+    uint64_t state = ldq_le_p(draw + 56), tex = ldq_le_p(draw + 32);
+    uint64_t samp = ldq_le_p(draw + 40), view = ldq_le_p(draw + 96), tls = ldq_le_p(draw + 112);
+    if (ldq_le_p(draw) != 3 || ldq_le_p(draw + 8) || ldq_le_p(draw + 24) ||
+        ldq_le_p(draw + 48) || ldq_le_p(draw + 64) || ldq_le_p(draw + 72) || ldq_le_p(draw + 104) ||
+        !state || (state & 63) || !tex || (tex & 31) || !samp || (samp & 31) ||
+        !view || (view & 31) || !tls || (tls & 63) ||
+        !auto9_g3d00_dma_read(s, state, rsd, sizeof(rsd)) ||
+        !auto9_g3d00_dma_read(s, tex, texture, sizeof(texture)) ||
+        !auto9_g3d00_dma_read(s, samp, sampler, sizeof(sampler)) ||
+        !auto9_g3d00_dma_read(s, view, viewport, sizeof(viewport))) { return G3D00_JOB_READ_FAULT; }
+    uint64_t pc = ldq_le_p(rsd), surf = ldq_le_p(texture + 16);
+    *stage = FRAG_SHADER;
+    if (!pc || (pc & 15) || memcmp(rsd + 8, renderer_tail, sizeof(renderer_tail)) ||
+        !auto9_g3d00_dma_read(s, pc, code, sizeof(code)) || memcmp(code, program, sizeof(code))) {
+        return G3D00_JOB_CONFIG_FAULT;
+    }
+    *stage = FRAG_TEXTURE_SURFACE;
+    if (ldl_le_p(texture) != (bpp == 1 ? 0x28c04042 : 0x2ec00042) ||
+        (uint32_t)ldl_le_p(texture + 4) != wh || ldl_le_p(texture + 8) != 0x2688 ||
+        ldl_le_p(texture + 12) || ldl_le_p(texture + 24) || (uint32_t)ldl_le_p(texture + 28) != wh ||
+        ldl_le_p(sampler) != 0x50099901 || ldl_le_p(sampler + 4) ||
+        ldq_le_p(sampler + 8) || ldq_le_p(sampler + 16) || ldq_le_p(sampler + 24) ||
+        ldq_le_p(viewport) || auto9_g3d00_float(viewport + 8) != width ||
+        auto9_g3d00_float(viewport + 12) != height || ldl_le_p(viewport + 16) ||
+        ldl_le_p(viewport + 20) != 0x3f800000 || ldl_le_p(viewport + 24) ||
+        (uint32_t)ldl_le_p(viewport + 28) != wh || !surf || (surf & 7) ||
+        !auto9_g3d00_dma_read(s, surf, surface, sizeof(surface))) { return G3D00_JOB_CONFIG_FAULT; }
+    uint64_t source = ldq_le_p(surface);
+    unsigned pitch = ldl_le_p(surface + 8), tx = (width + 15) / 16, ty = (height + 15) / 16;
+    unsigned stride = ldl_le_p(rt + 24), rows = ty;
+    *stage = FRAG_AFBC_LAYOUT;
+    if (block == 13) {
+        if (stride != ((tx + 7) & ~7U)) { return G3D00_JOB_CONFIG_FAULT; }
+        rows = (ty + 7) & ~7U;
+    } else if (stride != tx && !(ty == 1 && !stride)) { return G3D00_JOB_CONFIG_FAULT; }
+    if (!stride) { stride = tx; }
+    unsigned header_bytes = stride * rows * 16, row_bytes = width * bpp;
+    unsigned payload_bytes = tx * ty * 256 * bpp;
+    unsigned max_spans = (header_bytes + payload_bytes) / 4096 + 4;
+    spans = g_try_new(Auto9Vm3ClearSpan, max_spans);
+    sorted = g_try_new(Auto9Vm3ClearSpan, max_spans);
+    if (!spans || !sorted) { return G3D00_JOB_CONFIG_FAULT; }
+    if (!source || (source & (bpp - 1)) || pitch < row_bytes || pitch > 65536 ||
+        source >= (UINT64_C(1) << 48) || (uint64_t)(height - 1) * pitch + row_bytes > (UINT64_C(1) << 48) - source ||
+        !target || (target & (block == 13 ? 1023 : 63)) || !body || (body & 63) ||
+        target >= (UINT64_C(1) << 48) || header_bytes > (UINT64_C(1) << 48) - target ||
+        body < target + header_bytes) { return G3D00_JOB_CONFIG_FAULT; }
+    *stage = FRAG_TRANSLATE;
+    if (!auto9_vm3_clear_plan(s, target, 1, header_bytes, header_bytes, true,
+                              spans, max_spans, &n) ||
+        !auto9_g3d00_translate(s, head, sizeof(uint64_t) * 8, false, &pa) || pa != status_pa) {
+        return G3D00_JOB_WRITE_FAULT;
+    }
+    memcpy(sorted, spans, n * sizeof(*spans));
+    qsort(sorted, n, sizeof(*sorted), auto9_vm3_clear_span_cmp);
+    for (unsigned i = 1; i < n; i++) {
+        if (auto9_g3d00_overlap(sorted[i - 1].pa, sorted[i - 1].length, sorted[i].pa, sorted[i].length)) {
+            return G3D00_JOB_WRITE_FAULT;
+        }
+    }
+    uint64_t dependency[] = {head, ldq_le_p(job + 40) & ~UINT64_C(63), ldq_le_p(fb + 16), dcd + 128,
+                             state, tex, samp, view, tls, pc, surf};
+    unsigned lengths[] = {64, 192, 16, 128, 80, 32, 32, 32, 32, 64, 16};
+    for (unsigned i = 0; i < G_N_ELEMENTS(dependency); i++) {
+        if (!auto9_vm3_stock_read(s, dependency[i], NULL, lengths[i], sorted, n)) { return G3D00_JOB_WRITE_FAULT; }
+    }
+    *stage = FRAG_STORAGE;
+    g_autofree uint8_t *pixels = g_try_malloc(row_bytes * height);
+    g_autofree uint8_t *payload = NULL;
+    g_autofree uint8_t *headers = g_try_malloc0(header_bytes);
+    if (!pixels || !headers) { return G3D00_JOB_CONFIG_FAULT; }
+    uint32_t color = 0;
+    bool uniform = true;
+    *stage = FRAG_TEXTURE_MEMORY;
+    for (unsigned y = 0; y < height; y++) {
+        uint8_t *row = pixels + y * row_bytes;
+        if (!auto9_vm3_stock_read(s, source + (uint64_t)y * pitch, row, row_bytes, sorted, n)) {
+            return G3D00_JOB_READ_FAULT;
+        }
+        if (!y) { color = bpp == 1 ? row[0] : ldl_le_p(row); }
+        for (unsigned x = 0; x < width; x++) {
+            uint32_t pixel = bpp == 1 ? row[x] : ldl_le_p(row + 4 * x);
+            uniform &= pixel == color;
+        }
+    }
+    unsigned header_spans = n;
+    if (uniform) {
+        for (unsigned i = 0; i < header_bytes; i += 16) { stl_le_p(headers + i + 8, color); }
+    } else {
+        *stage = FRAG_AFBC_LAYOUT;
+        if (block != 12 || (ldl_le_p(rt + 28) & BIT(17)) ||
+            body - target > UINT32_MAX - payload_bytes ||
+            body >= (UINT64_C(1) << 48) || payload_bytes > (UINT64_C(1) << 48) - body) {
+            return G3D00_JOB_CONFIG_FAULT;
+        }
+        *stage = FRAG_TRANSLATE;
+        if (!auto9_vm3_clear_plan(s, body, 1, payload_bytes, payload_bytes, true,
+                                  spans, max_spans, &n)) { return G3D00_JOB_WRITE_FAULT; }
+        memcpy(sorted, spans, n * sizeof(*spans));
+        qsort(sorted, n, sizeof(*sorted), auto9_vm3_clear_span_cmp);
+        for (unsigned i = 1; i < n; i++) {
+            if (auto9_g3d00_overlap(sorted[i - 1].pa, sorted[i - 1].length,
+                                    sorted[i].pa, sorted[i].length)) { return G3D00_JOB_WRITE_FAULT; }
+        }
+        for (unsigned i = 0; i < G_N_ELEMENTS(dependency); i++) {
+            if (!auto9_vm3_stock_read(s, dependency[i], NULL, lengths[i], sorted, n)) {
+                return G3D00_JOB_WRITE_FAULT;
+            }
+        }
+        for (unsigned y = 0; y < height; y++) {
+            if (!auto9_vm3_stock_read(s, source + (uint64_t)y * pitch, NULL, row_bytes, sorted, n)) {
+                return G3D00_JOB_READ_FAULT;
+            }
+        }
+        *stage = FRAG_STORAGE;
+        payload = g_try_malloc0(payload_bytes);
+        if (!payload) { return G3D00_JOB_CONFIG_FAULT; }
+        static const uint8_t subblock[4][4] = {{2,1,14,13},{3,0,15,12},{4,7,8,11},{5,6,9,10}};
+        for (unsigned y = 0; y < height; y++) {
+            for (unsigned x = 0; x < width; x++) {
+                unsigned tile = (y / 16) * tx + x / 16;
+                unsigned sub = subblock[(x & 15) / 4][(y & 15) / 4];
+                unsigned pixel = tile * 256 + sub * 16 + (y & 3) * 4 + (x & 3);
+                memcpy(payload + pixel * bpp, pixels + y * row_bytes + x * bpp, bpp);
+            }
+        }
+        for (unsigned tile = 0; tile < tx * ty; tile++) {
+            uint8_t *h = headers + tile * 16;
+            stl_le_p(h, body - target + tile * 256 * bpp);
+            for (unsigned sub = 0; sub < 4; sub++) {
+                h[4 + sub * 3] = 0x41; h[5 + sub * 3] = 0x10; h[6 + sub * 3] = 0x04;
+            }
+        }
+    }
+    *stage = FRAG_WRITE;
+    unsigned body_offset = 0;
+    for (unsigned i = header_spans; i < n; i++) {
+        if (address_space_write(&address_space_memory, spans[i].pa, MEMTXATTRS_UNSPECIFIED,
+                                payload + body_offset, spans[i].length) != MEMTX_OK) {
+            return G3D00_JOB_WRITE_FAULT;
+        }
+        body_offset += spans[i].length;
+    }
+    unsigned offset = 0;
+    for (unsigned i = 0; i < header_spans; i++) {
+        if (address_space_write(&address_space_memory, spans[i].pa, MEMTXATTRS_UNSPECIFIED,
+                                headers + offset, spans[i].length) != MEMTX_OK) { return G3D00_JOB_WRITE_FAULT; }
+        offset += spans[i].length;
+    }
+    s->fragment_pixels_shaded += (uint64_t)width * height;
+    s->fragment_bytes_written += header_bytes + body_offset;
+    static unsigned logged, raw_logged;
+    if (!uniform && ++raw_logged <= 24) {
+        qemu_log_mask(LOG_GUEST_ERROR, "Auto9 QNX raw preframe committed: n=%u size=%ux%u bpp=%u "
+                      "block=%u header-bytes=%u payload-bytes=%u\n", raw_logged, width, height, bpp,
+                      block, header_bytes, body_offset);
+    }
+    if (uniform && ++logged <= 24) {
+        qemu_log_mask(LOG_GUEST_ERROR, "Auto9 QNX uniform preframe committed: n=%u size=%ux%u bpp=%u "
+                      "block=%u rgba=0x%x header-bytes=%u\n", logged, width, height, bpp, block, color, header_bytes);
+    }
+    return G3D00_JOB_DONE;
+}
+
 static uint32_t auto9_g3d00_fragment_job(Auto9MaliG3d1 *s, uint64_t head,
                                         uint64_t status_pa, uint64_t *tiler,
                                         unsigned *stage, uint64_t *renderer)
@@ -16950,6 +16256,10 @@ static uint32_t auto9_g3d00_fragment_job(Auto9MaliG3d1 *s, uint64_t head,
     if (s->g3d00 && !s->vm3_control && !*tiler &&
         ((ldl_le_p(rt + 4) >> 8) & 15) == 1) {
         return auto9_qnx_tiled_clear(s, head, status_pa, job, fb, ext, rt, stage);
+    }
+    if (s->g3d00 && !s->vm3_control && !*tiler &&
+        (((ldl_le_p(rt + 4) >> 8) & 15) == 12 || ((ldl_le_p(rt + 4) >> 8) & 15) == 13)) {
+        return auto9_qnx_uniform_preframe(s, head, status_pa, job, fb, rt, stage);
     }
     if (s->vm3_control) {
         auto9_vm3_pf_producer(s, fb, rt, !!*tiler, 0);
@@ -21460,9 +20770,166 @@ static void auto9_g3d1_vm3_geometry_observe(Auto9MaliG3d1 *s, uint64_t head,
                                             unsigned type, unsigned slot,
                                             unsigned sample, bool stopped);
 
-/* First rejection at each real viewport check, independent of the startup
- * success sample budget. Read only descriptor metadata and framed code;
- * never read the vertex contents, push values or output buffers here. */
+static uint16_t auto9_bifrost_unorm16_half_rne(uint16_t value)
+{
+    int exponent = -16;
+    for (uint32_t bits = value; bits >>= 1;) { exponent++; }
+    unsigned shift = exponent < -14 ? 24 : 10 - exponent;
+    uint64_t scaled = (uint64_t)value << shift;
+    uint32_t significand = (scaled + 32767) / 65535;
+    if (exponent < -14) { return significand; }
+    if (significand == 2048) { significand = 1024; exponent++; }
+    return ((exponent + 15) << 10) | (significand - 1024);
+}
+
+static uint32_t auto9_qnx_vertex_job(Auto9MaliG3d1 *s, uint64_t head,
+                                        unsigned slot, uint64_t status_pa)
+{
+    enum { LIMIT = 256, READ_CAP = 40 + 4 * LIMIT, WRITE_CAP = 4 * LIMIT };
+    uint8_t job[192], rsd[64], code[368], attr[16], vary[16], fau[128], rec[16], raw[8];
+    Auto9Vm3ClearSpan prefix[8];
+    unsigned nr = 0, nw = 0;
+    if (!s->g3d00 || s->vm3_control || slot != 1) { return G3D00_JOB_CONFIG_FAULT; }
+    if (!auto9_vm3_vertex_read(s, head, job, sizeof(job), prefix, G_N_ELEMENTS(prefix), &nr)) { return G3D00_JOB_READ_FAULT; }
+    if (prefix[0].pa != status_pa) { return G3D00_JOB_WRITE_FAULT; }
+    const uint8_t *draw = job + 64;
+    unsigned last = ldl_le_p(job + 32), first = ldl_le_p(draw + 4);
+    if (last >= LIMIT || ldl_le_p(job + 36) != 0x38000000 || ldl_le_p(draw) != 2 ||
+        ldl_le_p(draw + 8) || ldq_le_p(draw + 16)) { return G3D00_JOB_CONFIG_FAULT; }
+    unsigned count = last + 1;
+    uint64_t state = ldq_le_p(draw + 56), uniforms = ldq_le_p(draw + 48);
+    uint64_t attributes = ldq_le_p(draw + 72), varyings = ldq_le_p(draw + 88);
+    uint64_t ab = ldq_le_p(draw + 64), vb = ldq_le_p(draw + 80);
+    if (!state || !uniforms || !attributes || !varyings || !ab || !vb ||
+        (state & 63) || ((uniforms | attributes | varyings) & 7) || ((ab | vb) & 31)) { return G3D00_JOB_CONFIG_FAULT; }
+    if (!auto9_vm3_vertex_read(s, state, rsd, sizeof(rsd), prefix, G_N_ELEMENTS(prefix), &nr)) { return G3D00_JOB_READ_FAULT; }
+    uint64_t pc = ldq_le_p(rsd);
+    if (!pc || (pc & 15) || ldl_le_p(rsd + 8) || ldl_le_p(rsd + 12) != 0x20002 ||
+        (ldl_le_p(rsd + 48) != 0x86000 && ldl_le_p(rsd + 48) != 0x26000)) { return G3D00_JOB_CONFIG_FAULT; }
+    if (!auto9_vm3_vertex_read(s, pc, code, 64, prefix, G_N_ELEMENTS(prefix), &nr)) { return G3D00_JOB_READ_FAULT; }
+    g_autofree char *prefix_digest = g_compute_checksum_for_data(G_CHECKSUM_SHA256, code, 64);
+    unsigned program_bytes, profile;
+    const char *identity;
+    if (ldl_le_p(rsd + 48) == 0x26000) {
+        program_bytes = 176; profile = 0;
+        identity = "3b373e0c8775b5d851515bde000786d16f3f980cea6d5bcac89ea4ec365210e8";
+    } else if (prefix_digest && !strcmp(prefix_digest, "3bce50ad4c94ab226da0d3cad6e62cea2ac44afcb808bf4f88bbf75fba32fb1b")) {
+        program_bytes = 320; profile = 1;
+        identity = "4f6c59deabb99d807c74e27806657dd17fe0c0bbe587f117bebb2b0343b61bd3";
+    } else if (prefix_digest && !strcmp(prefix_digest, "9a00e526c1b3e82833205bbbda0c410a76172f8ba316febd25fccd82b49e208a")) {
+        program_bytes = 368; profile = 2;
+        identity = "e110c33c698012a4ebd20424d3875138aa0ec16d66e34a5d8188450ad8bcaa55";
+    } else { return G3D00_JOB_CONFIG_FAULT; }
+    if (!auto9_vm3_vertex_read(s, pc + 64, code + 64, program_bytes - 64,
+                               prefix, G_N_ELEMENTS(prefix), &nr)) { return G3D00_JOB_READ_FAULT; }
+    g_autofree char *digest = g_compute_checksum_for_data(G_CHECKSUM_SHA256, code, program_bytes);
+    if (!digest || strcmp(digest, identity)) { return G3D00_JOB_CONFIG_FAULT; }
+    g_autofree Auto9Vm3ClearSpan *reads = g_try_new(Auto9Vm3ClearSpan, READ_CAP);
+    g_autofree Auto9Vm3ClearSpan *targets = g_try_new(Auto9Vm3ClearSpan, WRITE_CAP);
+    g_autofree Auto9Vm3Vertex3Span *writes = g_try_new(Auto9Vm3Vertex3Span, WRITE_CAP);
+    g_autofree uint8_t *encoded = g_try_malloc_n(count, 20);
+    if (!reads || !targets || !writes || !encoded) { return G3D00_JOB_CONFIG_FAULT; }
+    memcpy(reads, prefix, nr * sizeof(*reads));
+    if (!auto9_vm3_vertex_read(s, attributes, attr, sizeof(attr), reads, READ_CAP, &nr) ||
+        !auto9_vm3_vertex_read(s, varyings, vary, sizeof(vary), reads, READ_CAP, &nr) ||
+        !auto9_vm3_vertex_read(s, uniforms, fau, profile ? sizeof(fau) : 32, reads, READ_CAP, &nr)) { return G3D00_JOB_READ_FAULT; }
+    uint64_t base[4];
+    static unsigned described[3];
+    if (++described[profile] <= 4) {
+        qemu_log_mask(LOG_GUEST_ERROR, "Auto9 QNX vertex%u ABI: attr=0x%x/%u,0x%x/%u vary=0x%x/%u,0x%x/%u\n",
+                      program_bytes, ldl_le_p(attr), ldl_le_p(attr + 4), ldl_le_p(attr + 8), ldl_le_p(attr + 12),
+                      ldl_le_p(vary), ldl_le_p(vary + 4), ldl_le_p(vary + 8), ldl_le_p(vary + 12));
+    }
+    unsigned xy_format = (uint32_t)ldl_le_p(attr) >> 22;
+    unsigned uv_format = (uint32_t)ldl_le_p(attr + 8) >> 22;
+    if ((xy_format != 175 && !(profile == 1 && xy_format == 204)) ||
+        (uv_format != 175 && uv_format != 207 && !(profile == 1 && uv_format == 172)) ||
+        (profile == 2 && uv_format != 175)) { return G3D00_JOB_CONFIG_FAULT; }
+    unsigned widths[] = {xy_format == 175 ? 8 : 4, uv_format == 175 ? 8 : 4, 4, 16};
+    unsigned formats[] = {xy_format, uv_format, 207, 94}, stride[4];
+    for (unsigned i = 0; i < 4; i++) {
+        bool output = i >= 2;
+        const uint8_t *entry = (output ? vary : attr) + 8 * (i & 1);
+        unsigned word = ldl_le_p(entry), offset = ldl_le_p(entry + 4), index = word & 511;
+        unsigned swizzle = (word >> 10) & 4095;
+        unsigned alignment = i == 2 || (i < 2 && formats[i] != 175) ? 2 : 4;
+        if ((word >> 22) != formats[i] || index >= 8 || offset > INT32_MAX || offset % alignment ||
+            (output ? (swizzle || (word & 512)) : (swizzle && swizzle != 16))) { return G3D00_JOB_CONFIG_FAULT; }
+        uint64_t table = output ? vb : ab;
+        if (table >= (UINT64_C(1) << 48) || !auto9_vm3_vertex_read(s, table + index * 16, rec, sizeof(rec), reads, READ_CAP, &nr)) { return G3D00_JOB_READ_FAULT; }
+        stride[i] = ldl_le_p(rec + 8);
+        if (stride[i] > 16384 || stride[i] % alignment || (output && stride[i] < widths[i]) ||
+            !auto9_vm3_vertex_count_address(rec, offset, word & 512 ? first : 0, count,
+                                            widths[i], stride[i], output, &base[i])) { return G3D00_JOB_CONFIG_FAULT; }
+    }
+    float u[32] = {0};
+    for (unsigned i = 0; i < (profile ? 32 : 8); i++) { u[i] = auto9_g3d00_float(fau + 4 * i); }
+    for (unsigned n = 0; n < count; n++) {
+        if (!auto9_vm3_vertex_read(s, base[0] + n * stride[0], raw, widths[0], reads, READ_CAP, &nr)) { return G3D00_JOB_READ_FAULT; }
+        float x = xy_format == 175 ? auto9_g3d00_float(raw) : (float)(int16_t)lduw_le_p(raw);
+        float y = xy_format == 175 ? auto9_g3d00_float(raw + 4) : (float)(int16_t)lduw_le_p(raw + 2);
+        float clip[4] = {x, y, 0.0f, 1.0f}, position[4];
+        if (profile == 1) {
+            clip[0] = fmaf(u[28], x, fmaf(u[9], y, -0.0f)) + u[29];
+            clip[1] = fmaf(u[26], x, fmaf(u[13], y, -0.0f)) + u[27];
+            clip[2] = fmaf(u[24], x, fmaf(u[17], y, -0.0f)) + u[25];
+            clip[3] = fmaf(u[30], x, fmaf(u[21], y, -0.0f)) + u[31];
+        } else if (profile == 2) {
+            clip[0] = fmaf(u[12], x, fmaf(u[16], y, -0.0f)) + u[30];
+            clip[1] = fmaf(u[13], x, fmaf(u[17], y, -0.0f)) + u[21];
+            clip[2] = fmaf(u[14], x, fmaf(u[18], y, -0.0f)) + u[31];
+            clip[3] = fmaf(u[28], x, fmaf(u[19], y, -0.0f)) + u[29];
+        }
+        if (!isfinite(x) || !isfinite(y) || !auto9_bifrost_viewport_alu(clip, u, position) ||
+            !auto9_bifrost_snap4(position)) { return G3D00_JOB_CONFIG_FAULT; }
+        uint8_t *data = encoded + 20 * n;
+        for (unsigned i = 0; i < 4; i++) { uint32_t bits; memcpy(&bits, position + i, 4); stl_le_p(data + 4 * i, bits); }
+        if (!auto9_vm3_vertex_read(s, base[1] + n * stride[1], raw, widths[1], reads, READ_CAP, &nr)) { return G3D00_JOB_READ_FAULT; }
+        if (profile == 2) {
+            float uv[] = {fmaf(auto9_g3d00_float(raw), u[26], u[27]),
+                          fmaf(auto9_g3d00_float(raw + 4), u[24], u[25])};
+            for (unsigned i = 0; i < 2; i++) {
+                if (!isfinite(uv[i])) { return G3D00_JOB_CONFIG_FAULT; }
+                uint16_t value = auto9_bifrost_f32_half_rne(uv[i]);
+                stw_le_p(data + 16 + 2 * i, value);
+            }
+        } else if (uv_format == 175) {
+            for (unsigned i = 0; i < 2; i++) {
+                stw_le_p(data + 16 + 2 * i, auto9_bifrost_f32_half_rne(auto9_g3d00_float(raw + 4 * i)));
+            }
+        } else if (uv_format == 172) {
+            for (unsigned i = 0; i < 2; i++) {
+                stw_le_p(data + 16 + 2 * i, auto9_bifrost_unorm16_half_rne(lduw_le_p(raw + 2 * i)));
+            }
+        } else {
+            memcpy(data + 16, raw, 4);
+        }
+        for (unsigned i = 2; i < 4; i++) {
+            unsigned done = 0, start = i == 2 ? 16 : 0;
+            while (done < widths[i]) {
+                uint64_t va = base[i] + n * stride[i] + done, pa;
+                unsigned length = MIN(widths[i] - done, 4096 - (va & 4095));
+                if (nw == WRITE_CAP || !auto9_g3d00_translate(s, va, length, true, &pa)) { return G3D00_JOB_WRITE_FAULT; }
+                writes[nw] = (Auto9Vm3Vertex3Span){pa, length, data + start + done};
+                targets[nw++] = (Auto9Vm3ClearSpan){pa, length};
+                done += length;
+            }
+        }
+    }
+    if (!auto9_vm3_vertex448_disjoint(reads, nr, targets, nw)) { return G3D00_JOB_WRITE_FAULT; }
+    for (unsigned i = 0; i < nw; i++) {
+        if (address_space_write(&address_space_memory, writes[i].pa, MEMTXATTRS_UNSPECIFIED,
+                                writes[i].data, writes[i].length) != MEMTX_OK) { return G3D00_JOB_WRITE_FAULT; }
+    }
+    s->vertices_written += count;
+    static unsigned completed[3];
+    if (++completed[profile] <= 24) {
+        qemu_log_mask(LOG_GUEST_ERROR, "Auto9 QNX vertex%u committed: n=%u vertices=%u xyzw-bytes=%u uv-bytes=%u\n",
+                      program_bytes, completed[profile], count, count * 16, count * 4);
+    }
+    return G3D00_JOB_DONE;
+}
+
 static void auto9_qnx_vertex_fault(Auto9MaliG3d1 *s, uint64_t head,
                                   unsigned slot, unsigned stage, uint32_t status)
 {
@@ -21635,6 +21102,9 @@ static uint32_t auto9_g3d00_control_descriptor(Auto9MaliG3d1 *s, uint64_t head,
         uint32_t result = auto9_g3d1_stock_viewport_job(s, head, slot, wb);
         if (result == G3D00_JOB_CONFIG_FAULT) {
             result = auto9_g3d00_viewport_job(s, head, slot, wb, &stage);
+        }
+        if (result == G3D00_JOB_CONFIG_FAULT && s->g3d00) {
+            result = auto9_qnx_vertex_job(s, head, slot, wb);
         }
         if (result == G3D00_JOB_CONFIG_FAULT && s->vm3_control) {
             result = auto9_vm3_vertex3_job(s, head, slot, wb);

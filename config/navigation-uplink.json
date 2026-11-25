@@ -1,0 +1,8 @@
+{
+  "profile": "navigation-real-uplink-v1",
+  "network": "10.87.5.0/24",
+  "address": "10.87.5.15",
+  "gateway": "10.87.5.2",
+  "dns": "10.87.5.3",
+  "mac": "52:54:00:87:04:01"
+}

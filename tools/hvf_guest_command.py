@@ -22,9 +22,13 @@ def run(guest,command):
   prefix=''if j.get('android_root')=='/'else'chroot /android '
   payload=prefix+'/bench/busybox su shell -s /system/bin/sh -c '+shlex.quote(command);uid=2000
  busybox='/bench/busybox'if guest=='android'and j.get('android_root')=='/'else'/bin/busybox'
- wire=busybox+' timeout -s TERM -k 1 10 '+busybox+' sh -c '+shlex.quote(payload)+'; printf "\\n'+tag+'=%s\\n" "$?"';text=execute(wire,timeout=13,port=port);m=re.search(r'\n'+tag+r'=(\d+)\r?\n',text)
+ wire=busybox+' timeout -s TERM -k 1 10 '+busybox+' sh -c '+shlex.quote(payload)+'; printf "\\n'+tag+'=%s\\n" "$?"';text=execute(wire,timeout=13,port=port,busybox=busybox);m=re.search(r'\n'+tag+r'=(\d+)\r?\n',text)
  if not m:raise RuntimeError('Command completion marker missing; guest retained')
- stdout=text[:m.start()];result=dict(guest=guest,uid=uid,command=command,stdout=stdout,exit=int(m.group(1)),qemu_pid=j['qemu_pid'],session=str(s),kernel='generic HVF',firmware='8704',framework_boot_completed=False if guest=='android'else None)
+ stdout=text[:m.start()];result=dict(guest=guest,uid=uid,command=command,stdout=stdout,exit=int(m.group(1)),qemu_pid=j['qemu_pid'],session=str(s),kernel='generic HVF',firmware='8704',framework_boot_completed=None)
+ if guest=='android':
+  observed=execute('printf "BENCH_BOOT_COMPLETE=%s\\n" "$(getprop sys.boot_completed)"',timeout=3,port=port,busybox=busybox)
+  boot=re.search(r'BENCH_BOOT_COMPLETE=(.*)\r?\n',observed)
+  if boot:result['framework_boot_completed']=boot.group(1).strip()=='1'
  return result
 if __name__=='__main__':
  import sys

@@ -1,0 +1,89 @@
+--- a/linux-user/qemu.h
++++ b/linux-user/qemu.h
+@@ -101,6 +101,7 @@
+ };
+ 
+ struct TaskState {
++    uint32_t bench_linux_personality;
+     pid_t ts_tid;     /* tid (or pid) of this task */
+ #ifdef TARGET_ARM
+ # ifdef TARGET_ABI32
+--- a/linux-user/syscall.c
++++ b/linux-user/syscall.c
+@@ -5704,6 +5704,48 @@
+     int target_size;
+     void *argptr;
+ 
++#if defined(TARGET_ARM) && !defined(TARGET_AARCH64) && defined(__aarch64__)
++    switch ((uint32_t)cmd) {
++    case 0xc0306201U:
++    case 0xc0046209U:
++    case 0x40046205U:
++    case 0x40086203U:
++    case 0x40046206U:
++    case 0x40046207U:
++    case 0x40046208U:
++    case 0x4018620dU:
++    case 0x400c620eU:
++    case 0xc00c620fU:
++    case 0x40046210U:
++        {
++            char link[64], path[128];
++            int length;
++            unsigned int size = ((uint32_t)cmd >> 16) & 0x3fff;
++            unsigned int direction = (uint32_t)cmd >> 30;
++            snprintf(link, sizeof(link), "/proc/self/fd/%d", fd);
++            length = readlink(link, path, sizeof(path) - 1);
++            if (length < 0) {
++                break;
++            }
++            path[length] = 0;
++            if (strcmp(path, "/dev/binder") && strcmp(path, "/dev/hwbinder") &&
++                strcmp(path, "/dev/vndbinder") && strcmp(path, "/dev/binderfs/binder") && strcmp(path, "/dev/binderfs/hwbinder") && strcmp(path, "/dev/binderfs/vndbinder")) {
++                break;
++            }
++            if (guest_base != 0) {
++                return -TARGET_EINVAL;
++            }
++            argptr = lock_user((direction & 2) ? VERIFY_WRITE : VERIFY_READ,
++                               arg, size, 1);
++            if (!argptr) {
++                return -TARGET_EFAULT;
++            }
++            ret = get_errno(safe_ioctl(fd, (unsigned long)(uint32_t)cmd, argptr));
++            unlock_user(argptr, arg, (direction & 2) ? size : 0);
++            return ret;
++        }
++    }
++#endif
+     ie = ioctl_entries;
+     for(;;) {
+         if (ie->target_cmd == 0) {
+@@ -11827,6 +11869,27 @@
+     case TARGET_NR_fchdir:
+         return get_errno(fchdir(arg1));
+     case TARGET_NR_personality:
++#if defined(TARGET_ARM) && !defined(TARGET_AARCH64) && defined(__aarch64__)
++        {
++            TaskState *ts = get_task_state(cpu);
++            uint32_t wanted = (uint32_t)arg1;
++            uint32_t type = wanted & 0xff;
++            if (wanted == UINT32_MAX) {
++                ret = get_errno(personality(UINT32_MAX));
++                return is_error(ret) ? ret :
++                    ((ret & ~0xff) | ts->bench_linux_personality);
++            }
++            if (type == 0 || type == 8) {
++                ret = get_errno(personality(wanted & ~0xffU));
++                if (is_error(ret)) {
++                    return ret;
++                }
++                ret = (ret & ~0xff) | ts->bench_linux_personality;
++                ts->bench_linux_personality = type;
++                return ret;
++            }
++        }
++#endif
+         return get_errno(personality(arg1));
+ #ifdef TARGET_NR__llseek /* Not on alpha */
+     case TARGET_NR__llseek:
