@@ -1,6 +1,6 @@
 # qemu-8704
 
-当前主路线为 Apple Silicon macOS + QEMU HVF，启动入口保留 `MEB-EMU.sh`。Windows 入口属于历史工程预览，不代表已验证的同等功能。
+当前主路线为 Apple Silicon macOS + QEMU HVF，启动入口保留 `MEB-EMU.sh`。
 
 ## 8704 资源下载
 
@@ -70,26 +70,7 @@ var/inputs/support/abox-dsp-native/virtual-lun0-dsp/ufs-lun0.raw
 
 macOS 日常操作、源码职责和验收边界见 [Mac 运行指南](docs/Mac运行.md)。
 
-## 历史 Windows 工程预览
-
-**0.1.0-preview.1 · Windows x64 工程预览版**
-
-Exynos Auto9 模拟器、原厂 Linux／Android／QNX 引导代码、中控原生像素窗口与统一控制页面。
-
-唯一入口：`MEB-EMU.ps1`。
-
-```powershell
-./MEB-EMU.ps1 setup
-./MEB-EMU.ps1 doctor
-./MEB-EMU.ps1 verify
-./MEB-EMU.ps1 test
-```
-
-- [导入输入与启动](docs/使用.md)
-- [源码与构建](docs/开发.md)
-- [预发布状态](docs/发布状态.md)
-- [第三方声明](NOTICE.md)
-- [运行边界](docs/运行边界.md)
+第三方许可见 [第三方声明](NOTICE.md)，功能验收范围见 [运行边界](docs/运行边界.md)。
 
 公开包保留 `src/`、`tools/`、`native/`、`runtime/`、`config/`、`tests/`、`licenses/` 与必要文档；本机输入和输出分别位于 `var/inputs/`、`var/sessions/`。`var/`、`.local/`、`.venv/` 不进入发布包。
 
