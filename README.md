@@ -2,9 +2,24 @@
 
 当前主路线为 Apple Silicon macOS + QEMU HVF，启动入口保留 `MEB-EMU.sh`。Windows 入口属于历史工程预览，不代表已验证的同等功能。
 
+## 8704 资源下载
+
+- [8704 资源（百度网盘）](https://pan.baidu.com/s/1W6a6TEcS3oD1tUDozOScfw)
+- 提取码：`8704`
+- 本地打包版本：`qemu-8704-resources-20261125.zip`，16,724,786,584 字节（约 15.6 GiB）。
+- 内容：8704 原始资源与运行输入、完整南京 1911 地图、必要 qcow2 种子及 backing 链、HMI 编译依赖和私有触控载体；不含历史会话盘/RAM 副本和个人车辆适配配置。
+
+下载后请核对本地打包版本的 SHA256：
+
+```text
+829d843d950c89e3b0c5f29abdf34cfe199f5651d2b38e6d8eb46a01a9c25127
+```
+
+使用者须自行确认原厂软件和地图的合法使用权限；分享不构成授权，也不代表新机器已通过全部业务验收。
+
 ## 首次运行
 
-本仓库不分发 8704 更新包、原厂镜像、原厂 JAR、个人车辆编码或运行快照，**也不提供 8704 资源下载链接**。使用者自行取得有权使用的 8704 资源并完成提取；原始更新包不能直接作为下列镜像使用。
+Git 仓库本身不包含 8704 更新包、原厂镜像、原厂 JAR、个人车辆编码或运行快照。8704 运行输入和地图可从上方独立网盘分享获取，也可自行准备有权使用的资源；原始更新包不能直接作为下列镜像使用。
 
 克隆后，在项目根目录执行：
 
@@ -12,7 +27,19 @@
 ./MEB-EMU.sh setup
 ```
 
-将自己准备的 8704 文件放到以下项目相对位置：
+使用网盘 ZIP 时，请先只取出恢复脚本和说明，不要直接完整解压：UFS 稀疏镜像的逻辑大小约 115.6 GiB，普通解压可能占满磁盘。在**新克隆且未启动会话**的项目根目录执行（将 `ZIP` 替换为下载文件的绝对路径）：
+
+```sh
+ZIP="/absolute/path/qemu-8704-resources-20261125.zip"
+shasum -a 256 "$ZIP"
+HELPER_DIR="$(mktemp -d)"
+unzip -j "$ZIP" restore_resources.py RESOURCE_README.txt -d "$HELPER_DIR"
+python3 "$HELPER_DIR/restore_resources.py" "$ZIP" "$PWD"
+```
+
+恢复脚本逐文件校验 SHA256、稀疏展开并重定位必要 qcow2 backing 路径，拒绝覆盖已有目标文件。已有输入或正在运行的工作目录不要直接套用。可选地图配置及迁移边界见包内 `RESOURCE_README.txt` 和 [Mac 运行指南](docs/Mac运行.md)。
+
+若不使用网盘 ZIP，请将自行准备的 8704 文件放到以下项目相对位置：
 
 ```text
 var/inputs/analysis/cpu/ivi/icas3cn-gp-image-euto-v9.ext4
