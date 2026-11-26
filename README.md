@@ -80,3 +80,9 @@ macOS 日常操作、源码职责和验收边界见 [Mac 运行指南](docs/Mac�
 - 私有固件与实车资料放在 `var/inputs/`；根目录的实车导出包及说明已原字节归档到 `var/inputs/packages/car-export-20261124/`，不进入 Git 或发布包。
 - 历史截图放在 `var/screenshots/`，不是当前实时画面；会话产物放在 `var/hvf/`、`var/sessions/`，不进入 Git。
 - 本机已有 `8704/` 是私有更新包提取目录，维持路径不搬动；新输入仍按首次运行约定放入 `var/inputs/`。
+
+## 交流群
+
+微信扫码加入「ID 折腾俱乐部」。图中二维码在 12 月 3 日前有效，过期后需更新。
+
+<img src="https://github.com/user-attachments/assets/cc0acdb7-dab7-4c20-95be-d6cfead08a4c" alt="ID 折腾俱乐部微信群二维码" width="400" />
